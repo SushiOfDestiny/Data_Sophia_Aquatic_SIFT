@@ -44,7 +44,8 @@ float_tolerance = 1e-7
 
 
 def computeKeypointsAndDescriptors(
-    image, sigma=1.6, num_intervals=3, assumed_blur=0.5, image_border_width=5
+    image, sigma=1.6, num_intervals=3, assumed_blur=0.5, image_border_width=5, 
+    contrast_threshold=0.04, eigenvalue_ratio=10
 ):
     """Compute SIFT keypoints and descriptors for an input image"""
     image = image.astype("float32")
@@ -54,7 +55,8 @@ def computeKeypointsAndDescriptors(
     gaussian_images = generateGaussianImages(base_image, num_octaves, gaussian_kernels)
     dog_images = generateDoGImages(gaussian_images)
     keypoints = findScaleSpaceExtrema(
-        gaussian_images, dog_images, num_intervals, sigma, image_border_width
+        gaussian_images, dog_images, num_intervals, sigma, image_border_width, 
+        contrast_threshold, eigenvalue_ratio
     )
     keypoints = removeDuplicateKeypoints(keypoints)
     keypoints = convertKeypointsToInputImageSize(keypoints)

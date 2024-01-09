@@ -77,6 +77,8 @@ def compute_fitted_extrema(
         eigenvalue_ratio,
     )
 
+    keypoints = pysift.convertKeypointsToInputImageSize(keypoints)
+
     return keypoints
 
 
@@ -154,6 +156,8 @@ def compute_raw_extrema(
 
     return keypoints
 
+
+# Debug tests
 
 if __name__ == "__main__":
     logger = logging.getLogger(__name__)
