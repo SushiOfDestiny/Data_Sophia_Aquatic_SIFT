@@ -153,8 +153,10 @@ def findScaleSpaceExtrema(
     sigma,
     image_border_width,
     contrast_threshold=0.04,
+    eigenvalue_ratio=10,
 ):
-    """Find pixel positions of all scale-space extrema in the image pyramid"""
+    """Find pixel positions of all scale-space extrema in the image pyramid.
+    Current version focuses on vizualisation"""
     logger.debug("Finding scale-space extrema...")
     threshold = floor(
         0.5 * contrast_threshold / num_intervals * 255
@@ -190,6 +192,7 @@ def findScaleSpaceExtrema(
                             sigma,
                             contrast_threshold,
                             image_border_width,
+                            eigenvalue_ratio
                         )
                         if localization_result is not None:
                             keypoint, localized_image_index = localization_result
