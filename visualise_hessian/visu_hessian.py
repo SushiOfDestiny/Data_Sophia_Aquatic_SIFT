@@ -112,25 +112,25 @@ def visu_hessian(im_name, g_img, keypoint, zoom_radius):
         axs[0].scatter([zoom_radius], [zoom_radius], c="r")
 
         # Plot colormap images
-        im1 = axs[1].imshow(eigvals1, cmap="gray")
+        im1 = axs[1].imshow(eigvals1, cmap="gray", vmin=0, vmax=1)
         axs[1].set_title("eigenvalue 1")
         axs[1].axis("off")
         # add red pixel on the keypoint
         axs[1].scatter([zoom_radius], [zoom_radius], c="r")
 
-        im2 = axs[2].imshow(eigvals2, cmap="gray")
+        im2 = axs[2].imshow(eigvals2, cmap="gray", vmin=0, vmax=1)
         axs[2].set_title("eigenvalue 2")
         axs[2].axis("off")
         # add red pixel on the keypoint
         axs[2].scatter([zoom_radius], [zoom_radius], c="r")
 
-        # Define the same normalization for colorbars 1 and 2
-        norm = colors.Normalize(vmin=0, vmax=1)
+        # # Define the same normalization for colorbars 1 and 2
+        # norm = colors.Normalize(vmin=0, vmax=1)
 
         # Add colorbar and adjust its size so it matches the images
         fig.colorbar(im0, ax=axs[0], fraction=0.046, pad=0.04)
-        fig.colorbar(im1, ax=axs[1], fraction=0.046, pad=0.04, norm=norm)
-        fig.colorbar(im2, ax=axs[2], fraction=0.046, pad=0.04, norm=norm)
+        fig.colorbar(im1, ax=axs[1], fraction=0.046, pad=0.04)
+        fig.colorbar(im2, ax=axs[2], fraction=0.046, pad=0.04)
 
         # add legend
         fig.suptitle(f"SIFT Keypoint {y_kp}, {x_kp} (in red)", fontsize=10)
