@@ -304,25 +304,43 @@ if __name__ == "__main__":
     print("oui")
 
     # load grayscale image
-    im_name = "87_img_"
-    img = cv.imread(f"../images/{im_name}.png", 0)
+    # img_path = "../images"
+    im_name = "dumbbell"
+    img_ext = "jpg"
+    # img = cv.imread(f"{img_path}/{im_name}.{img_ext}", 0)
+    img = cv.imread(f"{im_name}.{img_ext}", 0)
     # # show image
     # # plt.imshow(img, cmap="gray")
     # # plt.show()
 
     # define folder to save images
     img_folder = "zoomed_kp"
+    img_resolution = 400  # in dpi
 
     # calculate sift keypoints and descriptors
     sift = cv.SIFT_create()
     keypoints, descriptors = sift.detectAndCompute(img, None)
 
+    # draw keypoints on image
+    img_kp = cv.drawKeypoints(
+        img, keypoints, None, flags=cv.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS
+    )
+    nb_kp = len(keypoints)
+    plt.imshow(img_kp)
+    plt.title(f"{nb_kp} SIFT keypoints")
+    # save figure
+    plt.savefig(
+        f"{im_name}_sift.png",
+        dpi=img_resolution,
+    )
+    plt.show()
+
     # draw colormap of eigenvalues of Hessian matrix for 1 keypoint
-    kp0 = keypoints[550]
+    kp0 = keypoints[200]
     y_kp0, x_kp0 = np.round(kp0.pt).astype(int)
     # print(kp0.pt)
 
-    #####################
+    ###################################
     # Test visualize_curvature_values #
 
     eigval_fig = visualize_curvature_values(img, kp0, 30)
@@ -349,8 +367,19 @@ if __name__ == "__main__":
     plt.figure(eig_fig.number)
     plt.show()
 
-    # # save figure
-    # eig_fig.savefig(
-    #     f"{img_folder}/zoomed_{im_name}_kp_{y_kp0}_{x_kp0}_{zoom_radius}_eigvects.png",
-    #     dpi="figure",
-    # )
+    # save figure
+    eig_fig.savefig(
+        f"{img_folder}/zoomed_{im_name}_kp_{y_kp0}_{x_kp0}_{zoom_radius}_eigvects.png",
+        dpi=img_resolution,
+    )
+
+    # # test a bunch of keypoints
+    # zoom_radius = 30
+    # start_kp = 50
+    # nb_kp = 5
+    # step_idx = 50
+    # end_kp = start_kp + nb_kp * step_idx
+    # for kp in keypoints[start_kp:end_kp:step_idx]:
+    #     eigvec_fig = visualize_curvature_directions(img, kp, zoom_radius)
+    #     plt.figure(eigvec_fig.number)
+    #     plt.show()
