@@ -146,6 +146,23 @@ def visualize_curvature_values(g_img, keypoint, zoom_radius):
         return fig
 
 
+def add_vector_to_ax(colormap, norm, cm_value, x, y, vect, ax, width=0.1):
+    """
+    Add a vector to an axis with a colormap depending on a value.
+    colormap: matplotlib colormap
+    norm: matplotlib norm
+    cm_value: value to get the color from the colormap
+    x, y: position of the vector
+    vect: vector to plot
+    ax: matplotlib axis
+    width: width of the vector
+    """
+    # compute color of the eigenvector depending on the eigenvalue
+    color = colormap(norm(cm_value))
+    # plot eigenvector
+    ax.arrow(x, y, vect[0], vect[1], color=color, width=width)
+
+
 def visualize_curvature_directions(g_img, keypoint, zoom_radius, step_percentage=5):
     """
     Compute eigenvectors of the Hessian matrix of all pixels in a zoomed area around a keypoint.
@@ -154,6 +171,7 @@ def visualize_curvature_directions(g_img, keypoint, zoom_radius, step_percentage
     g_img: grayscale image
     keypoint: SIFT keypoint
     zoom_radius: radius of the zoomed area in pixels
+    step_percentage: percentage of pixels to skip in the computation of the eigenvectors, w.r.t subimage size
     Return: the matplotlib figure
     """
     # compute pixel coordinates of the keypoint
@@ -221,6 +239,7 @@ def visualize_curvature_directions(g_img, keypoint, zoom_radius, step_percentage
         # define colormap for eigenvectors depending on the value of the eigenvalues
         # the higher the eigenvalue, the more red the eigenvector, the lower the eigenvalue, the more blue the eigenvector
         colormap = plt.cm.get_cmap("RdBu")
+
         # normalize eigenvalues with the min and max eigenvalues
         vmin, vmax = np.min(eigvals), np.max(eigvals)
         norm = colors.Normalize(vmin=vmin, vmax=vmax)
@@ -232,48 +251,33 @@ def visualize_curvature_directions(g_img, keypoint, zoom_radius, step_percentage
             for x in range(border_size, w - border_size, step):
                 # assert y,x do not belong to keypoint, because it is calculated afterwards
                 if y != zoom_radius or x != zoom_radius:
-                    # compute color of the eigenvector depending on the eigenvalues
-                    color1 = colormap(norm(eigvals[y, x, 0]))
-                    # plot eigenvector 1
-                    axs[1].arrow(
+                    add_vector_to_ax(
+                        colormap,
+                        norm,
+                        eigvals[y, x, 0],
                         x,
                         y,
-                        normalized_eigvects[y, x, 0, 0],
-                        normalized_eigvects[y, x, 0, 1],
-                        color=color1,
-                        width=0.1,
+                        normalized_eigvects[y, x, 0],
+                        axs[1],
                     )
-                    # compute color of the eigenvector depending on the eigenvalues
-                    color2 = colormap(norm(eigvals[y, x, 1]))
-                    # plot eigenvector 2
-                    axs[1].arrow(
+                    add_vector_to_ax(
+                        colormap,
+                        norm,
+                        eigvals[y, x, 1],
                         x,
                         y,
-                        normalized_eigvects[y, x, 1, 0],
-                        normalized_eigvects[y, x, 1, 1],
-                        color=color2,
-                        width=0.1,
+                        normalized_eigvects[y, x, 1],
+                        axs[1],
                     )
         # display eigenvectors of the keypoint
-        # plot eigenvector 1
-        color_kp1 = colormap(norm(eigvals[zoom_radius, zoom_radius, 0]))
-        axs[1].arrow(
+        add_vector_to_ax(
+            colormap,
+            norm,
+            eigvals[zoom_radius, zoom_radius, 0],
             zoom_radius,
             zoom_radius,
-            normalized_eigvects[zoom_radius, zoom_radius, 0, 0],
-            normalized_eigvects[zoom_radius, zoom_radius, 0, 1],
-            color=color_kp1,
-            width=0.1,
-        )
-        # plot eigenvector 2
-        color_kp2 = colormap(norm(eigvals[zoom_radius, zoom_radius, 1]))
-        axs[1].arrow(
-            zoom_radius,
-            zoom_radius,
-            normalized_eigvects[zoom_radius, zoom_radius, 1, 0],
-            normalized_eigvects[zoom_radius, zoom_radius, 1, 1],
-            color=color_kp2,
-            width=0.1,
+            normalized_eigvects[zoom_radius, zoom_radius, 0],
+            axs[1],
         )
 
         # add red pixel on the keypoint, with variable size
@@ -331,7 +335,7 @@ def visualize_gradients(g_img, keypoint, zoom_radius, step_percentage=5):
             y_kp - zoom_radius : y_kp + zoom_radius,
             x_kp - zoom_radius : x_kp + zoom_radius,
         ]
-        # Compute hessian eigenvectors and eigenvalues of all pixels in subimage, (excluding a pixel border).
+        # Compute gradients for all pixels in subimage, (excluding a pixel border).
         border_size = 1
         h, w = sub_img.shape
         gradients = np.zeros((h, w, 2), dtype=np.float32)
@@ -350,19 +354,18 @@ def visualize_gradients(g_img, keypoint, zoom_radius, step_percentage=5):
             sub_img, (zoom_radius, zoom_radius)
         )
 
-        # create colormap for gradients
-        # the higher the eigenvalue, the more red the eigenvector, the lower the eigenvalue, the more blue the eigenvector
-        colormap = plt.cm.get_cmap("RdBu")
+        # create a colormap for gradients, shifting from white to red with increase of magnitude
+        colormap = plt.cm.get_cmap("Reds")
+
         # compute norm of gradients
         norms_gradients = np.linalg.norm(gradients, axis=-1)
-        # normalize eigenvalues with the min and max eigenvalues
+
+        # normalize gradients with the min and max eigenvalues
         vmin, vmax = np.min(norms_gradients), np.max(norms_gradients)
         norm = colors.Normalize(vmin=vmin, vmax=vmax)
 
-        # define commune size
-        grad_size = zoom_radius * 0.05
-
         # normalize gradient so they have same length grad_size
+        grad_size = zoom_radius * 0.05
         # and avoiding null gradients with a mask
         eps = 1e-6
         non_null_grad_mask = norms_gradients > eps
@@ -399,29 +402,25 @@ def visualize_gradients(g_img, keypoint, zoom_radius, step_percentage=5):
             for x in range(border_size, w - border_size, step):
                 # assert y,x do not belong to keypoint, because it is calculated afterwards
                 if y != zoom_radius or x != zoom_radius:
-                    # compute color of the eigenvector depending on the eigenvalues
-                    color = colormap(norm(norms_gradients[y, x]))
-                    # plot gradient with size grad_size
-                    axs[1].arrow(
+                    add_vector_to_ax(
+                        colormap,
+                        norm,
+                        norms_gradients[y, x],
                         x,
                         y,
-                        unit_gradients[y, x, 0],
-                        unit_gradients[y, x, 1],
-                        color=color,
-                        width=0.1,
+                        unit_gradients[y, x],
+                        axs[1],
                     )
 
         # display gradient of the keypoint
-        # compute color
-        color_kp = colormap(norm(norms_gradients[zoom_radius, zoom_radius]))
-        # plot gradient
-        axs[1].arrow(
+        add_vector_to_ax(
+            colormap,
+            norm,
+            norms_gradients[zoom_radius, zoom_radius],
             zoom_radius,
             zoom_radius,
-            unit_gradients[zoom_radius, zoom_radius, 0],
-            unit_gradients[zoom_radius, zoom_radius, 1],
-            color=color_kp,
-            width=0.1,
+            unit_gradients[zoom_radius, zoom_radius],
+            axs[1],
         )
         # add red pixel on the keypoint
         axs[1].scatter([zoom_radius], [zoom_radius], c="r", s=zoom_radius * kp_factor)
