@@ -89,9 +89,11 @@ def visu_hessian(im_name, g_img, keypoint, zoom_radius):
             for x in range(border_size, w - border_size):
                 H = compute_hessian(sub_img, (y, x))
                 eigvals[y, x] = np.linalg.eigvals(H)
-        # Normalize eigenvalues with the max absolute value
-        max_abs_eigvals = np.max(np.abs(eigvals), axis=(0, 1))
+
+        # # Normalize eigenvalues with the max absolute value
+        max_abs_eigvals = np.max(np.abs(eigvals))
         normalized_eigvals = eigvals / max_abs_eigvals
+        # normalized_eigvals = eigvals
 
         # Compute colormap images
         eigvals1 = normalized_eigvals[:, :, 0]
@@ -113,12 +115,14 @@ def visu_hessian(im_name, g_img, keypoint, zoom_radius):
 
         # Plot colormap images
         im1 = axs[1].imshow(eigvals1, cmap="gray", vmin=0, vmax=1)
+        # im1 = axs[1].imshow(eigvals1, cmap="gray", vmin=-1, vmax=1)
         axs[1].set_title("eigenvalue 1")
         axs[1].axis("off")
         # add red pixel on the keypoint
         axs[1].scatter([zoom_radius], [zoom_radius], c="r")
 
         im2 = axs[2].imshow(eigvals2, cmap="gray", vmin=0, vmax=1)
+        # im2 = axs[2].imshow(eigvals2, cmap="gray", vmin=-1, vmax=1)
         axs[2].set_title("eigenvalue 2")
         axs[2].axis("off")
         # add red pixel on the keypoint
@@ -139,7 +143,10 @@ def visu_hessian(im_name, g_img, keypoint, zoom_radius):
         # plt.show()
 
         # save figure
-        fig.savefig(f"zoomed_kp/zoomed_{im_name}_kp_{y_kp}_{x_kp}.png", dpi="figure")
+        fig.savefig(
+            f"zoomed_kp/zoomed_{im_name}_kp_{y_kp}_{x_kp}_{zoom_radius}.png",
+            dpi="figure",
+        )
 
 
 # TESTS
@@ -160,12 +167,12 @@ if __name__ == "__main__":
     keypoints, descriptors = sift.detectAndCompute(img, None)
 
     # draw colormap of eigenvalues of Hessian matrix for 1 keypoint
-    kp0 = keypoints[600]
+    kp0 = keypoints[1000]
     # print(kp0.pt)
 
-    visu_hessian(im_name, img, kp0, 15)
+    visu_hessian(im_name, img, kp0, 30)
 
     # draw colormap of eigenvalues of Hessian matrix for some keypoints
-    zoom_radius = 10
-    for kp in keypoints[50:301:50]:
-        visu_hessian(im_name, img, kp, zoom_radius)
+    # zoom_radius = 10
+    # for kp in keypoints[50:301:50]:
+    #     visu_hessian(im_name, img, kp, zoom_radius)
