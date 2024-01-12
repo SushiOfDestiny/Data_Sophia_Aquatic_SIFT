@@ -146,7 +146,7 @@ def visualize_curvature_values(g_img, keypoint, zoom_radius):
         return fig
 
 
-def visualize_curvature_directions(g_img, keypoint, zoom_radius):
+def visualize_curvature_directions(g_img, keypoint, zoom_radius, step_percentage=5):
     """
     Compute eigenvectors of the Hessian matrix of all pixels in a zoomed area around a keypoint.
     display the directions in 2 colors depending on the sign of the eigenvalues.
@@ -184,7 +184,9 @@ def visualize_curvature_directions(g_img, keypoint, zoom_radius):
         eigvals = np.zeros((h, w, 2), dtype=np.float32)
 
         # Downsample the computations by taking 1 pixel every step in each direction, instead of all pixels
-        step = 5
+        step = (2 * zoom_radius + 1) * step_percentage / 100
+        step = np.round(step).astype(int)
+
         for y in range(border_size, h - border_size, step):
             for x in range(border_size, w - border_size, step):
                 # assert y,x do not belong to keypoint, because it is calculated afterwards
@@ -298,6 +300,147 @@ def visualize_curvature_directions(g_img, keypoint, zoom_radius):
         return fig
 
 
+def visualize_gradients(g_img, keypoint, zoom_radius, step_percentage=5):
+    """
+    Compute gradients of all pixels in a zoomed area around a keypoint.
+    display with color shifting from white to red with increase of magnitude
+    Does nothing if the zoomed area is not in the image.
+    g_img: grayscale image
+    keypoint: SIFT keypoint
+    zoom_radius: radius of the zoomed area in pixels
+    Return: the matplotlib figure
+    """
+    # compute pixel coordinates of the keypoint
+    y, x = keypoint.pt
+    y_kp = np.round(y).astype(int)
+    x_kp = np.round(x).astype(int)
+
+    # check if zoomed area is in the image
+    is_in_image = (
+        y_kp - zoom_radius >= 0
+        and y_kp + zoom_radius < g_img.shape[0]
+        and x_kp - zoom_radius >= 0
+        and x_kp + zoom_radius < g_img.shape[1]
+    )
+
+    if not is_in_image:
+        print("zoomed area is not fully in the image")
+    else:
+        # crop image around keypoint
+        sub_img = g_img[
+            y_kp - zoom_radius : y_kp + zoom_radius,
+            x_kp - zoom_radius : x_kp + zoom_radius,
+        ]
+        # Compute hessian eigenvectors and eigenvalues of all pixels in subimage, (excluding a pixel border).
+        border_size = 1
+        h, w = sub_img.shape
+        gradients = np.zeros((h, w, 2), dtype=np.float32)
+
+        # Downsample the computations by taking 1 pixel every step in each direction, instead of all pixels
+        step = (2 * zoom_radius + 1) * step_percentage / 100
+        step = np.round(step).astype(int)
+
+        for y in range(border_size, h - border_size, step):
+            for x in range(border_size, w - border_size, step):
+                # assert y,x do not belong to keypoint, because it is calculated afterwards
+                if y != zoom_radius or x != zoom_radius:
+                    gradients[y, x, :] = compute_gradient(sub_img, (y, x))
+        # also compute gradient for the keypoint
+        gradients[zoom_radius, zoom_radius, :] = compute_gradient(
+            sub_img, (zoom_radius, zoom_radius)
+        )
+
+        # create colormap for gradients
+        # the higher the eigenvalue, the more red the eigenvector, the lower the eigenvalue, the more blue the eigenvector
+        colormap = plt.cm.get_cmap("RdBu")
+        # compute norm of gradients
+        norms_gradients = np.linalg.norm(gradients, axis=-1)
+        # normalize eigenvalues with the min and max eigenvalues
+        vmin, vmax = np.min(norms_gradients), np.max(norms_gradients)
+        norm = colors.Normalize(vmin=vmin, vmax=vmax)
+
+        # define commune size
+        grad_size = zoom_radius * 0.05
+
+        # normalize gradient so they have same length grad_size
+        # and avoiding null gradients with a mask
+        eps = 1e-6
+        non_null_grad_mask = norms_gradients > eps
+
+        unit_gradients = np.zeros_like(gradients, dtype=np.float32)
+
+        # Create a new array for the reciprocal of the non-null norms
+        reciprocal_norms = np.ones_like(norms_gradients)
+        reciprocal_norms[non_null_grad_mask] = 1 / norms_gradients[non_null_grad_mask]
+
+        # Normalize the non-null gradients
+        unit_gradients[non_null_grad_mask] = (
+            gradients[non_null_grad_mask]
+            * reciprocal_norms[non_null_grad_mask, ..., np.newaxis]
+            * grad_size
+        )
+
+        unit_gradients[~non_null_grad_mask] = 0.0
+
+        # plot the subimage and the subimage with the gradients with colormap and variable size on it
+        fig, axs = plt.subplots(1, 2, figsize=(10, 5))
+
+        # plot subimage
+        axs[0].imshow(sub_img, cmap="gray")
+        axs[0].set_title(f"zoomed image, radius={zoom_radius}")
+        axs[0].axis("off")
+        # add red pixel on the keypoint
+        kp_factor = 0.1
+        axs[0].scatter([zoom_radius], [zoom_radius], c="r", s=zoom_radius * kp_factor)
+
+        # plot the gradients on the subimage
+        axs[1].imshow(sub_img, cmap="gray")
+        for y in range(border_size, h - border_size, step):
+            for x in range(border_size, w - border_size, step):
+                # assert y,x do not belong to keypoint, because it is calculated afterwards
+                if y != zoom_radius or x != zoom_radius:
+                    # compute color of the eigenvector depending on the eigenvalues
+                    color = colormap(norm(norms_gradients[y, x]))
+                    # plot gradient with size grad_size
+                    axs[1].arrow(
+                        x,
+                        y,
+                        unit_gradients[y, x, 0],
+                        unit_gradients[y, x, 1],
+                        color=color,
+                        width=0.1,
+                    )
+
+        # display gradient of the keypoint
+        # compute color
+        color_kp = colormap(norm(norms_gradients[zoom_radius, zoom_radius]))
+        # plot gradient
+        axs[1].arrow(
+            zoom_radius,
+            zoom_radius,
+            unit_gradients[zoom_radius, zoom_radius, 0],
+            unit_gradients[zoom_radius, zoom_radius, 1],
+            color=color_kp,
+            width=0.1,
+        )
+        # add red pixel on the keypoint
+        axs[1].scatter([zoom_radius], [zoom_radius], c="r", s=zoom_radius * kp_factor)
+        axs[1].set_title(f"gradients, the reder, the bigger, radius={zoom_radius}")
+        axs[1].axis("off")
+
+        # create a ScalarMappable with the same colormap and normalization as the arrows
+        sm = plt.cm.ScalarMappable(cmap=colormap, norm=norm)
+        sm.set_array([])
+
+        # add the colorbar of the colormap of the arrows
+        fig.colorbar(sm, ax=axs[1], fraction=0.046, pad=0.04)
+
+        # add legend
+        fig.suptitle(f"SIFT Keypoint {y_kp}, {x_kp} (in red)", fontsize=10)
+
+        return fig
+
+
 # TESTS
 if __name__ == "__main__":
     logger = logging.getLogger(__name__)
@@ -326,14 +469,14 @@ if __name__ == "__main__":
         img, keypoints, None, flags=cv.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS
     )
     nb_kp = len(keypoints)
-    plt.imshow(img_kp)
-    plt.title(f"{nb_kp} SIFT keypoints")
-    # save figure
-    plt.savefig(
-        f"{im_name}_sift.png",
-        dpi=img_resolution,
-    )
-    plt.show()
+    # plt.imshow(img_kp)
+    # plt.title(f"{nb_kp} SIFT keypoints")
+    # # # save figure
+    # # plt.savefig(
+    # #     f"{im_name}_sift.png",
+    # #     dpi=img_resolution,
+    # # )
+    # plt.show()
 
     # draw colormap of eigenvalues of Hessian matrix for 1 keypoint
     kp0 = keypoints[200]
@@ -345,8 +488,8 @@ if __name__ == "__main__":
 
     eigval_fig = visualize_curvature_values(img, kp0, 30)
 
-    plt.figure(eigval_fig.number)
-    plt.show()
+    # plt.figure(eigval_fig.number)
+    # plt.show()
 
     # # save figure
     # eigval_fig.savefig(
@@ -364,14 +507,14 @@ if __name__ == "__main__":
     zoom_radius = 30
     eig_fig = visualize_curvature_directions(img, kp0, zoom_radius)
 
-    plt.figure(eig_fig.number)
-    plt.show()
+    # plt.figure(eig_fig.number)
+    # plt.show()
 
-    # save figure
-    eig_fig.savefig(
-        f"{img_folder}/zoomed_{im_name}_kp_{y_kp0}_{x_kp0}_{zoom_radius}_eigvects.png",
-        dpi=img_resolution,
-    )
+    # # save figure
+    # eig_fig.savefig(
+    #     f"{img_folder}/zoomed_{im_name}_kp_{y_kp0}_{x_kp0}_{zoom_radius}_eigvects.png",
+    #     dpi=img_resolution,
+    # )
 
     # # test a bunch of keypoints
     # zoom_radius = 30
@@ -383,3 +526,12 @@ if __name__ == "__main__":
     #     eigvec_fig = visualize_curvature_directions(img, kp, zoom_radius)
     #     plt.figure(eigvec_fig.number)
     #     plt.show()
+
+    ################
+    # Test gradients
+    ################
+
+    grad_fig = visualize_gradients(img, kp0, zoom_radius)
+
+    plt.figure(grad_fig.number)
+    plt.show()
