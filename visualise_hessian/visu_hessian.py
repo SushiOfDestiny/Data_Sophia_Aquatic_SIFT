@@ -501,11 +501,12 @@ def visualize_curvature_directions_ax_sm(
             eigvects[zoom_radius, zoom_radius],
         ) = np.linalg.eig(H_kp)
 
-        # normalize eigenvectors with the max absolute value
-        norms_eigvects = np.linalg.norm(eigvects, axis=-1)
-        max_abs_eigvects = np.max(norms_eigvects)
-        print("max_abs_eigvects 1", max_abs_eigvects)
-        normalized_eigvects = eigvects / max_abs_eigvects
+        # # normalize eigenvectors with the max absolute value
+        # norms_eigvects = np.linalg.norm(eigvects, axis=-1)
+        # max_abs_eigvects = np.max(norms_eigvects)
+        # print("max_abs_eigvects 1", max_abs_eigvects)
+        # normalized_eigvects = eigvects / max_abs_eigvects
+        normalized_eigvects = eigvects
 
         # plot eigenvectors
         # define colormap for eigenvectors depending on the value of the eigenvalues
@@ -580,16 +581,25 @@ def visualize_curvature_directions_ax_sm(
         return sm
 
 
-def downsample_array(array, step):
+def downsample_array(array, step, border_size=1):
     """
-    Downsample an array by taking 1 pixel every step in each direction, instead of all pixels
+    Downsample an array by taking 1 pixel every step in each direction, instead of all pixels,
+    except for a border.
     array: array to downsample
     step: step of the downsampling
+    border_size: size of the border to exclude from the computation
     Return: the downsampled array
     """
-    mask = (slice(step, -step, step), slice(step, -step, step))
+    # Create a mask for the first 2 dimensions
+    # mask = [slice(0, -1, step), slice(0, -1, step)]
+    mask = (
+        slice(border_size, -border_size, step),
+        slice(border_size, -border_size, step),
+    )
+
     selected_array = np.zeros_like(array, dtype=np.float32)
     selected_array[mask] = array[mask]
+
     return selected_array
 
 
@@ -600,7 +610,6 @@ def draw_vectors_on_ax(
     cmap_values,
     vects,
     im_shape,
-    avoided_position,
     step,
     border_size=1,
 ):
@@ -612,26 +621,22 @@ def draw_vectors_on_ax(
     cmap_values: values to get the color from the colormap
     vects: vectors to plot
     im_shape: shape of the image, (h, w)
-    avoided_position: position of the pixel to avoid, (y, x)
     step: step of the downsampling
     border_size: size of the border to exclude from the computation
     """
     h, w = im_shape
-    y_avoid, x_avoid = avoided_position
 
     for y in range(border_size, h - border_size, step):
         for x in range(border_size, w - border_size, step):
-            # don't draw vector if it is the avoided pixel
-            if y != y_avoid or x != x_avoid:
-                add_vector_to_ax(
-                    colormap,
-                    norm,
-                    cmap_values[y, x],
-                    x,
-                    y,
-                    vects[y, x],
-                    ax,
-                )
+            add_vector_to_ax(
+                colormap,
+                norm,
+                cmap_values[y, x],
+                x,
+                y,
+                vects[y, x],
+                ax,
+            )
 
 
 def visualize_curvature_directions_ax_sm_unfinished(
@@ -664,16 +669,17 @@ def visualize_curvature_directions_ax_sm_unfinished(
     eigvals, eigvects, _ = compute_hessian_gradient_subimage(sub_img)
 
     # Downsample the computations by taking 1 pixel every step in each direction, instead of all pixels
+    # We downsample within pixels that are not in the border
     # Values of unconsidered pixels are set to 0
     step = compute_downsampling_step(step_percentage, zoom_radius)
     selected_eigvects = downsample_array(eigvects, step)
     selected_eigvals = downsample_array(eigvals, step)
+    # Add values of the keypoint
+    selected_eigvects[zoom_radius, zoom_radius] = eigvects[zoom_radius, zoom_radius]
+    selected_eigvals[zoom_radius, zoom_radius] = eigvals[zoom_radius, zoom_radius]
 
-    # normalize eigenvectors with the max absolute value
-    norms_eigvects = np.linalg.norm(selected_eigvects, axis=-1)
-    max_abs_eigvects = np.max(norms_eigvects)
-    print("max_abs_eigvects", max_abs_eigvects)
-    normalized_eigvects = selected_eigvects / max_abs_eigvects
+    # normalize eigenvectors
+    normalized_eigvects = selected_eigvects * 10
 
     # draw eigenvectors on ax
     # define colormap for eigenvectors depending on the value of the eigenvalues
@@ -697,24 +703,12 @@ def visualize_curvature_directions_ax_sm_unfinished(
             selected_eigvals[:, :, i],
             normalized_eigvects[:, :, i],
             (h, w),
-            (zoom_radius, zoom_radius),
             step,
             border_size,
         )
 
-        # display eigenvectors of the keypoint
-        add_vector_to_ax(
-            colormap,
-            norm,
-            eigvals[zoom_radius, zoom_radius, i],
-            zoom_radius,
-            zoom_radius,
-            normalized_eigvects[zoom_radius, zoom_radius, i],
-            ax,
-        )
-
     # add red pixel on the keypoint, with variable size
-    kp_factor = zoom_radius * 0.01
+    kp_factor = zoom_radius * 0.1
     ax.scatter(
         [zoom_radius],
         [zoom_radius],
@@ -1065,7 +1059,9 @@ def visualize_gradients_ax_sm_unfinished(
     # Downsample the computations by taking 1 pixel every step in each direction, instead of all pixels
     # Values of unconsidered pixels are set to 0
     step = compute_downsampling_step(step_percentage, zoom_radius)
-    selected_gradients = downsample_array(gradients, step)
+    selected_gradients = downsample_array(gradients, step, border_size)
+    # Add values of the keypoint
+    selected_gradients[zoom_radius, zoom_radius] = gradients[zoom_radius, zoom_radius]
 
     # create a colormap for gradients norms, shifting from white to red with increase of magnitude
     colormap = plt.cm.get_cmap("Reds")
@@ -1091,15 +1087,8 @@ def visualize_gradients_ax_sm_unfinished(
         * grad_size
     )
 
-    print(
-        "unit_gradients: ",
-        np.min(np.linalg.norm(unit_gradients, axis=-1)),
-        np.max(np.linalg.norm(unit_gradients, axis=-1)),
-    )
-
     # plot the gradients on the subimage
     ax.imshow(sub_img, cmap="gray")
-    # first avoid keypoint
     draw_vectors_on_ax(
         ax,
         colormap,
@@ -1107,20 +1096,8 @@ def visualize_gradients_ax_sm_unfinished(
         norms_gradients,
         unit_gradients,
         (h, w),
-        (zoom_radius, zoom_radius),
         step,
         border_size,
-    )
-
-    # display gradient of the keypoint
-    add_vector_to_ax(
-        colormap,
-        norm,
-        norms_gradients[zoom_radius, zoom_radius],
-        zoom_radius,
-        zoom_radius,
-        unit_gradients[zoom_radius, zoom_radius],
-        ax,
     )
 
     # add red pixel on the keypoint
