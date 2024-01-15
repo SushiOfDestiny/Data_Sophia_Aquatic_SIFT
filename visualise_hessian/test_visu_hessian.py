@@ -131,26 +131,6 @@ y_kp0, x_kp0 = np.round(kp0.pt).astype(int)
 #     plt.figure(eigvec_fig.number)
 #     plt.show()
 
-# ##############
-# # test visualise_curvature_directions_ax_sm
-# ##############
-
-# # create figure and ax
-# fig, ax = plt.subplots(1, 1, figsize=(5, 5))
-
-# # compute eigenvectors and add them to the ax
-# sm = visu_hessian.visualize_curvature_directions_ax_sm(
-#     img_float32, kp0, zoom_radius=15, ax=ax
-# )
-
-# # add the colorbar of the colormap of the arrows
-# fig.colorbar(sm, ax=ax, fraction=0.046, pad=0.04)
-
-# # add legend
-# fig.suptitle(f"SIFT Keypoint {y_kp0}, {x_kp0} (in red) from 2nd function", fontsize=10)
-
-# plt.show()
-
 ###############
 # test downsample_array
 ###############
@@ -165,14 +145,14 @@ print(d_arr[:, :, 1])
 
 
 ##############
-# test visualise_curvature_directions_ax_sm_unifinished
+# test visualise_curvature_directions_ax_sm
 ##############
 
 # create figure and ax
 fig, ax = plt.subplots(1, 1, figsize=(5, 5))
 
 # compute eigenvectors and add them to the ax
-sm = visu_hessian.visualize_curvature_directions_ax_sm_unfinished(
+sm = visu_hessian.visualize_curvature_directions_ax_sm(
     img_float32, kp0, zoom_radius=15, ax=ax
 )
 
@@ -194,36 +174,15 @@ plt.show()
 # plt.figure(grad_fig.number)
 # plt.show()
 
-
 ##################
 # test visualize_gradients_ax_sm
-##################
-
-# # create figure and ax
-# fig, ax = plt.subplots(1, 1, figsize=(5, 5))
-
-# # compute eigenvectors and add them to the ax
-# sm = visu_hessian.visualize_gradients_ax_sm(img_float32, kp0, zoom_radius=15, ax=ax)
-
-# # add the colorbar of the colormap of the arrows
-# fig.colorbar(sm, ax=ax, fraction=0.046, pad=0.04)
-
-# # add legend
-# fig.suptitle(f"SIFT Keypoint {y_kp0}, {x_kp0} (in red) from 2nd function", fontsize=10)
-
-# plt.show()
-
-##################
-# test visualize_gradients_ax_sm_unfinished
 ##################
 
 # create figure and ax
 fig, ax = plt.subplots(1, 1, figsize=(5, 5))
 
 # compute eigenvectors and add them to the ax
-sm = visu_hessian.visualize_gradients_ax_sm_unfinished(
-    img_float32, kp0, zoom_radius=15, ax=ax
-)
+sm = visu_hessian.visualize_gradients_ax_sm(img_float32, kp0, zoom_radius=15, ax=ax)
 
 # add the colorbar of the colormap of the arrows
 fig.colorbar(sm, ax=ax, fraction=0.046, pad=0.04)
