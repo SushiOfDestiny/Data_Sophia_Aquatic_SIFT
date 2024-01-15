@@ -439,146 +439,146 @@ def visualize_curvature_directions(g_img, keypoint, zoom_radius, step_percentage
         return fig
 
 
-def visualize_curvature_directions_ax_sm(
-    g_img, keypoint, zoom_radius, ax, step_percentage=5
-):
-    """
-    g_img: float32 grayscale image
-    keypoint: SIFT keypoint
-    zoom_radius: radius of the zoomed area in pixels
-    step_percentage: percentage of pixels to skip in the computation of the eigenvectors, w.r.t subimage size
-    ax: matplotlib axis
+# def visualize_curvature_directions_ax_sm(
+#     g_img, keypoint, zoom_radius, ax, step_percentage=5
+# ):
+#     """
+#     g_img: float32 grayscale image
+#     keypoint: SIFT keypoint
+#     zoom_radius: radius of the zoomed area in pixels
+#     step_percentage: percentage of pixels to skip in the computation of the eigenvectors, w.r.t subimage size
+#     ax: matplotlib axis
 
-    Compute eigenvectors of the Hessian matrix of all pixels in a zoomed area around a keypoint.
-    display the directions in 2 colors depending on the sign of the eigenvalues.
-    Does nothing if the zoomed area is not in the image.
-    Inplace modify the argument ax
+#     Compute eigenvectors of the Hessian matrix of all pixels in a zoomed area around a keypoint.
+#     display the directions in 2 colors depending on the sign of the eigenvalues.
+#     Does nothing if the zoomed area is not in the image.
+#     Inplace modify the argument ax
 
-    Return: the scalable colormap of the arrows
-    """
-    # compute pixel coordinates of the keypoint
-    y, x = keypoint.pt
-    y_kp = np.round(y).astype(int)
-    x_kp = np.round(x).astype(int)
+#     Return: the scalable colormap of the arrows
+#     """
+#     # compute pixel coordinates of the keypoint
+#     y, x = keypoint.pt
+#     y_kp = np.round(y).astype(int)
+#     x_kp = np.round(x).astype(int)
 
-    # check if zoomed area is in the image
-    is_in_image = (
-        y_kp - zoom_radius >= 0
-        and y_kp + zoom_radius < g_img.shape[0]
-        and x_kp - zoom_radius >= 0
-        and x_kp + zoom_radius < g_img.shape[1]
-    )
+#     # check if zoomed area is in the image
+#     is_in_image = (
+#         y_kp - zoom_radius >= 0
+#         and y_kp + zoom_radius < g_img.shape[0]
+#         and x_kp - zoom_radius >= 0
+#         and x_kp + zoom_radius < g_img.shape[1]
+#     )
 
-    if not is_in_image:
-        print("zoomed area is not fully in the image")
-    else:
-        # crop image around keypoint
-        sub_img = g_img[
-            y_kp - zoom_radius : y_kp + zoom_radius,
-            x_kp - zoom_radius : x_kp + zoom_radius,
-        ]
-        # Compute hessian eigenvectors and eigenvalues of all pixels in subimage, (excluding a pixel border).
-        border_size = 1
-        h, w = sub_img.shape
-        eigvects = np.zeros((h, w, 2, 2), dtype=np.float32)
-        eigvals = np.zeros((h, w, 2), dtype=np.float32)
+#     if not is_in_image:
+#         print("zoomed area is not fully in the image")
+#     else:
+#         # crop image around keypoint
+#         sub_img = g_img[
+#             y_kp - zoom_radius : y_kp + zoom_radius,
+#             x_kp - zoom_radius : x_kp + zoom_radius,
+#         ]
+#         # Compute hessian eigenvectors and eigenvalues of all pixels in subimage, (excluding a pixel border).
+#         border_size = 1
+#         h, w = sub_img.shape
+#         eigvects = np.zeros((h, w, 2, 2), dtype=np.float32)
+#         eigvals = np.zeros((h, w, 2), dtype=np.float32)
 
-        # Downsample the computations by taking 1 pixel every step in each direction, instead of all pixels
-        step = (2 * zoom_radius + 1) * step_percentage / 100
-        step = np.round(step).astype(int)
+#         # Downsample the computations by taking 1 pixel every step in each direction, instead of all pixels
+#         step = (2 * zoom_radius + 1) * step_percentage / 100
+#         step = np.round(step).astype(int)
 
-        for y in range(border_size, h - border_size, step):
-            for x in range(border_size, w - border_size, step):
-                # assert y,x do not belong to keypoint, because it is calculated afterwards
-                if y != zoom_radius or x != zoom_radius:
-                    H = compute_hessian(sub_img, (y, x))
-                    # simultaneously compute eigenvalues and eigenvectors
-                    eigvals[y, x], eigvects[y, x] = np.linalg.eig(H)
-        # also compute eigenvalues and eigenvectors for the keypoint
-        H_kp = compute_hessian(sub_img, (zoom_radius, zoom_radius))
-        (
-            eigvals[zoom_radius, zoom_radius],
-            eigvects[zoom_radius, zoom_radius],
-        ) = np.linalg.eig(H_kp)
+#         for y in range(border_size, h - border_size, step):
+#             for x in range(border_size, w - border_size, step):
+#                 # assert y,x do not belong to keypoint, because it is calculated afterwards
+#                 if y != zoom_radius or x != zoom_radius:
+#                     H = compute_hessian(sub_img, (y, x))
+#                     # simultaneously compute eigenvalues and eigenvectors
+#                     eigvals[y, x], eigvects[y, x] = np.linalg.eig(H)
+#         # also compute eigenvalues and eigenvectors for the keypoint
+#         H_kp = compute_hessian(sub_img, (zoom_radius, zoom_radius))
+#         (
+#             eigvals[zoom_radius, zoom_radius],
+#             eigvects[zoom_radius, zoom_radius],
+#         ) = np.linalg.eig(H_kp)
 
-        # # normalize eigenvectors with the max absolute value
-        # norms_eigvects = np.linalg.norm(eigvects, axis=-1)
-        # max_abs_eigvects = np.max(norms_eigvects)
-        # print("max_abs_eigvects 1", max_abs_eigvects)
-        # normalized_eigvects = eigvects / max_abs_eigvects
-        normalized_eigvects = eigvects
+#         # # normalize eigenvectors with the max absolute value
+#         # norms_eigvects = np.linalg.norm(eigvects, axis=-1)
+#         # max_abs_eigvects = np.max(norms_eigvects)
+#         # print("max_abs_eigvects 1", max_abs_eigvects)
+#         # normalized_eigvects = eigvects / max_abs_eigvects
+#         normalized_eigvects = eigvects
 
-        # plot eigenvectors
-        # define colormap for eigenvectors depending on the value of the eigenvalues
-        # the higher the eigenvalue, the more red the eigenvector, the lower the eigenvalue, the more blue the eigenvector
-        colormap = plt.cm.get_cmap("RdBu")
+#         # plot eigenvectors
+#         # define colormap for eigenvectors depending on the value of the eigenvalues
+#         # the higher the eigenvalue, the more red the eigenvector, the lower the eigenvalue, the more blue the eigenvector
+#         colormap = plt.cm.get_cmap("RdBu")
 
-        # normalize eigenvalues with the min and max eigenvalues
-        vmin, vmax = np.min(eigvals), np.max(eigvals)
-        norm = colors.Normalize(vmin=vmin, vmax=vmax)
+#         # normalize eigenvalues with the min and max eigenvalues
+#         vmin, vmax = np.min(eigvals), np.max(eigvals)
+#         norm = colors.Normalize(vmin=vmin, vmax=vmax)
 
-        # plot eigenvectors on another image
-        ax.imshow(sub_img, cmap="gray")
+#         # plot eigenvectors on another image
+#         ax.imshow(sub_img, cmap="gray")
 
-        for y in range(border_size, h - border_size, step):
-            for x in range(border_size, w - border_size, step):
-                # assert y,x do not belong to keypoint, because it is calculated afterwards
-                if y != zoom_radius or x != zoom_radius:
-                    add_vector_to_ax(
-                        colormap,
-                        norm,
-                        eigvals[y, x, 0],
-                        x,
-                        y,
-                        normalized_eigvects[y, x, 0],
-                        ax,
-                    )
-                    add_vector_to_ax(
-                        colormap,
-                        norm,
-                        eigvals[y, x, 1],
-                        x,
-                        y,
-                        normalized_eigvects[y, x, 1],
-                        ax,
-                    )
-        # display eigenvectors of the keypoint
-        add_vector_to_ax(
-            colormap,
-            norm,
-            eigvals[zoom_radius, zoom_radius, 0],
-            zoom_radius,
-            zoom_radius,
-            normalized_eigvects[zoom_radius, zoom_radius, 0],
-            ax,
-        )
-        add_vector_to_ax(
-            colormap,
-            norm,
-            eigvals[zoom_radius, zoom_radius, 1],
-            zoom_radius,
-            zoom_radius,
-            normalized_eigvects[zoom_radius, zoom_radius, 1],
-            ax,
-        )
+#         for y in range(border_size, h - border_size, step):
+#             for x in range(border_size, w - border_size, step):
+#                 # assert y,x do not belong to keypoint, because it is calculated afterwards
+#                 if y != zoom_radius or x != zoom_radius:
+#                     add_vector_to_ax(
+#                         colormap,
+#                         norm,
+#                         eigvals[y, x, 0],
+#                         x,
+#                         y,
+#                         normalized_eigvects[y, x, 0],
+#                         ax,
+#                     )
+#                     add_vector_to_ax(
+#                         colormap,
+#                         norm,
+#                         eigvals[y, x, 1],
+#                         x,
+#                         y,
+#                         normalized_eigvects[y, x, 1],
+#                         ax,
+#                     )
+#         # display eigenvectors of the keypoint
+#         add_vector_to_ax(
+#             colormap,
+#             norm,
+#             eigvals[zoom_radius, zoom_radius, 0],
+#             zoom_radius,
+#             zoom_radius,
+#             normalized_eigvects[zoom_radius, zoom_radius, 0],
+#             ax,
+#         )
+#         add_vector_to_ax(
+#             colormap,
+#             norm,
+#             eigvals[zoom_radius, zoom_radius, 1],
+#             zoom_radius,
+#             zoom_radius,
+#             normalized_eigvects[zoom_radius, zoom_radius, 1],
+#             ax,
+#         )
 
-        # add red pixel on the keypoint, with variable size
-        kp_factor = zoom_radius * 0.01
-        ax.scatter(
-            [zoom_radius],
-            [zoom_radius],
-            c="r",
-            s=zoom_radius * kp_factor,
-        )
-        ax.set_title("eigenvectors")
-        ax.axis("off")
+#         # add red pixel on the keypoint, with variable size
+#         kp_factor = zoom_radius * 0.01
+#         ax.scatter(
+#             [zoom_radius],
+#             [zoom_radius],
+#             c="r",
+#             s=zoom_radius * kp_factor,
+#         )
+#         ax.set_title("eigenvectors")
+#         ax.axis("off")
 
-        # add the blue to red colormap of the arrows
-        # create a ScalarMappable with the same colormap and normalization as the arrows
-        sm = plt.cm.ScalarMappable(cmap=colormap, norm=norm)
-        sm.set_array([])
+#         # add the blue to red colormap of the arrows
+#         # create a ScalarMappable with the same colormap and normalization as the arrows
+#         sm = plt.cm.ScalarMappable(cmap=colormap, norm=norm)
+#         sm.set_array([])
 
-        return sm
+#         return sm
 
 
 def downsample_array(array, step, border_size=1):
@@ -639,6 +639,21 @@ def draw_vectors_on_ax(
             )
 
 
+def normalize_vectors_2D_array(array, eps=1e-8):
+    """
+    Normalize non null vectors of a 2D array.
+    array: 2D array of N-dimensional vectors, shape (h, w, N)
+    eps: threshold for null values
+    """
+    # compute norm of vectors
+    norms = np.linalg.norm(array, axis=-1)
+    # avoid division by 0
+    norms[norms <= eps] = 1
+    # normalize vectors
+    normalized_array = array / norms[..., np.newaxis]
+    return normalized_array
+
+
 def visualize_curvature_directions_ax_sm_unfinished(
     g_img, keypoint, zoom_radius, ax, step_percentage=5, border_size=1
 ):
@@ -679,7 +694,9 @@ def visualize_curvature_directions_ax_sm_unfinished(
     selected_eigvals[zoom_radius, zoom_radius] = eigvals[zoom_radius, zoom_radius]
 
     # normalize eigenvectors
-    normalized_eigvects = selected_eigvects * 10
+    vect_size = zoom_radius * 0.05
+    normalized_eigvects = normalize_vectors_2D_array(selected_eigvects)
+    normalized_eigvects *= vect_size
 
     # draw eigenvectors on ax
     # define colormap for eigenvectors depending on the value of the eigenvalues
@@ -1070,22 +1087,9 @@ def visualize_gradients_ax_sm_unfinished(
     norm = colors.Normalize(vmin=vmin, vmax=vmax)
 
     # normalize gradient so they have same length grad_size
+    normalized_gradients = normalize_vectors_2D_array(selected_gradients)
     grad_size = zoom_radius * 0.05
-    # and avoiding null gradients with a mask
-    eps = 1e-6
-    non_null_grad_mask = norms_gradients > eps
-    unit_gradients = np.zeros_like(gradients, dtype=np.float32)
-
-    # Create a new array for the reciprocal of the non-null norms
-    reciprocal_norms = np.ones_like(norms_gradients)
-    reciprocal_norms[non_null_grad_mask] = 1 / norms_gradients[non_null_grad_mask]
-
-    # Normalize the non-null gradients
-    unit_gradients[non_null_grad_mask] = (
-        gradients[non_null_grad_mask]
-        * reciprocal_norms[non_null_grad_mask, ..., np.newaxis]
-        * grad_size
-    )
+    normalized_gradients *= grad_size
 
     # plot the gradients on the subimage
     ax.imshow(sub_img, cmap="gray")
@@ -1094,7 +1098,7 @@ def visualize_gradients_ax_sm_unfinished(
         colormap,
         norm,
         norms_gradients,
-        unit_gradients,
+        normalized_gradients,
         (h, w),
         step,
         border_size,
