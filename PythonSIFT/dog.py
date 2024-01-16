@@ -8,9 +8,7 @@ from pysift import (
     generateDoGImages,
 )
 import matplotlib.pyplot as plt
-
-from cv2 import imread, imshow, waitKey
-
+from cv2 import imread
 import logging
 import numpy as np
 
@@ -33,6 +31,7 @@ def visualize_DoG(
     fig.subplots_adjust(right=0.8)
     cbar_ax = fig.add_axes([0.85, 0.15, 0.05, 0.7])
     fig.colorbar(im, cax=cbar_ax)
+    plt.title("Différences de gaussiennes (DoG)")
     plt.show()
 
 
