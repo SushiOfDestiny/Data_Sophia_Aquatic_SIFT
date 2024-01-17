@@ -23,6 +23,67 @@ img = cv.imread(os.path.join("..", "images", "87_img_.png"), 0)
 # convert to float32
 float32_img = vh.convert_uint8_to_float32(img)
 
+# choose a keypoint
+position = (50, 50)
+
+# compact_features = descriptor.compute_compact_features_vect(features, position)
+# print("compact_features", compact_features)
+
+
+###########################
+# Test compute_vector_histogram #
+###########################
+# eigvals, eigvects, gradients = vh.compute_hessian_gradient_subimage(
+#     float32_img, border_size=1
+# )
+# gradients_norms = np.linalg.norm(gradients, axis=-1)
+# orientations = descriptor.compute_orientations(float32_img, border_size=1)
+# posdeg_orientations = descriptor.convert_angles_to_pos_degrees(orientations)
+# histograms = descriptor.compute_vector_histogram(
+#     gradients_norms, posdeg_orientations, position
+# )
+# print("histograms", histograms)
+# display histogram figure
+# descriptor.display_histogram(histograms[0, 0, :])
+# descriptor.display_histogram(histograms[1, 1, :])
+# descriptor.display_spatial_histograms(histograms)
+
+#################################
+# Test compute_features_overall #
+#################################
+
+# features_overall = descriptor.compute_features_overall(float32_img, border_size=1)
+features_overall = descriptor.compute_features_overall_v2(float32_img, border_size=1)
+
+# print("features_overall", features_overall)
+
+######################################
+# Test compute_descriptor_histograms #
+######################################
+
+# descriptor_histos = descriptor.compute_descriptor_histograms(features_overall, position)
+descriptor_histos = descriptor.compute_descriptor_histograms_v2(
+    features_overall, position
+)
+
+# print("histos", histos)
+
+#################
+# Visualization #
+#################
+
+# titles = ["positive eigenvalues", "negative eigenvalues", "gradients"]
+# for id_value in range(len(histos)):
+#     descriptor.display_spatial_histograms(histos[id_value], titles[id_value])
+
+descriptor.display_descriptor(descriptor_histos)
+
+
+#############################
+# Tests of unused functions #
+#############################
+
+
 ######################
 # Test create_1D_gaussian_kernel
 ######################
@@ -58,64 +119,3 @@ convolved_img2 = cv.GaussianBlur(img, (0, 0), 1.6)
 # arr2 = np.ones((11, 11, 2), dtype=np.float32)
 # g_mean2 = descriptor.compute_gaussian_mean(arr2, 1.6)
 # print("g_mean2", g_mean2)
-
-#############################
-#  Test compute_kp_features #
-#############################
-
-# compute global features
-# eigvals, eigvects, gradients = vh.compute_hessian_gradient_subimage(
-#     float32_img, border_size=1
-# )
-# orientations = descriptor.compute_orientations(float32_img, border_size=1)
-
-# separate eigenvalues and eigenvectors
-# features = [
-#     eigvals[:, :, 0],
-#     eigvals[:, :, 1],
-#     eigvects[:, :, 0],
-#     eigvects[:, :, 1],
-#     gradients,
-#     orientations,
-# ]
-
-# choose a keypoint
-position = (100, 100)
-
-# compact_features = descriptor.compute_compact_features_vect(features, position)
-# print("compact_features", compact_features)
-
-##############################
-#  Test compact2flat_features_vect #
-##############################
-
-# flat_features = descriptor.compact2flat_features_vect(compact_features)
-# print("flat_features", flat_features)
-
-###########################
-# Test compute_vector_histogram #
-###########################
-eigvals, eigvects, gradients = vh.compute_hessian_gradient_subimage(
-    float32_img, border_size=1
-)
-values = np.linalg.norm(gradients, axis=-1)
-orientations = descriptor.compute_orientations(float32_img, border_size=1)
-histograms = descriptor.compute_vector_histogram(values, orientations, position)
-# print("histograms", histograms)
-# display histogram figure
-descriptor.display_histogram(histograms[0, 0, :])
-
-
-#################################
-# Test compute_features_overall #
-#################################
-
-# features_overall = descriptor.compute_features_overall(float32_img, border_size=1)
-# print("features_overall", features_overall)
-
-###########################
-# Test compute_descriptor #
-###########################
-
-# histos = descriptor.compute_descriptor(features_overall, position)
-# print("histos", histos)
