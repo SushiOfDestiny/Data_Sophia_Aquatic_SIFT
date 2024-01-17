@@ -17,6 +17,7 @@ def point_cloud(ob_name, coords, edges=[], faces=[]):
 
     # Display name and update the mesh
     ob.show_name = True
+    ob.show_texture_space = True
     me.update()
     return ob
 
@@ -32,6 +33,6 @@ def draw_points_in_camera_frame(pt_list, ob_name, cam):
     draw_points(pt_list_global, ob_name)
 
 # distance to canvas = f/d, where f is the camera's focal length and d is the sensor size
-f = 0.05
-d = 0.036
-D = f/d
+# f = 0.05
+# d = 0.036
+# D = f/d
