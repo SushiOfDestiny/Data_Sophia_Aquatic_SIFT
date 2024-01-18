@@ -111,7 +111,7 @@ def compute_descriptors_img_v2(g_img, border_size=1, kp_radius=2, sigma=1.6):
 #     gradients_norms = np.linalg.norm(gradients, axis=2)
 
 #     # compute principal directions of the Hessian matrix
-#     principal_directions = compute_principal_directions(eigvects)
+#     principal_directions = compute_horiz_angles(eigvects)
 
 #     # compute orientations of the gradients in degrees
 #     orientations = compute_orientations(g_img, border_size)

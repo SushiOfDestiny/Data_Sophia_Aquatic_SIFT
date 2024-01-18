@@ -26,13 +26,11 @@ float32_img = vh.convert_uint8_to_float32(img)
 # choose a keypoint
 position = (50, 50)
 
-# compact_features = descriptor.compute_compact_features_vect(features, position)
-# print("compact_features", compact_features)
-
 
 ###########################
 # Test compute_vector_histogram #
 ###########################
+
 # eigvals, eigvects, gradients = vh.compute_hessian_gradient_subimage(
 #     float32_img, border_size=1
 # )
@@ -48,74 +46,163 @@ position = (50, 50)
 # descriptor.display_histogram(histograms[1, 1, :])
 # descriptor.display_spatial_histograms(histograms)
 
-#################################
-# Test compute_features_overall #
-#################################
+##########################
+# Test angle computation #
+##########################
 
-# features_overall = descriptor.compute_features_overall(float32_img, border_size=1)
-features_overall = descriptor.compute_features_overall_v2(float32_img, border_size=1)
+# # Define the matrix
+# A = np.array([[1, 2], [3, 4]])
 
-# print("features_overall", features_overall)
+# # Compute the eigenvalues and eigenvectors
+# eigenvalues, eigenvectors = np.linalg.eig(A)
 
-######################################
-# Test compute_descriptor_histograms #
-######################################
+# # The eigenvectors are the columns of the eigenvectors matrix. To return them as rows, transpose the matrix.
+# eigenvectors = eigenvectors.T
 
-# descriptor_histos = descriptor.compute_descriptor_histograms(features_overall, position)
-descriptor_histos = descriptor.compute_descriptor_histograms_v2(
-    features_overall, position
+# print(eigenvectors, eigenvectors.shape)
+
+
+# # vects = np.full((1, 1, 2, 2), fill_value=1 / np.sqrt(2), dtype=np.float32)
+# vects = np.array([[[1 / np.sqrt(2), 1 / np.sqrt(2)]], [[1, 1]]], dtype=np.float32)
+# horiz_angles = descriptor.compute_horiz_angles(vects) * 180 / np.pi
+# print("horiz_angles", horiz_angles)
+
+eigvals, eigvects, gradients = vh.compute_hessian_gradient_subimage(
+    float32_img[:50, :50], border_size=1
 )
 
-# print("histos", histos)
+print(eigvects[:, :, 0, :].shape)  # y=1, x = 1
 
-#################
-# Visualization #
-#################
+# compute multiple angles at once
+vects1 = eigvects[:, :, 0, :]
+print(vects1)
+horiz_angles = descriptor.compute_horiz_angles(vects1) * 180 / np.pi
+print("horiz_angles", horiz_angles)
 
-# titles = ["positive eigenvalues", "negative eigenvalues", "gradients"]
-# for id_value in range(len(histos)):
-#     descriptor.display_spatial_histograms(histos[id_value], titles[id_value])
-
-descriptor.display_descriptor(descriptor_histos)
-
-
-#############################
-# Tests of unused functions #
-#############################
+# compute 1 single angle
+y, x = 1, 1
+v1 = eigvects[y, x, 0]
+print(v1)
+h_vect = np.array([0, 1], dtype=np.float32)
+h_ang1 = descriptor.compute_angle(v1, h_vect) * 180 / np.pi
+print("h_ang1", h_ang1)
+print("horiz_angles[y, x]", horiz_angles[y, x])
 
 
-######################
-# Test create_1D_gaussian_kernel
-######################
+# compute first principal directions of the Hessian matrix
+principal_directions1 = descriptor.compute_horiz_angles(eigvects[:, :, 0, :])
 
-kernel = descriptor.create_1D_gaussian_kernel(1.6)
-# print(kernel)
-# plt.plot(kernel)
-# plt.show()
+# convert and rescale angles in [0, 360[
+posdeg_principal_directions1 = descriptor.convert_angles_to_pos_degrees(
+    principal_directions1
+)
 
-######################
-# Test convolve_2D_gaussian
-######################
+a = 2
 
-# convolution with a 2D separable Gaussian kernel
-convolved_img = descriptor.convolve_2D_gaussian(img, 1)
-# plt.imshow(convolved_img, cmap="gray")
-# plt.show()
+# ##################################
+# # Visualize principal directions #
+# ##################################
+# sift = cv.SIFT_create()
+# keypoints, descriptors = sift.detectAndCompute(img, None)
 
-# convolve with a 2D Gaussian kernel
-convolved_img2 = cv.GaussianBlur(img, (0, 0), 1.6)
-# plt.imshow(convolved_img2, cmap="gray")
-# plt.show()
+# # draw keypoints on image
+# img_kp = cv.drawKeypoints(
+#     img, keypoints, None, flags=cv.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS
+# )
+# nb_kp = len(keypoints)
 
-######################
-# Test compute_gaussian_mean
-######################
-# 1D test
-# arr = np.ones((11, 11), dtype=np.float32)
-# print("shape", arr.shape)
-# g_mean = descriptor.compute_gaussian_mean(arr, 1.6)
-# print("g_mean", g_mean)
-# # 2D test
-# arr2 = np.ones((11, 11, 2), dtype=np.float32)
-# g_mean2 = descriptor.compute_gaussian_mean(arr2, 1.6)
-# print("g_mean2", g_mean2)
+# # plt.imshow(img_kp)
+# # plt.title(f"{nb_kp} SIFT keypoints")
+
+# kp0 = keypoints[200]
+
+# # eigvals, eigvects, gradients = vh.compute_hessian_gradient_subimage(
+# #         float32_img, border_size=1
+# #     )
+
+# # # create figure and ax
+# # fig, ax = plt.subplots(1, 1, figsize=(5, 5))
+
+# # # compute eigenvectors and add them to the ax
+# # sm = vh.visualize_curvature_directions_ax_sm(
+# #     float32_img, kp0, zoom_radius=30, ax=ax, step_percentage=3
+# # )
+
+# # # add the colorbar of the colormap of the arrows
+# # fig.colorbar(sm, ax=ax, fraction=0.046, pad=0.04)
+
+# # # add legend
+# # fig.suptitle(f"unfinished", fontsize=10)
+
+# # plt.show()
+
+
+# #################################
+# # Test compute_features_overall #
+# #################################
+
+# # features_overall = descriptor.compute_features_overall(float32_img, border_size=1)
+# features_overall = descriptor.compute_features_overall(float32_img, border_size=1)
+
+# # print("features_overall", features_overall)
+
+# ######################################
+# # Test compute_descriptor_histograms #
+# ######################################
+
+# # descriptor_histos = descriptor.compute_descriptor_histograms(features_overall, position)
+# descriptor_histos = descriptor.compute_descriptor_histograms(features_overall, position)
+
+# # print("histos", histos)
+
+# #################
+# # Visualization #
+# #################
+
+# # titles = ["positive eigenvalues", "negative eigenvalues", "gradients"]
+# # for id_value in range(len(histos)):
+# #     descriptor.display_spatial_histograms(histos[id_value], titles[id_value])
+
+# descriptor.display_descriptor(descriptor_histos)
+
+
+# #############################
+# # Tests of unused functions #
+# #############################
+
+
+# ######################
+# # Test create_1D_gaussian_kernel
+# ######################
+
+# kernel = descriptor.create_1D_gaussian_kernel(1.6)
+# # print(kernel)
+# # plt.plot(kernel)
+# # plt.show()
+
+# ######################
+# # Test convolve_2D_gaussian
+# ######################
+
+# # convolution with a 2D separable Gaussian kernel
+# convolved_img = descriptor.convolve_2D_gaussian(img, 1)
+# # plt.imshow(convolved_img, cmap="gray")
+# # plt.show()
+
+# # convolve with a 2D Gaussian kernel
+# convolved_img2 = cv.GaussianBlur(img, (0, 0), 1.6)
+# # plt.imshow(convolved_img2, cmap="gray")
+# # plt.show()
+
+# ######################
+# # Test compute_gaussian_mean
+# ######################
+# # 1D test
+# # arr = np.ones((11, 11), dtype=np.float32)
+# # print("shape", arr.shape)
+# # g_mean = descriptor.compute_gaussian_mean(arr, 1.6)
+# # print("g_mean", g_mean)
+# # # 2D test
+# # arr2 = np.ones((11, 11, 2), dtype=np.float32)
+# # g_mean2 = descriptor.compute_gaussian_mean(arr2, 1.6)
+# # print("g_mean2", g_mean2)

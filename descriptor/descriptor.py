@@ -42,7 +42,7 @@ def compute_orientation(g_img, position, epsilon=1e-6):
 
 def convert_angles_to_pos_degrees(angles):
     """
-    Convert angles in radians to positive degrees in [0, 360[
+    Convert array of angles in radians to positive degrees in [0, 360[
     """
     # translate the angles in [0, 2pi[
     posdeg_angles = angles % (2 * np.pi)
@@ -137,25 +137,28 @@ def compute_gaussian_mean(array, sigma):
 
 def compute_angle(v1, v2):
     """
-    Compute the angle between 2 vectors, in radiants
+    Compute the angle between 2 vectors, in radians.
     """
     angle = np.arccos(np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2)))
     return angle
 
 
-def compute_principal_directions(eigvects):
+
+def compute_horiz_angles(arrvects):
     """
-    compute principal directions as the angle between eigenvectors and horizontal axis of the image
-    eigvects: numpy array of shape (height, width, 2, 2) of float32
-    return principal_directions: numpy array of shape (height, width, 2) of float32 with angles in radians
+    compute angle between each vector of the given array and the horizontal vector (0, 1) (in the image's frame)
+    arrvects: numpy array of 2D vectors, of shape (height, width, 2) of float32 (recall vectors are the rows and not the columns)
+    so arrvects[0,0,:] is the vector at the position (0,0) of the image
+    return horiz_angles: numpy array of shape (height, width) of float32 with angles in radians
     """
     horiz_vect = np.array([0, 1], dtype=np.float32)
-    principal_directions = np.zeros(eigvects.shape[:3], dtype=np.float32)
-    for id_dir in range(2):
-        principal_directions[:, :, id_dir] = compute_angle(
-            eigvects[:, :, id_dir], horiz_vect
-        )
-    return principal_directions
+
+    def helper(vector):
+        return compute_angle(vector, horiz_vect)
+    
+    horiz_angles = np.apply_along_axis(helper, -1, arrvects)
+
+    return horiz_angles
 
 
 def split_eigenvalues(eigvals):
@@ -167,6 +170,48 @@ def split_eigenvalues(eigvals):
 
     # return list of features in specific order
     return [eigvals1pos, eigvals2pos, eigvals1neg, eigvals2neg]
+
+
+# def compute_features_overall(g_img, border_size=1):
+#     """
+#     Compute useful features for all pixels of a grayscale image.
+#     Return a list of pairs of features arrays, each pair containing the feature values and the feature orientations.
+#     All angular features are in degrees in [0, 360[.
+#     """
+#     # compute eigenvalues and eigenvectors of the Hessian matrix
+#     eigvals, eigvects, gradients = vh.compute_hessian_gradient_subimage(
+#         g_img, border_size
+#     )
+#     # compute gradients norms
+#     gradients_norms = np.linalg.norm(gradients, axis=2)
+
+#     # compute principal directions of the Hessian matrix
+#     principal_directions = compute_horiz_angles(eigvects)
+
+#     # compute orientations of the gradients in degrees
+#     orientations = compute_orientations(g_img, border_size)
+
+#     # convert and rescale angles in [0, 360[
+#     posdeg_orientations = convert_angles_to_pos_degrees(orientations)
+#     posdeg_principal_directions = [
+#         convert_angles_to_pos_degrees(principal_directions[:, :, i]) for i in range(2)
+#     ]
+
+#     # separate eigenvalues according to their sign
+#     splitted_eigvals = split_eigenvalues(eigvals)
+#     eigvals1pos, eigvals2pos, eigvals1neg, eigvals2neg = splitted_eigvals
+
+#     features = [
+#         posdeg_principal_directions,
+#         eigvals1pos,
+#         eigvals2pos,
+#         eigvals1neg,
+#         eigvals2neg,
+#         gradients_norms,
+#         posdeg_orientations,
+#     ]
+
+#     return features
 
 
 def compute_features_overall(g_img, border_size=1):
@@ -183,14 +228,24 @@ def compute_features_overall(g_img, border_size=1):
     gradients_norms = np.linalg.norm(gradients, axis=2)
 
     # compute principal directions of the Hessian matrix
-    principal_directions = compute_principal_directions(eigvects)
+    principal_directions = np.zeros(eigvects.shape[:3], dtype=np.float32)
+    for eigvect_id in range(2):
+        principal_directions[:, :, eigvect_id] = compute_horiz_angles(
+            eigvects[:, :, eigvect_id]
+        )
 
     # compute orientations of the gradients in degrees
     orientations = compute_orientations(g_img, border_size)
 
     # convert and rescale angles in [0, 360[
     posdeg_orientations = convert_angles_to_pos_degrees(orientations)
-    posdeg_principal_directions = convert_angles_to_pos_degrees(principal_directions)
+    posdeg_principal_directions = np.zeros(
+        principal_directions.shape[:3], dtype=np.float32
+    )
+    for prin_dir_id in range(2):
+        posdeg_principal_directions[:, :, prin_dir_id] = convert_angles_to_pos_degrees(
+            principal_directions[:, :, prin_dir_id]
+        )
 
     # separate eigenvalues according to their sign
     splitted_eigvals = split_eigenvalues(eigvals)
@@ -222,11 +277,10 @@ def rescale_value(values, kp_value):
     return values / kp_value
 
 
-def rotate_orientations(orientations, kp_position):
+def rotate_orientations(orientations, kp_orientation):
     """
     Rotate orientations with kp orientation in trigo order
     """
-    kp_orientation = orientations[kp_position]
     rotated_orientations = (orientations - kp_orientation) % 360.0
     return rotated_orientations
 
@@ -318,17 +372,19 @@ def compute_descriptor_histograms(overall_features, kp_position):
     rescaled_eigvals2neg = rescale_value(eigvals2neg, kp_abs_eigval2)
 
     # rotate vectors orientations with kp orientation in trigo order
+    kp_prin_dir = [posdeg_principal_directions[i][y_kp, x_kp] for i in range(2)]
     rotated_prin_dirs = [
         rotate_orientations(
-            posdeg_principal_directions[:, :, i],
-            kp_position,
+            posdeg_principal_directions[i],
+            kp_prin_dir[i],
         )
         for i in range(2)
     ]
 
+    kp_orientation = posdeg_orientations[y_kp, x_kp]
     rotated_orientations = rotate_orientations(
         posdeg_orientations,
-        kp_position,
+        kp_orientation,
     )
 
     # compute 1st positive eigenvalues histogram
