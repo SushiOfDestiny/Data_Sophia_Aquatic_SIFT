@@ -67,35 +67,40 @@ position = (50, 50)
 # horiz_angles = descriptor.compute_horiz_angles(vects) * 180 / np.pi
 # print("horiz_angles", horiz_angles)
 
-eigvals, eigvects, gradients = vh.compute_hessian_gradient_subimage(
-    float32_img[:50, :50], border_size=1
-)
+# eigvals, eigvects, gradients = vh.compute_hessian_gradient_subimage(
+#     float32_img[:50, :50], border_size=1
+# )
 
-print(eigvects[:, :, 0, :].shape)  # y=1, x = 1
+# print(eigvects[:, :, 0, :].shape)  # y=1, x = 1
 
-# compute multiple angles at once
-vects1 = eigvects[:, :, 0, :]
-print(vects1)
-horiz_angles = descriptor.compute_horiz_angles(vects1) * 180 / np.pi
-print("horiz_angles", horiz_angles)
+# # compute multiple angles at once
+# vects1 = eigvects[:, :, 0, :]
+# print(vects1)
+# horiz_angles = descriptor.compute_horiz_angles(vects1) * 180 / np.pi
+# print("horiz_angles", horiz_angles)
 
-# compute 1 single angle
-y, x = 1, 1
-v1 = eigvects[y, x, 0]
-print(v1)
-h_vect = np.array([0, 1], dtype=np.float32)
-h_ang1 = descriptor.compute_angle(v1, h_vect) * 180 / np.pi
-print("h_ang1", h_ang1)
-print("horiz_angles[y, x]", horiz_angles[y, x])
+# # compute 1 single angle
+# y, x = 1, 1
+# v1 = eigvects[y, x, 0]
+# print(v1)
+# h_vect = np.array([0, 1], dtype=np.float32)
+# h_ang1 = descriptor.compute_angle(v1, h_vect) * 180 / np.pi
+# print("h_ang1", h_ang1)
+# print("horiz_angles[y, x]", horiz_angles[y, x])
 
 
-# compute first principal directions of the Hessian matrix
-principal_directions1 = descriptor.compute_horiz_angles(eigvects[:, :, 0, :])
+# # compute first principal directions of the Hessian matrix
+# principal_directions1 = descriptor.compute_horiz_angles(eigvects[:, :, 0, :])
 
-# convert and rescale angles in [0, 360[
-posdeg_principal_directions1 = descriptor.convert_angles_to_pos_degrees(
-    principal_directions1
-)
+# # convert and rescale angles in [0, 360[
+# posdeg_principal_directions1 = descriptor.convert_angles_to_pos_degrees(
+#     principal_directions1
+# )
+
+# A = np.array([[1, 2], [1, 2]])
+# eigvals, eigvects = np.linalg.eig(A)
+# print("eigvals", eigvals)
+# print("eigvects", eigvects)
 
 a = 2
 
@@ -141,8 +146,7 @@ a = 2
 # # Test compute_features_overall #
 # #################################
 
-# # features_overall = descriptor.compute_features_overall(float32_img, border_size=1)
-# features_overall = descriptor.compute_features_overall(float32_img, border_size=1)
+features_overall = descriptor.compute_features_overall(float32_img, border_size=1)
 
 # # print("features_overall", features_overall)
 
@@ -150,8 +154,7 @@ a = 2
 # # Test compute_descriptor_histograms #
 # ######################################
 
-# # descriptor_histos = descriptor.compute_descriptor_histograms(features_overall, position)
-# descriptor_histos = descriptor.compute_descriptor_histograms(features_overall, position)
+descriptor_histos = descriptor.compute_descriptor_histograms(features_overall, position)
 
 # # print("histos", histos)
 
@@ -163,7 +166,7 @@ a = 2
 # # for id_value in range(len(histos)):
 # #     descriptor.display_spatial_histograms(histos[id_value], titles[id_value])
 
-# descriptor.display_descriptor(descriptor_histos)
+descriptor.display_descriptor(descriptor_histos)
 
 
 # #############################

@@ -135,19 +135,22 @@ def compute_gaussian_mean(array, sigma):
 ###########################
 
 
-def compute_angle(v1, v2):
+def compute_angle(v1, v2, eps=1e-6):
     """
     Compute the angle between 2 vectors, in radians.
+    Return 0 if one of the vectors is null.
     """
-    angle = np.arccos(np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2)))
+    norms = [np.linalg.norm(v1), np.linalg.norm(v2)]
+    if norms[0] < eps or norms[1] < eps:
+        return 0.0
+    angle = np.arccos(np.dot(v1, v2) / (norms[0] * norms[1]))
     return angle
-
 
 
 def compute_horiz_angles(arrvects):
     """
     compute angle between each vector of the given array and the horizontal vector (0, 1) (in the image's frame)
-    arrvects: numpy array of 2D vectors, of shape (height, width, 2) of float32 (recall vectors are the rows and not the columns)
+    arrvects: numpy array of *non null* 2D vectors, of shape (height, width, 2) of float32 (recall vectors are the rows and not the columns)
     so arrvects[0,0,:] is the vector at the position (0,0) of the image
     return horiz_angles: numpy array of shape (height, width) of float32 with angles in radians
     """
@@ -155,63 +158,31 @@ def compute_horiz_angles(arrvects):
 
     def helper(vector):
         return compute_angle(vector, horiz_vect)
-    
+
     horiz_angles = np.apply_along_axis(helper, -1, arrvects)
 
     return horiz_angles
 
 
-def split_eigenvalues(eigvals):
-    # separate for each index of eigenvalue, the eigenvalue according to its sign
-    eigvals1pos = eigvals[:, :, 0] * (eigvals[:, :, 0] > 0)
-    eigvals1neg = eigvals[:, :, 0] * (eigvals[:, :, 0] < 0) * (-1)
-    eigvals2pos = eigvals[:, :, 1] * (eigvals[:, :, 1] > 0)
-    eigvals2neg = eigvals[:, :, 1] * (eigvals[:, :, 1] < 0) * (-1)
+# def split_eigenvalues(eigvals):
+#     # Compute for each array of eigenvalue, the arrays of their positive and negative parts
+#     eigvals1pos = eigvals[:, :, 0] * (eigvals[:, :, 0] > 0)
+#     eigvals1neg = eigvals[:, :, 0] * (eigvals[:, :, 0] < 0) * (-1)
+#     eigvals2pos = eigvals[:, :, 1] * (eigvals[:, :, 1] > 0)
+#     eigvals2neg = eigvals[:, :, 1] * (eigvals[:, :, 1] < 0) * (-1)
 
-    # return list of features in specific order
-    return [eigvals1pos, eigvals2pos, eigvals1neg, eigvals2neg]
+#     # return list of features in specific order
+#     return [eigvals1pos, eigvals2pos, eigvals1neg, eigvals2neg]
 
-
-# def compute_features_overall(g_img, border_size=1):
-#     """
-#     Compute useful features for all pixels of a grayscale image.
-#     Return a list of pairs of features arrays, each pair containing the feature values and the feature orientations.
-#     All angular features are in degrees in [0, 360[.
-#     """
-#     # compute eigenvalues and eigenvectors of the Hessian matrix
-#     eigvals, eigvects, gradients = vh.compute_hessian_gradient_subimage(
-#         g_img, border_size
-#     )
-#     # compute gradients norms
-#     gradients_norms = np.linalg.norm(gradients, axis=2)
-
-#     # compute principal directions of the Hessian matrix
-#     principal_directions = compute_horiz_angles(eigvects)
-
-#     # compute orientations of the gradients in degrees
-#     orientations = compute_orientations(g_img, border_size)
-
-#     # convert and rescale angles in [0, 360[
-#     posdeg_orientations = convert_angles_to_pos_degrees(orientations)
-#     posdeg_principal_directions = [
-#         convert_angles_to_pos_degrees(principal_directions[:, :, i]) for i in range(2)
-#     ]
-
-#     # separate eigenvalues according to their sign
-#     splitted_eigvals = split_eigenvalues(eigvals)
-#     eigvals1pos, eigvals2pos, eigvals1neg, eigvals2neg = splitted_eigvals
-
-#     features = [
-#         posdeg_principal_directions,
-#         eigvals1pos,
-#         eigvals2pos,
-#         eigvals1neg,
-#         eigvals2neg,
-#         gradients_norms,
-#         posdeg_orientations,
-#     ]
-
-#     return features
+def split_posneg_parts(array):
+    """
+    Compute array of positive and negative parts of a given array.
+    array: numpy array, shape: (h,w)
+    return pos_array, neg_array: numpy arrays, shape: (h,w)
+    """
+    pos_array = array * (array > 0)
+    neg_array = array * (array < 0) * (-1)
+    return pos_array, neg_array
 
 
 def compute_features_overall(g_img, border_size=1):
@@ -221,6 +192,7 @@ def compute_features_overall(g_img, border_size=1):
     All angular features are in degrees in [0, 360[.
     """
     # compute eigenvalues and eigenvectors of the Hessian matrix
+    # recall objects in the avoided border are set to 0
     eigvals, eigvects, gradients = vh.compute_hessian_gradient_subimage(
         g_img, border_size
     )
@@ -236,9 +208,9 @@ def compute_features_overall(g_img, border_size=1):
 
     # compute orientations of the gradients in degrees
     orientations = compute_orientations(g_img, border_size)
-
     # convert and rescale angles in [0, 360[
     posdeg_orientations = convert_angles_to_pos_degrees(orientations)
+    # same for principal directions (therefore they are angles)
     posdeg_principal_directions = np.zeros(
         principal_directions.shape[:3], dtype=np.float32
     )
@@ -248,8 +220,10 @@ def compute_features_overall(g_img, border_size=1):
         )
 
     # separate eigenvalues according to their sign
-    splitted_eigvals = split_eigenvalues(eigvals)
-    eigvals1pos, eigvals2pos, eigvals1neg, eigvals2neg = splitted_eigvals
+    # splitted_eigvals = split_eigenvalues(eigvals)
+    # eigvals1pos, eigvals2pos, eigvals1neg, eigvals2neg = splitted_eigvals
+    eigvals1pos, eigvals1neg = split_posneg_parts(eigvals[:, :, 0])
+    eigvals2pos, eigvals2neg = split_posneg_parts(eigvals[:, :, 1])
 
     features = [
         posdeg_principal_directions,
@@ -271,7 +245,7 @@ def compute_features_overall(g_img, border_size=1):
 
 def rescale_value(values, kp_value):
     """
-    Rescale vector values by keypoint value.
+    Rescale vector values by keypoint value with broadcast.
     Vector value must be positive.
     """
     return values / kp_value
@@ -279,7 +253,7 @@ def rescale_value(values, kp_value):
 
 def rotate_orientations(orientations, kp_orientation):
     """
-    Rotate orientations with kp orientation in trigo order
+    Rotate orientations with kp orientation in trigo order with broadcast.
     """
     rotated_orientations = (orientations - kp_orientation) % 360.0
     return rotated_orientations
@@ -342,6 +316,96 @@ def compute_vector_histogram(
 ######################
 
 
+# def compute_descriptor_histograms(overall_features, kp_position):
+#     """
+#     Compute the histograms for the descriptor of a keypoint
+#     overall_features: list of features arrays of all pixels of the image
+#     kp_position: (y, x) int pixel position of keypoint
+#     return descriptor_histograms: list of 3 histograms, each of shape (nb_bins, nb_bins, nb_angular_bins)
+#     """
+#     y_kp, x_kp = kp_position
+#     # unpack the features
+#     (
+#         posdeg_principal_directions,
+#         eigvals1pos,
+#         eigvals2pos,
+#         eigvals1neg,
+#         eigvals2neg,
+#         gradients_norms,
+#         posdeg_orientations,
+#     ) = overall_features
+
+#     # compute absolute value of keypoint eigenvalue for rescale
+#     kp_abs_eigval1 = eigvals1pos[y_kp, x_kp] + eigvals1neg[y_kp, x_kp]
+#     kp_abs_eigval2 = eigvals2pos[y_kp, x_kp] + eigvals2neg[y_kp, x_kp]
+
+#     # rescale vectors values by keypoint value
+#     rescaled_eigvals1pos = rescale_value(eigvals1pos, kp_abs_eigval1)
+#     rescaled_eigvals2pos = rescale_value(eigvals2pos, kp_abs_eigval2)
+#     rescaled_eigvals1neg = rescale_value(eigvals1neg, kp_abs_eigval1)
+#     rescaled_eigvals2neg = rescale_value(eigvals2neg, kp_abs_eigval2)
+
+#     # rotate vectors orientations with kp orientation in trigo order
+#     kp_prin_dirs = posdeg_principal_directions[y_kp, x_kp]
+#     rotated_prin_dirs = [
+#         rotate_orientations(
+#             posdeg_principal_directions[:, :, i],
+#             kp_prin_dirs[i],
+#         )
+#         for i in range(2)
+#     ]
+
+#     kp_orientation = posdeg_orientations[y_kp, x_kp]
+#     rotated_orientations = rotate_orientations(
+#         posdeg_orientations,
+#         kp_orientation,
+#     )
+
+#     # compute 1st positive eigenvalues histogram
+#     eig1pos_hist = compute_vector_histogram(
+#         rescaled_eigvals1pos,
+#         rotated_prin_dirs[0],
+#         kp_position,
+#     )
+
+#     # compute 2nd positive eigenvalues histogram
+#     eig2pos_hist = compute_vector_histogram(
+#         rescaled_eigvals2pos,
+#         rotated_prin_dirs[1],
+#         kp_position,
+#     )
+
+#     # compute 1st negative eigenvalues histogram
+#     eig1neg_hist = compute_vector_histogram(
+#         rescaled_eigvals1neg,
+#         rotated_prin_dirs[0],
+#         kp_position,
+#     )
+
+#     # compute 2nd negative eigenvalues histogram
+#     eig2neg_hist = compute_vector_histogram(
+#         rescaled_eigvals2neg,
+#         rotated_prin_dirs[1],
+#         kp_position,
+#     )
+
+#     # compute gradients histogram
+#     grad_hist = compute_vector_histogram(
+#         gradients_norms,
+#         rotated_orientations,
+#         kp_position,
+#     )
+
+#     # Add histograms of same sign eigenvalues
+#     eigpos_hist = eig1pos_hist + eig2pos_hist
+#     eigneg_hist = eig1neg_hist + eig2neg_hist
+
+#     # stack all histograms
+#     descriptor_histograms = [eigpos_hist, eigneg_hist, grad_hist]
+
+#     return descriptor_histograms
+
+
 def compute_descriptor_histograms(overall_features, kp_position):
     """
     Compute the histograms for the descriptor of a keypoint
@@ -371,12 +435,15 @@ def compute_descriptor_histograms(overall_features, kp_position):
     rescaled_eigvals1neg = rescale_value(eigvals1neg, kp_abs_eigval1)
     rescaled_eigvals2neg = rescale_value(eigvals2neg, kp_abs_eigval2)
 
-    # rotate vectors orientations with kp orientation in trigo order
-    kp_prin_dir = [posdeg_principal_directions[i][y_kp, x_kp] for i in range(2)]
+    # rotate vectors orientations with mean of kp orientation in trigo order
+    # therefore it is a angle of reference for the keypoint that does not depend on the
+    # order of the eigenvalues
+    kp_prin_dirs = posdeg_principal_directions[y_kp, x_kp]
+    mean_kp_prin_dir = 0.5 * (kp_prin_dirs[0] + kp_prin_dirs[1])
     rotated_prin_dirs = [
         rotate_orientations(
-            posdeg_principal_directions[i],
-            kp_prin_dir[i],
+            posdeg_principal_directions[:, :, i],
+            mean_kp_prin_dir,
         )
         for i in range(2)
     ]
@@ -481,7 +548,7 @@ def display_spatial_histograms(histograms, title="Spatial Histograms"):
     # Adjust the space between subplots
     plt.subplots_adjust(hspace=0.5, wspace=0.5)
 
-    plt.show()
+    # plt.show()
 
 
 def display_descriptor(descriptor_histograms):
@@ -495,3 +562,5 @@ def display_descriptor(descriptor_histograms):
             descriptor_histograms[id_value],
             title=values_names[id_value],
         )
+
+    plt.show()
