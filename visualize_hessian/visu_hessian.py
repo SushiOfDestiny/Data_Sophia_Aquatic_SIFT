@@ -444,6 +444,16 @@ def visualize_curvature_directions_ax_sm(
             step,
             border_size,
         )
+        # then draw keypoint
+        add_vector_to_ax(
+            colormap,
+            norm,
+            selected_eigvals[zoom_radius, zoom_radius, eigvect_id],
+            zoom_radius,
+            zoom_radius,
+            normalized_eigvects[zoom_radius, zoom_radius, eigvect_id],
+            ax,
+        )
 
     # add red pixel on the keypoint, with variable size
     kp_factor = zoom_radius * 0.05
@@ -564,6 +574,7 @@ def visualize_gradients_ax_sm(
     normalized_gradients *= grad_size
 
     # plot the gradients on the subimage
+    # first avoid keypoint
     ax.imshow(sub_img, cmap="gray")
     draw_vectors_on_ax(
         ax,
@@ -574,6 +585,16 @@ def visualize_gradients_ax_sm(
         (h, w),
         step,
         border_size,
+    )
+    # then draw keypoint
+    add_vector_to_ax(
+        colormap,
+        norm,
+        norms_gradients[zoom_radius, zoom_radius],
+        zoom_radius,
+        zoom_radius,
+        normalized_gradients[zoom_radius, zoom_radius],
+        ax,
     )
 
     # add red pixel on the keypoint

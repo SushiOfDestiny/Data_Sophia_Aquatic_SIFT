@@ -174,6 +174,7 @@ def compute_horiz_angles(arrvects):
 #     # return list of features in specific order
 #     return [eigvals1pos, eigvals2pos, eigvals1neg, eigvals2neg]
 
+
 def split_posneg_parts(array):
     """
     Compute array of positive and negative parts of a given array.
@@ -406,7 +407,7 @@ def compute_vector_histogram(
 #     return descriptor_histograms
 
 
-def compute_descriptor_histograms(overall_features, kp_position):
+def compute_descriptor_histograms(overall_features, kp_position, nb_bins=3, bin_radius=2, delta_angle=5.0, sigma=0):
     """
     Compute the histograms for the descriptor of a keypoint
     overall_features: list of features arrays of all pixels of the image
@@ -459,6 +460,10 @@ def compute_descriptor_histograms(overall_features, kp_position):
         rescaled_eigvals1pos,
         rotated_prin_dirs[0],
         kp_position,
+        nb_bins,
+        bin_radius,
+        delta_angle,
+        sigma,
     )
 
     # compute 2nd positive eigenvalues histogram
@@ -466,6 +471,9 @@ def compute_descriptor_histograms(overall_features, kp_position):
         rescaled_eigvals2pos,
         rotated_prin_dirs[1],
         kp_position,
+        bin_radius,
+        delta_angle,
+        sigma,
     )
 
     # compute 1st negative eigenvalues histogram
@@ -473,6 +481,9 @@ def compute_descriptor_histograms(overall_features, kp_position):
         rescaled_eigvals1neg,
         rotated_prin_dirs[0],
         kp_position,
+        bin_radius,
+        delta_angle,
+        sigma,
     )
 
     # compute 2nd negative eigenvalues histogram
@@ -480,6 +491,9 @@ def compute_descriptor_histograms(overall_features, kp_position):
         rescaled_eigvals2neg,
         rotated_prin_dirs[1],
         kp_position,
+        bin_radius,
+        delta_angle,
+        sigma,
     )
 
     # compute gradients histogram
@@ -487,6 +501,9 @@ def compute_descriptor_histograms(overall_features, kp_position):
         gradients_norms,
         rotated_orientations,
         kp_position,
+        bin_radius,
+        delta_angle,
+        sigma,
     )
 
     # Add histograms of same sign eigenvalues
@@ -551,7 +568,7 @@ def display_spatial_histograms(histograms, title="Spatial Histograms"):
     # plt.show()
 
 
-def display_descriptor(descriptor_histograms):
+def display_descriptor(descriptor_histograms, descriptor_name="Descriptor"):
     """
     Display the descriptor of a keypoint.
     descriptor_histograms: list of 3 histograms, each of shape (nb_bins, nb_bins, nb_angular_bins)
@@ -560,7 +577,7 @@ def display_descriptor(descriptor_histograms):
     for id_value in range(len(values_names)):
         display_spatial_histograms(
             descriptor_histograms[id_value],
-            title=values_names[id_value],
+            title=f"{descriptor_name}, {values_names[id_value]}",
         )
 
     plt.show()

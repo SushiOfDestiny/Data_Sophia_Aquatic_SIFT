@@ -68,8 +68,9 @@ print(img_float32.min(), img_float32.max())
 ##################################
 # test crop_subimage_around_keypoint
 ##################################
+zoom_radius = 30
 
-sub_img = visu_hessian.crop_image_around_keypoint(img_float32, position, 30)
+sub_img = visu_hessian.crop_image_around_keypoint(img_float32, position, zoom_radius)
 print(sub_img.min(), sub_img.max())
 
 # plt.imshow(sub_img, cmap="gray")
@@ -149,11 +150,11 @@ y_kp0, x_kp0 = np.round(kp0.pt).astype(int)
 ##############
 
 # create figure and ax
-fig, ax = plt.subplots(1, 1, figsize=(5, 5))
+fig, ax = plt.subplots(1, 1, figsize=(20, 20))
 
 # compute eigenvectors and add them to the ax
 sm = visu_hessian.visualize_curvature_directions_ax_sm(
-    img_float32, kp0, zoom_radius=15, ax=ax
+    img_float32, kp0, zoom_radius, ax=ax
 )
 
 # add the colorbar of the colormap of the arrows
@@ -179,47 +180,47 @@ plt.show()
 ##################
 
 # create figure and ax
-# fig, ax = plt.subplots(1, 1, figsize=(5, 5))
+fig, ax = plt.subplots(1, 1, figsize=(20, 20))
 
-# # compute eigenvectors and add them to the ax
-# sm = visu_hessian.visualize_gradients_ax_sm(img_float32, kp0, zoom_radius=15, ax=ax)
+# compute eigenvectors and add them to the ax
+sm = visu_hessian.visualize_gradients_ax_sm(img_float32, kp0, zoom_radius, ax=ax)
 
-# # add the colorbar of the colormap of the arrows
-# fig.colorbar(sm, ax=ax, fraction=0.046, pad=0.04)
+# add the colorbar of the colormap of the arrows
+fig.colorbar(sm, ax=ax, fraction=0.046, pad=0.04)
 
-# # add legend
-# fig.suptitle(f"unfinished", fontsize=10)
+# add legend
+fig.suptitle(f"unfinished", fontsize=10)
 
-# plt.show()
+plt.show()
 
 ##################
 # Test compare directions
 ##################
 
 # load grayscale image
-img_path = "../data"
-im_name1 = "cube-0"
-im_name2 = "cube-1"
-img_ext = "png"
-g_img1 = cv.imread(f"{img_path}/{im_name1}.{img_ext}", 0)
-g_img2 = cv.imread(f"{img_path}/{im_name2}.{img_ext}", 0)
+# img_path = "../data"
+# im_name1 = "cube-0"
+# im_name2 = "cube-1"
+# img_ext = "png"
+# g_img1 = cv.imread(f"{img_path}/{im_name1}.{img_ext}", 0)
+# g_img2 = cv.imread(f"{img_path}/{im_name2}.{img_ext}", 0)
 
-# compute float32 images
-float32_g_img1 = visu_hessian.convert_uint8_to_float32(g_img1)
-float32_g_img2 = visu_hessian.convert_uint8_to_float32(g_img2)
+# # compute float32 images
+# float32_g_img1 = visu_hessian.convert_uint8_to_float32(g_img1)
+# float32_g_img2 = visu_hessian.convert_uint8_to_float32(g_img2)
 
-# calculate sift keypoints and descriptors
-sift = cv.SIFT_create()
-keypoints1, descriptors1 = sift.detectAndCompute(g_img1, None)
-keypoints2, descriptors2 = sift.detectAndCompute(g_img2, None)
+# # calculate sift keypoints and descriptors
+# sift = cv.SIFT_create()
+# keypoints1, descriptors1 = sift.detectAndCompute(g_img1, None)
+# keypoints2, descriptors2 = sift.detectAndCompute(g_img2, None)
 
-# match descriptors
-bf = cv.BFMatcher()
-matches = bf.knnMatch(descriptors1, descriptors2, k=2)
+# # match descriptors
+# bf = cv.BFMatcher()
+# matches = bf.knnMatch(descriptors1, descriptors2, k=2)
 
-# Get keypoints of first match
-kp1 = keypoints1[matches[0][0].queryIdx]
-kp2 = keypoints2[matches[0][0].trainIdx]
+# # Get keypoints of first match
+# kp1 = keypoints1[matches[0][0].queryIdx]
+# kp2 = keypoints2[matches[0][0].trainIdx]
 
 # compare directions
 # dir_fig = visu_hessian.compare_directions(
