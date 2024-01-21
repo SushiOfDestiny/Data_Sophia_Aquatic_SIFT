@@ -109,7 +109,7 @@ a = 2
 # # Test compute_features_overall #
 # #################################
 
-# features_overall = descriptor.compute_features_overall(float32_img, border_size=1)
+features_overall = descriptor.compute_features_overall(float32_img, border_size=1)
 
 # # # print("features_overall", features_overall)
 
@@ -117,9 +117,20 @@ a = 2
 # # # Test compute_descriptor_histograms #
 # # ######################################
 
-# descriptor_histos = descriptor.compute_descriptor_histograms(features_overall, position)
+descriptor_histos = descriptor.compute_descriptor_histograms(features_overall, position)
 
 # # # print("histos", histos)
+
+# # #################
+# # # Visualization #
+# # #################
+
+# # # titles = ["positive eigenvalues", "negative eigenvalues", "gradients"]
+# # # for id_value in range(len(histos)):
+# # #     descriptor.display_spatial_histograms(histos[id_value], titles[id_value])
+
+values_names = ["positive eigenvalues", "negative eigenvalues", "gradients"]
+descriptor.display_descriptor(descriptor_histos, values_names=values_names)
 
 
 # ################################
@@ -137,16 +148,9 @@ descriptor_histos2 = descriptor.compute_descriptor_histograms2(
     features_overall2, position
 )
 
-
 # # #################
-# # # Visualization #
+# # # Visualization 2 #
 # # #################
-
-# # # titles = ["positive eigenvalues", "negative eigenvalues", "gradients"]
-# # # for id_value in range(len(histos)):
-# # #     descriptor.display_spatial_histograms(histos[id_value], titles[id_value])
-
-# descriptor.display_descriptor(descriptor_histos)
 
 values_names2 = ["1st eigenvalues", "2nd eigenvalues", "gradients"]
 
