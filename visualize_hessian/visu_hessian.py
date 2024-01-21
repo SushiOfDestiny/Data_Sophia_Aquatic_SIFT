@@ -85,6 +85,41 @@ def crop_image_around_keypoint(g_img, position, zoom_radius):
         )
 
 
+# def compute_hessian_gradient_subimage(sub_img, border_size=1):
+#     """
+#     Compute hessian and gradient of neighbors of the keypoint within a square neighborhood.
+#     sub_img: float32 grayscale image
+#     border_size: size of the border to exclude from the computation
+#     Return None if the zoomed area is not in the image.
+#     Return array of hessian eigenvalues, array of hessian eigenvectors, array of gradients, computed within the border
+#     For locations in the avoided border, the values are set to 0
+#     Convention: the eigenvectors are the rows of the eigvects array, ie eigvects[y, x, i] is the i-th 2D eigenvector
+#     That is not the numpy convention
+#     """
+
+#     h, w = sub_img.shape
+#     # initialize arrays
+#     eigvals = np.zeros((h, w, 2), dtype=np.float32)
+#     eigvects = np.zeros((h, w, 2, 2), dtype=np.float32)
+#     gradients = np.zeros((h, w, 2), dtype=np.float32)
+
+#     # loop over neighbors
+#     for y in range(border_size, h - border_size):
+#         for x in range(border_size, w - border_size):
+#             # simultaneously compute eigenvalues and eigenvectors
+#             H = compute_hessian(sub_img, (y, x))
+#             eigvals[y, x], eigvects_col = np.linalg.eig(
+#                 H
+#             )  # numpy naturally returns the eigenvectors as columns
+#             # eigvect_col is a 2*2 array, each column is an eigenvector
+#             eigvects[
+#                 y, x
+#             ] = eigvects_col.T  # we want the eigenvectors as rows (convention)
+#             gradients[y, x] = compute_gradient(sub_img, (y, x))
+
+#     return eigvals, eigvects, gradients
+
+
 def compute_hessian_gradient_subimage(sub_img, border_size=1):
     """
     Compute hessian and gradient of neighbors of the keypoint within a square neighborhood.
@@ -93,6 +128,7 @@ def compute_hessian_gradient_subimage(sub_img, border_size=1):
     Return None if the zoomed area is not in the image.
     Return array of hessian eigenvalues, array of hessian eigenvectors, array of gradients, computed within the border
     For locations in the avoided border, the values are set to 0
+    Eigenvalues and eigenvectors are in decreasing order of signed value
     Convention: the eigenvectors are the rows of the eigvects array, ie eigvects[y, x, i] is the i-th 2D eigenvector
     That is not the numpy convention
     """
@@ -111,6 +147,12 @@ def compute_hessian_gradient_subimage(sub_img, border_size=1):
             eigvals[y, x], eigvects_col = np.linalg.eig(
                 H
             )  # numpy naturally returns the eigenvectors as columns
+            # sort eigenvalues and eigenvectors in decreasing order of signed value
+            # numpy argsort by default sorts in increasing order, so we pass the opposite of the eigenvalues
+            idx = np.argsort(-eigvals[y, x])
+            eigvals[y, x] = eigvals[y, x, idx]
+            eigvects_col = eigvects_col[:, idx]
+
             # eigvect_col is a 2*2 array, each column is an eigenvector
             eigvects[
                 y, x
