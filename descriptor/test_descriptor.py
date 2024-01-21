@@ -104,69 +104,53 @@ position = (50, 50)
 
 a = 2
 
-# ##################################
-# # Visualize principal directions #
-# ##################################
-# sift = cv.SIFT_create()
-# keypoints, descriptors = sift.detectAndCompute(img, None)
-
-# # draw keypoints on image
-# img_kp = cv.drawKeypoints(
-#     img, keypoints, None, flags=cv.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS
-# )
-# nb_kp = len(keypoints)
-
-# # plt.imshow(img_kp)
-# # plt.title(f"{nb_kp} SIFT keypoints")
-
-# kp0 = keypoints[200]
-
-# # eigvals, eigvects, gradients = vh.compute_hessian_gradient_subimage(
-# #         float32_img, border_size=1
-# #     )
-
-# # # create figure and ax
-# # fig, ax = plt.subplots(1, 1, figsize=(5, 5))
-
-# # # compute eigenvectors and add them to the ax
-# # sm = vh.visualize_curvature_directions_ax_sm(
-# #     float32_img, kp0, zoom_radius=30, ax=ax, step_percentage=3
-# # )
-
-# # # add the colorbar of the colormap of the arrows
-# # fig.colorbar(sm, ax=ax, fraction=0.046, pad=0.04)
-
-# # # add legend
-# # fig.suptitle(f"unfinished", fontsize=10)
-
-# # plt.show()
-
 
 # #################################
 # # Test compute_features_overall #
 # #################################
 
-features_overall = descriptor.compute_features_overall(float32_img, border_size=1)
+# features_overall = descriptor.compute_features_overall(float32_img, border_size=1)
 
-# # print("features_overall", features_overall)
+# # # print("features_overall", features_overall)
 
-# ######################################
-# # Test compute_descriptor_histograms #
-# ######################################
+# # ######################################
+# # # Test compute_descriptor_histograms #
+# # ######################################
 
-descriptor_histos = descriptor.compute_descriptor_histograms(features_overall, position)
+# descriptor_histos = descriptor.compute_descriptor_histograms(features_overall, position)
 
-# # print("histos", histos)
+# # # print("histos", histos)
 
-# #################
-# # Visualization #
-# #################
 
-# # titles = ["positive eigenvalues", "negative eigenvalues", "gradients"]
-# # for id_value in range(len(histos)):
-# #     descriptor.display_spatial_histograms(histos[id_value], titles[id_value])
+# ################################
+# Test compute_overall_features2 #
+##################################
 
-descriptor.display_descriptor(descriptor_histos)
+features_overall2 = descriptor.compute_features_overall2(float32_img, border_size=1)
+
+
+#######################################
+# Test compute_descriptor_histograms2 #
+#######################################
+
+descriptor_histos2 = descriptor.compute_descriptor_histograms2(
+    features_overall2, position
+)
+
+
+# # #################
+# # # Visualization #
+# # #################
+
+# # # titles = ["positive eigenvalues", "negative eigenvalues", "gradients"]
+# # # for id_value in range(len(histos)):
+# # #     descriptor.display_spatial_histograms(histos[id_value], titles[id_value])
+
+# descriptor.display_descriptor(descriptor_histos)
+
+values_names2 = ["1st eigenvalues", "2nd eigenvalues", "gradients"]
+
+descriptor.display_descriptor(descriptor_histos2, values_names=values_names2)
 
 
 # #############################

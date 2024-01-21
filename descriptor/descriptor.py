@@ -239,6 +239,50 @@ def compute_features_overall(g_img, border_size=1):
     return features
 
 
+def compute_features_overall2(g_img, border_size=1):
+    """
+    Compute useful features for all pixels of a grayscale image.
+    All angular features are in degrees in [0, 360[.
+    Return principal directions, eigenvalues, gradients norms and orientations.
+    """
+    # compute eigenvalues and eigenvectors of the Hessian matrix
+    # recall objects in the avoided border are set to 0
+    eigvals, eigvects, gradients = vh.compute_hessian_gradient_subimage(
+        g_img, border_size
+    )
+    # compute gradients norms
+    gradients_norms = np.linalg.norm(gradients, axis=2)
+
+    # compute principal directions of the Hessian matrix
+    principal_directions = np.zeros(eigvects.shape[:3], dtype=np.float32)
+    for eigvect_id in range(2):
+        principal_directions[:, :, eigvect_id] = compute_horiz_angles(
+            eigvects[:, :, eigvect_id]
+        )
+
+    # compute orientations of the gradients in degrees
+    orientations = compute_orientations(g_img, border_size)
+    # convert and rescale angles in [0, 360[
+    posdeg_orientations = convert_angles_to_pos_degrees(orientations)
+    # same for principal directions (therefore they are angles)
+    posdeg_principal_directions = np.zeros(
+        principal_directions.shape[:3], dtype=np.float32
+    )
+    for prin_dir_id in range(2):
+        posdeg_principal_directions[:, :, prin_dir_id] = convert_angles_to_pos_degrees(
+            principal_directions[:, :, prin_dir_id]
+        )
+
+    features = [
+        posdeg_principal_directions,
+        eigvals,
+        gradients_norms,
+        posdeg_orientations,
+    ]
+
+    return features
+
+
 ######################
 # Compute histograms #
 ######################
@@ -407,7 +451,9 @@ def compute_vector_histogram(
 #     return descriptor_histograms
 
 
-def compute_descriptor_histograms(overall_features, kp_position, nb_bins=3, bin_radius=2, delta_angle=5.0, sigma=0):
+def compute_descriptor_histograms(
+    overall_features, kp_position, nb_bins=3, bin_radius=2, delta_angle=5.0, sigma=0
+):
     """
     Compute the histograms for the descriptor of a keypoint
     overall_features: list of features arrays of all pixels of the image
@@ -516,6 +562,82 @@ def compute_descriptor_histograms(overall_features, kp_position, nb_bins=3, bin_
     return descriptor_histograms
 
 
+def compute_descriptor_histograms2(
+    overall_features2, kp_position, nb_bins=3, bin_radius=2, delta_angle=5.0, sigma=0
+):
+    """
+    Compute the histograms for the descriptor of a keypoint
+    overall_features: list of features arrays of all pixels of the image
+    kp_position: (y, x) int pixel position of keypoint
+    return descriptor_histograms: list of 3 histograms, each of shape (nb_bins, nb_bins, nb_angular_bins)
+    1st histogram: first eigenvalues (highest signed value)
+    2nd histogram: second eigenvalues
+    3rd histogram: gradients
+    """
+    y_kp, x_kp = kp_position
+    # unpack the features
+    (
+        posdeg_principal_directions,
+        eigvals,
+        gradients_norms,
+        posdeg_orientations,
+    ) = overall_features2
+
+    # compute absolute value of keypoint eigenvalue for rescale
+    kp_abs_eigvals = eigvals[y_kp, x_kp]
+
+    # rescale vectors values by keypoint value
+    rescaled_eigvals = np.zeros_like(eigvals, dtype=np.float32)
+    for eigval_id in range(2):
+        rescaled_eigvals[:, :, eigval_id] = rescale_value(
+            eigvals[:, :, eigval_id], kp_abs_eigvals[eigval_id]
+        )
+
+    # rotate vectors orientations
+    # principal directions
+    kp_prin_dirs = posdeg_principal_directions[y_kp, x_kp]
+    rotated_prin_dirs = np.zeros_like(posdeg_principal_directions, dtype=np.float32)
+    for eigval_id in range(2):
+        rotated_prin_dirs[:, :, eigval_id] = rotate_orientations(
+            posdeg_principal_directions[:, :, eigval_id],
+            kp_prin_dirs[eigval_id],
+        )
+    # gradients orientations
+    kp_orientation = posdeg_orientations[y_kp, x_kp]
+    rotated_orientations = rotate_orientations(
+        posdeg_orientations,
+        kp_orientation,
+    )
+
+    # compute the 2 eigenvalues histograms
+    eigvals_hists = [compute_vector_histogram(
+        rescaled_eigvals[:, :, eigval_id],
+        rotated_prin_dirs[:,:,eigval_id],
+        kp_position,
+        nb_bins,
+        bin_radius,
+        delta_angle,
+        sigma,
+    ) for eigval_id in range(2)]
+
+
+    # compute gradients histogram
+    grad_hist = compute_vector_histogram(
+        gradients_norms,
+        rotated_orientations,
+        kp_position,
+        nb_bins,
+        bin_radius,
+        delta_angle,
+        sigma,
+    )
+
+    # stack all histograms
+    descriptor_histograms = [eigvals_hists[0], eigvals_hists[1], grad_hist]
+
+    return descriptor_histograms
+
+
 ############################
 # Descriptor Visualization #
 ############################
@@ -568,12 +690,12 @@ def display_spatial_histograms(histograms, title="Spatial Histograms"):
     # plt.show()
 
 
-def display_descriptor(descriptor_histograms, descriptor_name="Descriptor"):
+def display_descriptor(descriptor_histograms, descriptor_name="Descriptor",  values_names=["positive eigenvalues", "negative eigenvalues", "gradients"]):
     """
     Display the descriptor of a keypoint.
     descriptor_histograms: list of 3 histograms, each of shape (nb_bins, nb_bins, nb_angular_bins)
     """
-    values_names = ["positive eigenvalues", "negative eigenvalues", "gradients"]
+   
     for id_value in range(len(values_names)):
         display_spatial_histograms(
             descriptor_histograms[id_value],
