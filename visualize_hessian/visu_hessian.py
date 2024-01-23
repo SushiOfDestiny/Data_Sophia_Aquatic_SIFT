@@ -24,9 +24,10 @@ def compute_gradient(g_img, position):
     """
     Compute gradient with finite differences at order 1.
     g_img: float32 grayscale image
-    position: (y,x) position of point in pixels
+    position: (x,y) position of point in pixels
+    return: gradient vector [dx, dy]
     """
-    y, x = position
+    x, y = position
     dx = g_img[y, x + 1] - g_img[y, x - 1]
     dy = g_img[y + 1, x] - g_img[y - 1, x]
     return np.array([dx, dy])
@@ -36,9 +37,10 @@ def compute_hessian(g_img, position):
     """
     Compute hessian with finite differences at order 2.
     g_img: float32 grayscale image
-    position: (y,x) position of the pixel
+    position: (x,y) position of the pixel
+    return: hessian matrix [[dxx, dxy], [dxy, dyy]]
     """
-    y, x = position
+    x, y = position
     # compute derivatives
     dxx = g_img[y, x + 1] + g_img[y, x - 1] - 2 * g_img[y, x]
     dyy = g_img[y + 1, x] + g_img[y - 1, x] - 2 * g_img[y, x]
@@ -55,12 +57,12 @@ def crop_image_around_keypoint(g_img, position, zoom_radius):
     """
     Crop image around keypoint.
     g_img: float32 grayscale image
-    position: (y,x) position of the keypoint
+    position: (x,y) position of the keypoint
     zoom_radius: radius of the zoomed area in pixels
     Return None if the zoomed area is not in the image.
     Return the cropped image
     """
-    y_kp, x_kp = position
+    x_kp, y_kp = position
 
     # check if zoomed area is in the image
     is_in_image = (
@@ -81,43 +83,8 @@ def crop_image_around_keypoint(g_img, position, zoom_radius):
 
     else:
         print(
-            f"Zoom around keypoint {y_kp}, {x_kp} of radius {zoom_radius} is not in the image"
+            f"Zoom around keypoint x:{x_kp}, y:{y_kp} of radius {zoom_radius} is not in the image"
         )
-
-
-# def compute_hessian_gradient_subimage(sub_img, border_size=1):
-#     """
-#     Compute hessian and gradient of neighbors of the keypoint within a square neighborhood.
-#     sub_img: float32 grayscale image
-#     border_size: size of the border to exclude from the computation
-#     Return None if the zoomed area is not in the image.
-#     Return array of hessian eigenvalues, array of hessian eigenvectors, array of gradients, computed within the border
-#     For locations in the avoided border, the values are set to 0
-#     Convention: the eigenvectors are the rows of the eigvects array, ie eigvects[y, x, i] is the i-th 2D eigenvector
-#     That is not the numpy convention
-#     """
-
-#     h, w = sub_img.shape
-#     # initialize arrays
-#     eigvals = np.zeros((h, w, 2), dtype=np.float32)
-#     eigvects = np.zeros((h, w, 2, 2), dtype=np.float32)
-#     gradients = np.zeros((h, w, 2), dtype=np.float32)
-
-#     # loop over neighbors
-#     for y in range(border_size, h - border_size):
-#         for x in range(border_size, w - border_size):
-#             # simultaneously compute eigenvalues and eigenvectors
-#             H = compute_hessian(sub_img, (y, x))
-#             eigvals[y, x], eigvects_col = np.linalg.eig(
-#                 H
-#             )  # numpy naturally returns the eigenvectors as columns
-#             # eigvect_col is a 2*2 array, each column is an eigenvector
-#             eigvects[
-#                 y, x
-#             ] = eigvects_col.T  # we want the eigenvectors as rows (convention)
-#             gradients[y, x] = compute_gradient(sub_img, (y, x))
-
-#     return eigvals, eigvects, gradients
 
 
 def compute_hessian_gradient_subimage(sub_img, border_size=1):
@@ -125,12 +92,13 @@ def compute_hessian_gradient_subimage(sub_img, border_size=1):
     Compute hessian and gradient of neighbors of the keypoint within a square neighborhood.
     sub_img: float32 grayscale image
     border_size: size of the border to exclude from the computation
-    Return None if the zoomed area is not in the image.
-    Return array of hessian eigenvalues, array of hessian eigenvectors, array of gradients, computed within the border
     For locations in the avoided border, the values are set to 0
     Eigenvalues and eigenvectors are in decreasing order of signed value
-    Convention: the eigenvectors are the rows of the eigvects array, ie eigvects[y, x, i] is the i-th 2D eigenvector
-    That is not the numpy convention
+    Convention: the eigenvectors are the rows of the eigvects array,
+    ie eigvects[y, x, 0, 1] is the vertical coord of the first eigenvector
+    That is not the numpy convention.
+    Return array of hessian eigenvalues, array of hessian eigenvectors, array of gradients, computed within the border
+    Return None if the zoomed area is not in the image.
     """
 
     h, w = sub_img.shape
@@ -143,7 +111,7 @@ def compute_hessian_gradient_subimage(sub_img, border_size=1):
     for y in range(border_size, h - border_size):
         for x in range(border_size, w - border_size):
             # simultaneously compute eigenvalues and eigenvectors
-            H = compute_hessian(sub_img, (y, x))
+            H = compute_hessian(sub_img, (x, y))
             eigvals[y, x], eigvects_col = np.linalg.eig(
                 H
             )  # numpy naturally returns the eigenvectors as columns
@@ -157,7 +125,7 @@ def compute_hessian_gradient_subimage(sub_img, border_size=1):
             eigvects[
                 y, x
             ] = eigvects_col.T  # we want the eigenvectors as rows (convention)
-            gradients[y, x] = compute_gradient(sub_img, (y, x))
+            gradients[y, x] = compute_gradient(sub_img, (x, y))
 
     return eigvals, eigvects, gradients
 
@@ -172,10 +140,10 @@ def visualize_curvature_values(g_img, keypoint, zoom_radius, figsize=(30, 10)):
     Return: the matplotlib figure
     """
     # compute pixel coordinates of the keypoint
-    y_kp, x_kp = np.round(keypoint.pt).astype(int)
+    x_kp, y_kp = np.round(keypoint.pt).astype(int)
 
     # try to crop subimage around keypoint
-    sub_img = crop_image_around_keypoint(g_img, (y_kp, x_kp), zoom_radius)
+    sub_img = crop_image_around_keypoint(g_img, (x_kp, y_kp), zoom_radius)
 
     if sub_img is not None:
         # Compute hessian eigenvalues
@@ -198,7 +166,7 @@ def visualize_curvature_values(g_img, keypoint, zoom_radius, figsize=(30, 10)):
 
         # Define the images and titles
         images = [sub_img, eigvals1, eigvals2]
-        titles = [f"zoomed image, radius={zoom_radius}", "eigenvalue 1", "eigenvalue 2"]
+        titles = [f"zoomed image on keypoint", "eigenvalue 1", "eigenvalue 2"]
         v_min_max = [(None, None), (0, 1), (0, 1)]
 
         # Loop over the axes, images, and titles
@@ -216,7 +184,10 @@ def visualize_curvature_values(g_img, keypoint, zoom_radius, figsize=(30, 10)):
             fig.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
 
         # add legend
-        fig.suptitle(f"SIFT Keypoint {y_kp}, {x_kp} (in red)", fontsize=10)
+        fig.suptitle(
+            f"SIFT Keypoint x:{x_kp}, y:{y_kp} (in red) \n radius={zoom_radius}",
+            fontsize=10,
+        )
 
         return fig
 
@@ -228,7 +199,7 @@ def add_vector_to_ax(colormap, norm, cm_value, x, y, vect, ax, width=0.1):
     norm: matplotlib norm
     cm_value: value to get the color from the colormap
     x, y: position of the vector
-    vect: vector to plot
+    vect: vector to plot, coordinates are vect[0]=x, vect[1]=y
     ax: matplotlib axis
     width: width of the vector
     """
@@ -324,94 +295,6 @@ def normalize_vectors_2D_array(array, eps=1e-8):
     return normalized_array
 
 
-# def visualize_curvature_directions_ax_sm(
-#     g_img, keypoint, zoom_radius, ax, step_percentage=5, border_size=1
-# ):
-#     """
-#     g_img: float32 grayscale image
-#     keypoint: SIFT keypoint
-#     zoom_radius: radius of the zoomed area in pixels
-#     step_percentage: percentage of pixels to skip in the computation of the eigenvectors, w.r.t subimage size
-#     ax: matplotlib axis
-
-#     Compute eigenvectors of the Hessian matrix of all pixels in a zoomed area around a keypoint.
-#     display the directions in 2 colors depending on the sign of the eigenvalues.
-#     Does nothing if the zoomed area is not in the image.
-#     Inplace modify the argument ax
-
-#     Return: the scalable colormap of the arrows
-#     """
-#     # compute pixel coordinates of the keypoint
-#     y, x = keypoint.pt
-#     y_kp = np.round(y).astype(int)
-#     x_kp = np.round(x).astype(int)
-
-#     # try to crop image around keypoint
-#     sub_img = crop_image_around_keypoint(g_img, (y_kp, x_kp), zoom_radius)
-#     h, w = sub_img.shape
-
-#     # Compute hessian eigenvectors and eigenvalues of all pixels in subimage.
-#     eigvals, eigvects, _ = compute_hessian_gradient_subimage(sub_img)
-
-#     # Downsample the computations by taking 1 pixel every step in each direction, instead of all pixels
-#     # We downsample within pixels that are not in the border
-#     # Values of unconsidered pixels are set to 0
-#     step = compute_downsampling_step(step_percentage, zoom_radius)
-#     selected_eigvects = downsample_array(eigvects, step)
-#     selected_eigvals = downsample_array(eigvals, step)
-#     # Add values of the keypoint
-#     selected_eigvects[zoom_radius, zoom_radius] = eigvects[zoom_radius, zoom_radius]
-#     selected_eigvals[zoom_radius, zoom_radius] = eigvals[zoom_radius, zoom_radius]
-
-#     # normalize eigenvectors
-#     vect_size = zoom_radius * 0.05
-#     normalized_eigvects = normalize_vectors_2D_array(selected_eigvects)
-#     normalized_eigvects *= vect_size
-
-#     # draw eigenvectors on ax
-#     # define colormap for eigenvectors depending on the value of the eigenvalues
-#     # the higher the eigenvalue, the more red the eigenvector, the lower the eigenvalue, the more blue the eigenvector
-#     colormap = plt.cm.get_cmap("RdBu")
-
-#     # normalize eigenvalues with the min and max eigenvalues
-#     vmin, vmax = np.min(selected_eigvals), np.max(selected_eigvals)
-#     norm = colors.Normalize(vmin=vmin, vmax=vmax)
-
-#     # draw eigenvectors on ax
-#     ax.imshow(sub_img, cmap="gray")
-
-#     # draw eigenvectors of all pixels
-#     for i in range(2):
-#         # first avoid keypoint
-#         draw_vectors_on_ax(
-#             ax,
-#             colormap,
-#             norm,
-#             selected_eigvals[:, :, i],
-#             normalized_eigvects[:, :, i],
-#             (h, w),
-#             step,
-#             border_size,
-#         )
-
-#     # add red pixel on the keypoint, with variable size
-#     kp_factor = zoom_radius * 0.1
-#     ax.scatter(
-#         [zoom_radius],
-#         [zoom_radius],
-#         c="r",
-#         s=zoom_radius * kp_factor,
-#     )
-#     ax.set_title("eigenvectors")
-#     ax.axis("off")
-
-#     # add the blue to red colormap of the arrows
-#     # create a ScalarMappable with the same colormap and normalization as the arrows
-#     sm = plt.cm.ScalarMappable(cmap=colormap, norm=norm)
-#     sm.set_array([])
-
-#     return sm
-
 
 def visualize_curvature_directions_ax_sm(
     g_img, keypoint, zoom_radius, ax, step_percentage=5, border_size=1
@@ -422,7 +305,6 @@ def visualize_curvature_directions_ax_sm(
     zoom_radius: radius of the zoomed area in pixels
     step_percentage: percentage of pixels to skip in the computation of the eigenvectors, w.r.t subimage size
     ax: matplotlib axis
-
     Compute eigenvectors of the Hessian matrix of all pixels in a zoomed area around a keypoint.
     display the directions in 2 colors depending on the sign of the eigenvalues.
     Does nothing if the zoomed area is not in the image.
@@ -431,12 +313,12 @@ def visualize_curvature_directions_ax_sm(
     Return: the scalable colormap of the arrows
     """
     # compute pixel coordinates of the keypoint
-    y, x = keypoint.pt
-    y_kp = np.round(y).astype(int)
-    x_kp = np.round(x).astype(int)
+    x_kp, y_kp = keypoint.pt
+    y_kp = np.round(y_kp).astype(int)
+    x_kp = np.round(x_kp).astype(int)
 
     # try to crop image around keypoint
-    sub_img = crop_image_around_keypoint(g_img, (y_kp, x_kp), zoom_radius)
+    sub_img = crop_image_around_keypoint(g_img, (x_kp, y_kp), zoom_radius)
     h, w = sub_img.shape
 
     # Compute hessian eigenvectors and eigenvalues of all pixels in subimage.
@@ -586,12 +468,12 @@ def visualize_gradients_ax_sm(
     Return: the matplotlib scalable colormap of the arrows
     """
     # compute pixel coordinates of the keypoint
-    y, x = keypoint.pt
-    y_kp = np.round(y).astype(int)
-    x_kp = np.round(x).astype(int)
+    x_kp, y_kp = keypoint.pt
+    y_kp = np.round(y_kp).astype(int)
+    x_kp = np.round(x_kp).astype(int)
 
     # try to crop image around keypoint
-    sub_img = crop_image_around_keypoint(g_img, (y_kp, x_kp), zoom_radius)
+    sub_img = crop_image_around_keypoint(g_img, (x_kp, y_kp), zoom_radius)
     h, w = sub_img.shape
 
     # Compute gradients for all pixels in subimage

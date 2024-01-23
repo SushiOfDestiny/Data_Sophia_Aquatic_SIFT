@@ -22,11 +22,11 @@ def compute_orientation(g_img, position, epsilon=1e-6):
     """
     Compute the orientation of the keypoint with Lowe's formula.
     g_img: float32 grayscale image
-    position: (y, x) int pixel position of point
+    position: (x, y) int pixel position of point
     epsilon: float to avoid division by 0 (default is 1e-6)
     return orientation: float32 orientation of the keypoint in degrees, within [0, 360[
     """
-    y, x = position
+    x, y = position
     denominator = g_img[y, x + 1] - g_img[y, x - 1]
     # if denominator is too small, add or subtract epsilon to avoid division by 0
     if np.abs(denominator) < epsilon:
@@ -61,7 +61,7 @@ def compute_orientations(g_img, border_size=1):
     orientations = np.zeros_like(g_img, dtype=np.float32)
     for y in range(border_size, g_img.shape[0] - border_size):
         for x in range(border_size, g_img.shape[1] - border_size):
-            orientations[y, x] = compute_orientation(g_img, (y, x))
+            orientations[y, x] = compute_orientation(g_img, (x, y))
     return orientations
 
 
@@ -362,16 +362,16 @@ def compute_vector_histogram(
     for bin_j in range(nb_bins):
         for bin_i in range(nb_bins):
             # compute the center of the neighborhood
-            y = kp_position[0] + (bin_j - nb_bins // 2) * (2 * bin_radius + 1)
-            x = kp_position[1] + (bin_i - nb_bins // 2) * (2 * bin_radius + 1)
+            x_center = kp_position[0] + (bin_j - nb_bins // 2) * (2 * bin_radius + 1)
+            y_center = kp_position[1] + (bin_i - nb_bins // 2) * (2 * bin_radius + 1)
             # loop over all pixels of the neighborhood
-            for j in range(y - bin_radius, y + bin_radius + 1):
-                for i in range(x - bin_radius, x + bin_radius + 1):
+            for j in range(y_center - bin_radius, y_center + bin_radius + 1):
+                for i in range(x_center - bin_radius, x_center + bin_radius + 1):
                     # compute the angle of the vector
                     angle = rotated_orientations[j, i]
                     # compute the gaussian weight of the vector
                     weight = g_weight * np.exp(
-                        -((j - kp_position[0]) ** 2 + (i - kp_position[1]) ** 2)
+                        -((i - kp_position[0]) ** 2 + (j - kp_position[1]) ** 2)
                         / (2 * sigma**2)
                     )
                     # compute the bin of the angle
@@ -388,106 +388,17 @@ def compute_vector_histogram(
 ######################
 
 
-# def compute_descriptor_histograms(overall_features, kp_position):
-#     """
-#     Compute the histograms for the descriptor of a keypoint
-#     overall_features: list of features arrays of all pixels of the image
-#     kp_position: (y, x) int pixel position of keypoint
-#     return descriptor_histograms: list of 3 histograms, each of shape (nb_bins, nb_bins, nb_angular_bins)
-#     """
-#     y_kp, x_kp = kp_position
-#     # unpack the features
-#     (
-#         posdeg_principal_directions,
-#         eigvals1pos,
-#         eigvals2pos,
-#         eigvals1neg,
-#         eigvals2neg,
-#         gradients_norms,
-#         posdeg_orientations,
-#     ) = overall_features
-
-#     # compute absolute value of keypoint eigenvalue for rescale
-#     kp_abs_eigval1 = eigvals1pos[y_kp, x_kp] + eigvals1neg[y_kp, x_kp]
-#     kp_abs_eigval2 = eigvals2pos[y_kp, x_kp] + eigvals2neg[y_kp, x_kp]
-
-#     # rescale vectors values by keypoint value
-#     rescaled_eigvals1pos = rescale_value(eigvals1pos, kp_abs_eigval1)
-#     rescaled_eigvals2pos = rescale_value(eigvals2pos, kp_abs_eigval2)
-#     rescaled_eigvals1neg = rescale_value(eigvals1neg, kp_abs_eigval1)
-#     rescaled_eigvals2neg = rescale_value(eigvals2neg, kp_abs_eigval2)
-
-#     # rotate vectors orientations with kp orientation in trigo order
-#     kp_prin_dirs = posdeg_principal_directions[y_kp, x_kp]
-#     rotated_prin_dirs = [
-#         rotate_orientations(
-#             posdeg_principal_directions[:, :, i],
-#             kp_prin_dirs[i],
-#         )
-#         for i in range(2)
-#     ]
-
-#     kp_orientation = posdeg_orientations[y_kp, x_kp]
-#     rotated_orientations = rotate_orientations(
-#         posdeg_orientations,
-#         kp_orientation,
-#     )
-
-#     # compute 1st positive eigenvalues histogram
-#     eig1pos_hist = compute_vector_histogram(
-#         rescaled_eigvals1pos,
-#         rotated_prin_dirs[0],
-#         kp_position,
-#     )
-
-#     # compute 2nd positive eigenvalues histogram
-#     eig2pos_hist = compute_vector_histogram(
-#         rescaled_eigvals2pos,
-#         rotated_prin_dirs[1],
-#         kp_position,
-#     )
-
-#     # compute 1st negative eigenvalues histogram
-#     eig1neg_hist = compute_vector_histogram(
-#         rescaled_eigvals1neg,
-#         rotated_prin_dirs[0],
-#         kp_position,
-#     )
-
-#     # compute 2nd negative eigenvalues histogram
-#     eig2neg_hist = compute_vector_histogram(
-#         rescaled_eigvals2neg,
-#         rotated_prin_dirs[1],
-#         kp_position,
-#     )
-
-#     # compute gradients histogram
-#     grad_hist = compute_vector_histogram(
-#         gradients_norms,
-#         rotated_orientations,
-#         kp_position,
-#     )
-
-#     # Add histograms of same sign eigenvalues
-#     eigpos_hist = eig1pos_hist + eig2pos_hist
-#     eigneg_hist = eig1neg_hist + eig2neg_hist
-
-#     # stack all histograms
-#     descriptor_histograms = [eigpos_hist, eigneg_hist, grad_hist]
-
-#     return descriptor_histograms
-
-
 def compute_descriptor_histograms(
     overall_features, kp_position, nb_bins=3, bin_radius=2, delta_angle=5.0, sigma=0
 ):
     """
     Compute the histograms for the descriptor of a keypoint
     overall_features: list of features arrays of all pixels of the image
-    kp_position: (y, x) int pixel position of keypoint
+    kp_position: (x, y) int pixel position of keypoint
     return descriptor_histograms: list of 3 histograms, each of shape (nb_bins, nb_bins, nb_angular_bins)
     """
-    y_kp, x_kp = kp_position
+    x_kp, y_kp = kp_position
+
     # unpack the features
     (
         posdeg_principal_directions,
@@ -599,13 +510,13 @@ def compute_descriptor_histograms2(
     """
     Compute the histograms for the descriptor of a keypoint
     overall_features: list of features arrays of all pixels of the image
-    kp_position: (y, x) int pixel position of keypoint
+    kp_position: (x, y) int pixel position of keypoint
     return descriptor_histograms: list of 3 histograms, each of shape (nb_bins, nb_bins, nb_angular_bins)
     1st histogram: first eigenvalues (highest signed value)
     2nd histogram: second eigenvalues
     3rd histogram: gradients
     """
-    y_kp, x_kp = kp_position
+    x_kp, y_kp = kp_position
     # unpack the features
     (
         posdeg_principal_directions,
@@ -682,8 +593,8 @@ def display_histogram(histogram):
     histogram: numpy array of shape (nb_angular_bins,)
     """
     nb_angular_bins = histogram.shape[0]
-    x = np.linspace(0.0, 360.0, nb_angular_bins)
-    plt.hist(x, weights=histogram, bins=nb_angular_bins)
+    angles = np.linspace(0.0, 360.0, nb_angular_bins)
+    plt.hist(angles, weights=histogram, bins=nb_angular_bins)
     plt.show()
 
 
@@ -694,7 +605,7 @@ def display_spatial_histograms(histograms, title="Spatial Histograms"):
     """
     nb_bins = histograms.shape[0]
     nb_angular_bins = histograms.shape[2]
-    x = np.linspace(0.0, 360.0, nb_angular_bins)
+    angles = np.linspace(0.0, 360.0, nb_angular_bins)
 
     # make a figure with nb_bins * nb_bins subplots
     fig, axs = plt.subplots(nb_bins, nb_bins, figsize=(nb_bins * 8, nb_bins * 8))
@@ -704,7 +615,7 @@ def display_spatial_histograms(histograms, title="Spatial Histograms"):
         for bin_i in range(nb_bins):
             # display the histogram
             axs[bin_j, bin_i].bar(
-                x,
+                angles,
                 histograms[bin_j, bin_i, :],
             )
             # set the title of the subplot

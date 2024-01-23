@@ -51,8 +51,8 @@ nb_kp = len(keypoints)
 
 # draw colormap of eigenvalues of Hessian matrix for 1 keypoint
 kp0 = keypoints[90]
-y_kp0, x_kp0 = np.round(kp0.pt).astype(int)
-position = (y_kp0, x_kp0)
+x_kp0, y_kp0 = np.round(kp0.pt).astype(int)
+position = (x_kp0, y_kp0)
 # print(kp0.pt)
 
 ################################
@@ -87,7 +87,7 @@ print(eigvals.shape, eigvects.shape, gradients.shape)
 ###################################
 # Test visualize_curvature_values #
 ###################################
-y_kp0, x_kp0 = np.round(kp0.pt).astype(int)
+x_kp0, y_kp0 = np.round(kp0.pt).astype(int)
 
 # eigval_fig = visu_hessian.visualize_curvature_values(img_float32, kp0, 30)
 

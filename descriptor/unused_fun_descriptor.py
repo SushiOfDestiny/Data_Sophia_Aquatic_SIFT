@@ -21,9 +21,9 @@ def stack_features(eigvals, eigvects, gradients, orientations):
 def compute_compact_features_vect(features, position):
     """
     features: list of separated features arrays for all pixels: eigvals1, eigvals2, eigvects1, eigvects2, gradients, orientations
-    Return: compact features vector of position (y, x)
+    Return: compact features vector of position (x, y)
     """
-    y, x = position
+    x, y = position
     return [feature[y, x] for feature in features]
 
 
@@ -54,7 +54,7 @@ def compute_raw_features_vect_v2(features, position, radius=2, sigma=1.6):
     Warning: features that are already vectors (gradients, eigenvectors) are put intact in the vector.
     features: gradients, orientations, first eigenvalues, second eigenvalues, first eigenvectors, second eigenvectors of all pixels of an image, float32 arrays
     """
-    y, x = position
+    x, y = position
     # crop subfeatures around the keypoint
     subfeatures = [
         feature[y - radius : y + radius + 1, x - radius : x + radius + 1]
@@ -222,7 +222,7 @@ def compute_descriptors_img_v2(g_img, border_size=1, kp_radius=2, sigma=1.6):
 #     """
 #     Compute the histograms for the descriptor of a keypoint
 #     overall_features: list of features arrays of all pixels of the image
-#     kp_position: (y, x) int pixel position of keypoint
+#     kp_position: (x, y) int pixel position of keypoint
 #     return descriptor_histograms: list of 3 histograms, each of shape (nb_bins, nb_bins, nb_angular_bins)
 #     """
 #     descriptor_histograms = []
