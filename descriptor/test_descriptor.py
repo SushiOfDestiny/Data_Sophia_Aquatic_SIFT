@@ -109,7 +109,7 @@ a = 2
 # # Test compute_features_overall #
 # #################################
 
-features_overall = descriptor.compute_features_overall(float32_img, border_size=1)
+# features_overall = descriptor.compute_features_overall(float32_img, border_size=1)
 
 # # # print("features_overall", features_overall)
 
@@ -117,7 +117,7 @@ features_overall = descriptor.compute_features_overall(float32_img, border_size=
 # # # Test compute_descriptor_histograms #
 # # ######################################
 
-descriptor_histos = descriptor.compute_descriptor_histograms(features_overall, position)
+# descriptor_histos = descriptor.compute_descriptor_histograms(features_overall, position)
 
 # # # print("histos", histos)
 
@@ -129,24 +129,24 @@ descriptor_histos = descriptor.compute_descriptor_histograms(features_overall, p
 # # # for id_value in range(len(histos)):
 # # #     descriptor.display_spatial_histograms(histos[id_value], titles[id_value])
 
-values_names = ["positive eigenvalues", "negative eigenvalues", "gradients"]
-descriptor.display_descriptor(descriptor_histos, values_names=values_names)
+# values_names = ["positive eigenvalues", "negative eigenvalues", "gradients"]
+# descriptor.display_descriptor(descriptor_histos, values_names=values_names)
 
 
 # ################################
 # Test compute_overall_features2 #
 ##################################
 
-features_overall2 = descriptor.compute_features_overall2(float32_img, border_size=1)
+# features_overall2 = descriptor.compute_features_overall2(float32_img, border_size=1)
 
 
 #######################################
 # Test compute_descriptor_histograms2 #
 #######################################
 
-descriptor_histos2 = descriptor.compute_descriptor_histograms2(
-    features_overall2, position
-)
+# descriptor_histos2 = descriptor.compute_descriptor_histograms2(
+#     features_overall2, position
+# )
 
 # # #################
 # # # Visualization 2 #
@@ -154,7 +154,7 @@ descriptor_histos2 = descriptor.compute_descriptor_histograms2(
 
 values_names2 = ["1st eigenvalues", "2nd eigenvalues", "gradients"]
 
-descriptor.display_descriptor(descriptor_histos2, values_names=values_names2)
+# descriptor.display_descriptor(descriptor_histos2, values_names=values_names2)
 
 
 # #############################
@@ -197,3 +197,15 @@ descriptor.display_descriptor(descriptor_histos2, values_names=values_names2)
 # # arr2 = np.ones((11, 11, 2), dtype=np.float32)
 # # g_mean2 = descriptor.compute_gaussian_mean(arr2, 1.6)
 # # print("g_mean2", g_mean2)
+
+
+#############################
+# Test rotate_array_border #
+#############################
+
+# 2D array with 1D elements
+array = np.array([[0, 7, 6], [1, 8, 5], [2, 3, 4]])
+print("array", array)
+shift = 2
+rotated_array = descriptor.rotate_array_border(array, 2)
+print("rotated_array", rotated_array)

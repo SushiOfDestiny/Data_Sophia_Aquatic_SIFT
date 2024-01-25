@@ -70,13 +70,14 @@ def compute_orientations(g_img, border_size=1):
 #######################
 
 
-def create_1D_gaussian_kernel(sigma, size=0):
+def create_1D_gaussian_kernel(sigma, size=0, epsilon=1e-6):
     """
     Create a 1D Gaussian kernel of a given sigma
-    sigma: float
+    sigma: int
+    epsilon: threshold to know if size is null (default is 1e-6)
     Return: 1D numpy array
     """
-    if size == 0:
+    if size < epsilon:
         # if no size is passed, define it with sigma
         size = 2 * np.ceil(3 * sigma) + 1
         size = int(size)
@@ -315,11 +316,16 @@ def compute_features_overall2(g_img, border_size=1):
 ######################
 
 
-def rescale_value(values, kp_value):
+def rescale_value(values, kp_value, epsilon=1e-6):
     """
     Rescale vector values by keypoint value with broadcast.
     Vector value must be positive.
+    If kp_value is null, divide by 1 instead.
+    epsilon: float to avoid division by 0 (default is 1e-6)
     """
+    if kp_value < epsilon:
+        print("Warning: keypoint value is null, rescale by 1 instead")
+        kp_value = 1
     return values / kp_value
 
 
@@ -329,6 +335,108 @@ def rotate_orientations(orientations, kp_orientation):
     """
     rotated_orientations = (orientations - kp_orientation) % 360.0
     return rotated_orientations
+
+
+def extract_border_from_array(array):
+    h = array.shape[0]
+    elt_shape = array.shape[2:]
+    length = 4 * h - 4
+    border = np.zeros((length, elt_shape), dtype=np.float32)
+    border[0:h] = array[:,0]
+    border[h:2*h-1] = array[h-1,1:h]
+    border[2*h-1:3*h-2] = array[h-2::-1,h-1]
+    border[3*h-2:4*h-4] = array[0:h-2:0:-1]
+
+    return border   
+
+
+def rotate_array_border(array, shift):
+    """
+    Rotate counterclockwise the extremal points of a square array by a given shift.
+    """
+    h, _ = array.shape[:2]
+    top = array[0, :]
+    left = array[:, 0]
+    bottom = array[h - 1, :]
+    right = array[:, h - 1]
+
+    if shift <= h:
+        array[0, 0 : h - shift] = top[shift:h]
+        array[0, h - shift : h] = right[0:shift]
+
+        array[0:shift, 0] = top[shift - 1 :: -1]  # top[0:shift]
+        array[shift:h, 0] = left[0 : h - shift]
+
+        array[h - 1, 0:shift] = left[h - shift : h]
+        array[h - 1, shift:h] = bottom[0 : h - shift]
+
+        array[h - shift : h, h - 1] = bottom[
+            h - 1 : h - shift - 1 : -1
+        ]  # bottom[h - shift : h : -1]
+        array[0 : h - shift, h - 1] = right[shift:h]
+
+    if shift > h:
+        nb_90rot = shift // h
+        shift_residual = shift % h
+
+        for k in range(nb_90rot):
+            array = rotate_array_border(array, h)
+
+        array = rotate_array_border(array, shift_residual)
+
+    return array
+
+
+# def compute_vector_histogram(
+#     rescaled_values,
+#     rotated_orientations,
+#     kp_position,
+#     nb_bins=3,
+#     bin_radius=2,
+#     delta_angle=5.0,
+#     sigma=0,
+# ):
+#     """
+#     Discretize neighborhood of keypoint into nb_bins bins, each of size 2*bin_radius+1, centered on keypoint.
+#     For each neighborhood, compute the histogram of the vectors orientations, weighted by vector values and distance to keypoint.
+#     Vector value must be positive.
+#     nb_bins: int odd number of bins of the neighborhood (default is 3)
+#     delta_angle: float size of the angular bins in degrees (default is 5)
+#     """
+#     # if sigma is null, define it with neighborhood_size
+#     neighborhood_size = nb_bins * (2 * bin_radius + 1)
+#     if sigma == 0:
+#         sigma = neighborhood_size / 2
+#     # compute the gaussian weight of the vectors
+#     g_weight = np.exp(-1 / (2 * sigma**2))
+
+#     # initialize the angular histograms
+#     nb_angular_bins = int(360 / delta_angle) + 1
+#     histograms = np.zeros((nb_bins, nb_bins, nb_angular_bins), dtype=np.float32)
+
+#     # loop over all pixels and add its contribution to the right angular histogram
+#     for bin_j in range(nb_bins):
+#         for bin_i in range(nb_bins):
+#             # compute the center of the neighborhood
+#             x_center = kp_position[0] + (bin_j - nb_bins // 2) * (2 * bin_radius + 1)
+#             y_center = kp_position[1] + (bin_i - nb_bins // 2) * (2 * bin_radius + 1)
+#             # loop over all pixels of the neighborhood
+#             for j in range(y_center - bin_radius, y_center + bin_radius + 1):
+#                 for i in range(x_center - bin_radius, x_center + bin_radius + 1):
+#                     # compute the angle of the vector
+#                     angle = rotated_orientations[j, i]
+#                     # compute the gaussian weight of the vector
+#                     weight = g_weight * np.exp(
+#                         -((i - kp_position[0]) ** 2 + (j - kp_position[1]) ** 2)
+#                         / (2 * sigma**2)
+#                     )
+#                     # compute the bin of the angle
+#                     bin_angle = int(angle / delta_angle)
+#                     # add the weighted vector to the right histogram
+#                     histograms[bin_j, bin_i, bin_angle] += (
+#                         weight * rescaled_values[j, i]
+#                     )
+#     return histograms
 
 
 def compute_vector_histogram(
@@ -380,6 +488,11 @@ def compute_vector_histogram(
                     histograms[bin_j, bin_i, bin_angle] += (
                         weight * rescaled_values[j, i]
                     )
+
+            # normalize the histogram, now in percentage
+            histograms[bin_j, bin_i, :] /= np.sum(histograms[bin_j, bin_i, :])
+            histograms[bin_j, bin_i, :] *= 100.0
+
     return histograms
 
 
@@ -520,19 +633,19 @@ def compute_descriptor_histograms2(
     # unpack the features
     (
         posdeg_principal_directions,
-        eigvals,
+        abs_eigvals,
         gradients_norms,
         posdeg_orientations,
     ) = overall_features2
 
     # compute absolute value of keypoint eigenvalue for rescale
-    kp_abs_eigvals = eigvals[y_kp, x_kp]
+    kp_abs_eigvals = abs_eigvals[y_kp, x_kp]
 
     # rescale vectors values by keypoint value
-    rescaled_eigvals = np.zeros_like(eigvals, dtype=np.float32)
+    rescaled_eigvals = np.zeros_like(abs_eigvals, dtype=np.float32)
     for eigval_id in range(2):
         rescaled_eigvals[:, :, eigval_id] = rescale_value(
-            eigvals[:, :, eigval_id], kp_abs_eigvals[eigval_id]
+            abs_eigvals[:, :, eigval_id], kp_abs_eigvals[eigval_id]
         )
 
     # rotate vectors orientations
@@ -651,3 +764,34 @@ def display_descriptor(
         )
 
     plt.show()
+
+
+#######################
+# Descriptor Matching #
+#######################
+
+
+def flatten_descriptor(descriptor_histograms):
+    """
+    Flatten the descriptor histograms into a 1D vector.
+    descriptor_histograms: list of 3 histograms, each of shape (nb_bins, nb_bins, nb_angular_bins)
+    return descriptor: 1D numpy array
+    """
+    descriptor = np.concatenate(
+        [
+            descriptor_histograms[0].flatten(),
+            descriptor_histograms[1].flatten(),
+            descriptor_histograms[2].flatten(),
+        ]
+    )
+    return descriptor
+
+
+def compute_descriptor_distance(descriptor1, descriptor2):
+    """
+    Compute the euclidean distance between 2 descriptors.
+    descriptor1, descriptor2: 1D numpy arrays
+    return distance: float
+    """
+    distance = np.linalg.norm(descriptor1 - descriptor2)
+    return distance
