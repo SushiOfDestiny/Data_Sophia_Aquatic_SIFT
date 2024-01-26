@@ -3,7 +3,8 @@ from mathutils import Vector
 from draw_points import draw_points
 
 def get_world_from_img_co(x, y, cam):
-    D = cam.data.lens / cam.data.sensor_width # Same unit
+    '''Returns world coordinates from image pixel coordinates'''
+    D = cam.data.lens / cam.data.sensor_width
     return cam.matrix_world @ Vector((x, y, -D))
 
 def check_ray_intersect(obj, pt_world_1, pt_world_2, cam_1, cam_2, epsilon):

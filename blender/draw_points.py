@@ -22,6 +22,7 @@ def point_cloud(ob_name, coords, edges=[], faces=[]):
     return ob
 
 def draw_points(pt_list, ob_name):
+    '''Draw points from a list of points into the current scene'''
     # Create the object
     pc = point_cloud(ob_name, pt_list)
 
@@ -29,6 +30,7 @@ def draw_points(pt_list, ob_name):
     bpy.context.collection.objects.link(pc)
 
 def draw_points_in_camera_frame(pt_list, ob_name, cam):
+    '''Draw points from a list of points given by their coordinates in the camera frame into the current scene'''
     pt_list_global = [cam.matrix_world @ pt for pt in pt_list]
     draw_points(pt_list_global, ob_name)
 
