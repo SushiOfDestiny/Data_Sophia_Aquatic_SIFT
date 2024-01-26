@@ -343,7 +343,7 @@ def rescale_value(values, kp_value, epsilon=1e-6):
     """
     if kp_value < epsilon:
         print("Warning: keypoint value is null, rescale by 1 instead")
-        kp_value = 1  # could use another value such as 0.1 or 0.01 ? to better convey the fact that the value is null at that point
+        kp_value = epsilon  # could use another value such as 0.1 or 0.01 ? to better convey the fact that the value is null at that point
     return values / kp_value
 
 
