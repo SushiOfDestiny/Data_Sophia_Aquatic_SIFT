@@ -24,11 +24,14 @@ img = cv.imread(os.path.join("..", "images", "87_img_.png"), 0)
 float32_img = vh.convert_uint8_to_float32(img)
 
 # choose a keypoint
-position = (200,200)
+position = (200, 200)
 
 # crop the image around the keypoint
 radius = 50
-sub_float32_img = float32_img[position[1] - radius : position[1] + radius + 1, position[0] - radius : position[0] + radius + 1]
+sub_float32_img = float32_img[
+    position[1] - radius : position[1] + radius + 1,
+    position[0] - radius : position[0] + radius + 1,
+]
 sub_position = (radius, radius)
 
 
@@ -161,6 +164,26 @@ a = 2
 values_names2 = ["1st eigenvalues", "2nd eigenvalues", "gradients"]
 # descriptor.display_descriptor(descriptor_histos2, values_names=values_names2)
 
+#####################
+# test rotate_pixel #
+#####################
+
+# arr = np.arange(25).reshape((5, 5)).astype(np.float32)
+# kp_x, kp_y = 2, 2
+# angle = 45.0
+# arr_rotated = np.zeros_like(arr, dtype=np.float32)
+# for i in range(arr.shape[0]):
+#     for j in range(arr.shape[1]):
+#         i_rot, j_rot = descriptor.rotate_pixel(i, j, kp_x, kp_y, angle)
+#         arr_rotated[i_rot, j_rot] = arr[i, j]
+# print("arr", arr)
+# print("arr_rotated", arr_rotated)
+
+import scipy.ndimage as ndimage
+
+
+# a = 2
+
 
 #######################################
 # Test compute_descriptor_histograms2_rotated #
@@ -215,45 +238,3 @@ descriptor.display_descriptor(descriptor_histos2_rotated, values_names=values_na
 # # arr2 = np.ones((11, 11, 2), dtype=np.float32)
 # # g_mean2 = descriptor.compute_gaussian_mean(arr2, 1.6)
 # # print("g_mean2", g_mean2)
-
-
-#############################
-# Test rotate_array_border #
-#############################
-
-# # 2D array with 1D elements
-# array = np.array([[0, 7, 6], [1, 8, 5], [2, 3, 4]])
-# print("array", array)
-# shift = 2
-# rotated_array = descriptor.rotate_array_border(array, 2)
-# print("rotated_array", rotated_array)
-
-#####################
-# test rotate_pixel #
-#####################
-
-# arr = np.arange(25).reshape((5, 5)).astype(np.float32)
-# kp_x, kp_y = 2, 2
-# angle = 45.0
-# arr_rotated = np.zeros_like(arr, dtype=np.float32)
-# for i in range(arr.shape[0]):
-#     for j in range(arr.shape[1]):
-#         i_rot, j_rot = descriptor.rotate_pixel(i, j, kp_x, kp_y, angle)
-#         arr_rotated[i_rot, j_rot] = arr[i, j]
-# print("arr", arr)
-# print("arr_rotated", arr_rotated)
-
-# import scipy.ndimage as ndimage
-
-# coord_arr = descriptor.compute_coord_array(5, 5)
-# rotated_coord_arr = ndimage.rotate(coord_arr, 45, reshape=False, mode="reflect")
-# # print("coord_arr", coord_arr)
-# # print("\nrotated_coord_arr", rotated_coord_arr)
-
-# plt.figure()
-# plt.imshow(coord_arr[:, :, 1])
-# plt.figure()
-# plt.imshow(rotated_coord_arr[:, :, 1])
-# plt.show()
-
-# a = 2

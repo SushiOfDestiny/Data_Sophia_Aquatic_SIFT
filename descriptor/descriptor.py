@@ -343,7 +343,7 @@ def rescale_value(values, kp_value, epsilon=1e-6):
     """
     if kp_value < epsilon:
         print("Warning: keypoint value is null, rescale by 1 instead")
-        kp_value = 1 # could use another value such as 0.1 or 0.01 ? to better convey the fact that the value is null at that point
+        kp_value = 1  # could use another value such as 0.1 or 0.01 ? to better convey the fact that the value is null at that point
     return values / kp_value
 
 
@@ -373,10 +373,10 @@ def compute_vector_histogram(
     nb_bins: int odd number of bins of the neighborhood (default is 3)
     delta_angle: float size of the angular bins in degrees (default is 5)
     """
-    # if sigma is null, define it with neighborhood_size
-    neighborhood_size = nb_bins * (2 * bin_radius + 1)
+    # if sigma is null, define it with neighborhood_width
+    neighborhood_width = nb_bins * (2 * bin_radius + 1)
     if sigma == 0:
-        sigma = neighborhood_size / 2
+        sigma = neighborhood_width / 2
     # compute the gaussian weight of the vectors
     g_weight = np.exp(-1 / (2 * sigma**2))
 
@@ -414,9 +414,67 @@ def compute_vector_histogram(
     return histograms
 
 
-def compute_coord_array(height, width):
-    coord_arr = np.indices((height, width)).transpose(1, 2, 0)
-    return coord_arr
+def rotate_point(x, y, angle, center_x, center_y):
+    """
+    Rotate a point counterclockwise by a given angle around a given origin, even if the vertical axis points downward.
+    x, y: coordinates of the point
+    angle: rotation angle in degrees
+    center_x, center_y: coordinates of the rotation center
+    return: new coordinates of the point
+    """
+    # Convert angle from degrees to radians
+    angle = np.deg2rad(angle)
+
+    # Translate point back to origin
+    x -= center_x
+    y -= center_y
+
+    # Rotate point
+    new_x = x * np.cos(angle) - y * np.sin(angle)
+    new_y = x * np.sin(angle) + y * np.cos(angle)
+
+    # Translate point back
+    new_x += center_x
+    new_y += center_y
+
+    return new_x, new_y
+
+
+def rotate_point_pixel(row, col, angle, center_row, center_col):
+    """
+    Rotate a point clockwise by a given angle around a given origin.
+    row, col: coordinates of the point (in pixel coordinates)
+    angle: rotation angle in degrees
+    center_row, center_col: coordinates of the rotation center (in pixel coordinates)
+    return: new coordinates of the point (in pixel coordinates)
+    """
+    # Convert angle from degrees to radians
+    angle = np.deg2rad(angle)
+
+    # Invert the row coordinate (because the y-axis points downward)
+    row = -row
+    center_row = -center_row
+
+    # Translate point back to origin
+    x = col - center_col
+    y = row - center_row
+
+    # Rotate point
+    new_x = x * np.cos(angle) - y * np.sin(angle)
+    new_y = x * np.sin(angle) + y * np.cos(angle)
+
+    # Translate point back
+    new_x += center_col
+    new_y += center_row
+
+    # Invert the new row coordinate back
+    new_y = -new_y
+
+    # round to int
+    new_y = np.round(new_y).astype(np.int32)
+    new_x = np.round(new_x).astype(np.int32)
+
+    return new_y, new_x
 
 
 def compute_rotated_vector_histogram(
@@ -428,11 +486,10 @@ def compute_rotated_vector_histogram(
     bin_radius=2,
     delta_angle=5.0,
     sigma=0,
-    mode="nearest",
 ):
     """
     Discretize neighborhood of keypoint into nb_bins bins, each of size 2*bin_radius+1, centered on keypoint.
-    Rotate the neighborhood with the (opposite) orientation of the keypoint
+    Rotate neighborhood in the orientation of the keypoint
     For each spatial bin, compute the histogram of the vectors orientations, weighted by vector values and distance to keypoint.
     Vector value must be positive.
     rescaled_values, rotated_orientations: numpy arrays of shape (height, width) (same as the image)
@@ -440,10 +497,10 @@ def compute_rotated_vector_histogram(
     nb_bins: int odd number of bins of the neighborhood (default is 3)
     delta_angle: float size of the angular bins in degrees (default is 5)
     """
-    # if sigma is null, define it with neighborhood_size
-    neighborhood_size = nb_bins * (2 * bin_radius + 1)
+    # if sigma is null, define it with neighborhood_width
+    neighborhood_width = nb_bins * (2 * bin_radius + 1)
     if sigma == 0:
-        sigma = neighborhood_size / 2
+        sigma = neighborhood_width / 2
     # compute the gaussian weight of the vectors
     g_weight = np.exp(-1 / (2 * sigma**2))
 
@@ -451,20 +508,7 @@ def compute_rotated_vector_histogram(
     nb_angular_bins = int(360 / delta_angle) + 1
     histograms = np.zeros((nb_bins, nb_bins, nb_angular_bins), dtype=np.float32)
 
-    # compute the coordinates of the rotated pixels in the neighborhood
-    # rotation is with angle +kp_gradient_orientation in trigonometric order
-    # mathematically, the rotation angle is -kp_gradient_orientation for a
-    # frame with upward vertical axis (that is the case for scipy)
-    # but vertical ax is inverted in the image frame so it becomes +kp_gradient_orientation
-    # so that the orientation of the keypoint is horizontal in the frame of the whole neighborhood (histogram grid)
-    # the rotated neighborhood must be of same size as the original neighborhood
-    # therefore, a way to deal with apparition of new pixels in the rotated neighborhood is required
-    # this is the purpose of the "mode" scipy parameter
-    coords_neigh = compute_coord_array(neighborhood_size, neighborhood_size)
-    rot_coords_neigh = ndimage.rotate(
-        coords_neigh, kp_gradient_orientation, reshape=False, mode=mode
-    )
-
+    # rotation is with angle +kp_gradient_orientation counterclockwise
     # loop over all pixels and add its contribution to the right angular histogram
     # recall i is the row index and j the column index
     for bin_i in range(nb_bins):
@@ -477,16 +521,12 @@ def compute_rotated_vector_histogram(
             # still in the frame of the image
             for i in range(y_center - bin_radius, y_center + bin_radius + 1):
                 for j in range(x_center - bin_radius, x_center + bin_radius + 1):
-                    # compute the coordinates of the pixel in the frame of the neighborhood
-                    i_neigh = i - kp_position[1]
-                    j_neigh = j - kp_position[0]
-
-                    # compute rotated pixel position in the frame of the neighborhood
-                    i_rot_neigh, j_rot_neigh = rot_coords_neigh[i_neigh, j_neigh]
-                    # compute the coordinates of the pixel in the frame of the image
-                    # kp_position did not change because the rotation is centered on the keypoint
-                    i_rot_img = i_rot_neigh + kp_position[1]
-                    j_rot_img = j_rot_neigh + kp_position[0]
+                    # compute rotated pixel position in the image frame
+                    # because rotate_point_pixel rotate a positive angle clockwise,
+                    # we need to rotate with -kp_gradient_orientation
+                    i_rot_img, j_rot_img = rotate_point_pixel(
+                        i, j, -kp_gradient_orientation, kp_position[1], kp_position[0]
+                    )
 
                     # compute the angle of the vector in the frame of the image
                     angle = rotated_orientations[i_rot_img, j_rot_img]
@@ -495,10 +535,15 @@ def compute_rotated_vector_histogram(
 
                     # compute the gaussian weight of the vector with the distance in the image frame
                     weight = g_weight * np.exp(
-                        -((i_rot_neigh) ** 2 + (j_rot_neigh) ** 2) / (2 * sigma**2)
+                        -(
+                            (i_rot_img - kp_position[1]) ** 2
+                            + (j_rot_img - kp_position[0]) ** 2
+                        )
+                        / (2 * sigma**2)
                     )
                     # compute the bin of the angle
                     bin_angle = np.round(angle / delta_angle).astype(np.int32)
+
                     # add the weighted vector to the right histogram
                     histograms[bin_i, bin_j, bin_angle] += weight * contribution
 
