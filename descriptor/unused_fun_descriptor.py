@@ -97,7 +97,7 @@ def compute_descriptors_img_v2(g_img, border_size=1, kp_radius=2, sigma=1.6):
             kp_features
 
 
-# def compute_features_overall(g_img, border_size=1):
+# def compute_features_overall_posneg(g_img, border_size=1):
 #     """
 #     Compute useful features for all pixels of a grayscale image.
 #     Return a list of pairs of features arrays, each pair containing the feature values and the feature orientations.
@@ -218,17 +218,17 @@ def compute_descriptors_img_v2(g_img, border_size=1, kp_radius=2, sigma=1.6):
 #     return histograms
 
 
-# def compute_descriptor_histograms(overall_features, kp_position):
+# def compute_descriptor_histograms_posneg(overall_features_posneg, kp_position):
 #     """
 #     Compute the histograms for the descriptor of a keypoint
-#     overall_features: list of features arrays of all pixels of the image
+#     overall_features_posneg: list of features arrays of all pixels of the image
 #     kp_position: (x, y) int pixel position of keypoint
 #     return descriptor_histograms: list of 3 histograms, each of shape (nb_bins, nb_bins, nb_angular_bins)
 #     """
 #     descriptor_histograms = []
 #     # loop over all features pairs (value, orientation_value), example (gradient norms, gradient orientations)
-#     for id_value in range(len(overall_features)):
-#         value, value_orientation = overall_features[id_value]
+#     for id_value in range(len(overall_features_posneg)):
+#         value, value_orientation = overall_features_posneg[id_value]
 #         descriptor_histograms.append(
 #             compute_vector_histogram(
 #                 value,

@@ -4,6 +4,7 @@ import cv2 as cv
 import matplotlib.pyplot as plt
 import numpy as np
 import descriptor
+import visu_descriptor
 
 # add the path to the visualize_hessian folder
 sys.path.append(os.path.join("..", "visualize_hessian"))
@@ -50,8 +51,8 @@ sub_position = (radius, radius)
 # )
 # print("histograms", histograms)
 # display histogram figure
-# descriptor.display_histogram(histograms[0, 0, :])
-# descriptor.display_histogram(histograms[1, 1, :])
+# descriptor.visu_descriptor.display_histogram(histograms[0, 0, :])
+# descriptor.visu_descriptor.display_histogram(histograms[1, 1, :])
 # descriptor.display_spatial_histograms(histograms)
 
 ##########################
@@ -114,18 +115,18 @@ a = 2
 
 
 # #################################
-# # Test compute_features_overall #
+# # Test compute_features_overall_posneg #
 # #################################
 
-# features_overall = descriptor.compute_features_overall(float32_img, border_size=1)
+# features_overall_posneg = descriptor.compute_features_overall_posneg(float32_img, border_size=1)
 
-# # # print("features_overall", features_overall)
+# # # print("features_overall_posneg", features_overall_posneg)
 
 # # ######################################
-# # # Test compute_descriptor_histograms #
+# # # Test compute_descriptor_histograms_posneg #
 # # ######################################
 
-# descriptor_histos = descriptor.compute_descriptor_histograms(features_overall, position)
+# descriptor_histos = descriptor.compute_descriptor_histograms_posneg(features_overall_posneg, position)
 
 # # # print("histos", histos)
 
@@ -145,15 +146,15 @@ a = 2
 # Test compute_overall_features2 #
 ##################################
 
-# features_overall2 = descriptor.compute_features_overall2(float32_img, border_size=1)
+# features_overall_abs = descriptor.compute_features_overall_abs(float32_img, border_size=1)
 
 
 #######################################
-# Test compute_descriptor_histograms2 #
+# Test compute_descriptor_histograms_1_2 #
 #######################################
 
-# descriptor_histos2 = descriptor.compute_descriptor_histograms2(
-#     features_overall2, position
+# descriptor_histos2 = descriptor.compute_descriptor_histograms_1_2(
+#     features_overall_abs, position
 # )
 
 
@@ -186,16 +187,44 @@ import scipy.ndimage as ndimage
 
 
 #######################################
-# Test compute_descriptor_histograms2_rotated #
+# Test compute_descriptor_histograms_1_2_rotated #
 #######################################
-features_overall2 = descriptor.compute_features_overall2(sub_float32_img, border_size=1)
+features_overall_abs = descriptor.compute_features_overall_abs(
+    sub_float32_img, border_size=1
+)
 
-descriptor_histos2_rotated = descriptor.compute_descriptor_histograms2_rotated(
-    features_overall2, sub_position
+descriptor_histos2_rotated = descriptor.compute_descriptor_histograms_1_2_rotated(
+    features_overall_abs, sub_position
 )
 
 values_names2 = ["1st eigenvalues", "2nd eigenvalues", "gradients"]
-descriptor.display_descriptor(descriptor_histos2_rotated, values_names=values_names2)
+# visu_descriptor.display_descriptor(
+#     descriptor_histos2_rotated, values_names=values_names2
+# )
+
+
+###################################
+# Test display_matched_descriptor #
+###################################
+
+position2 = (200, 200)
+sub_float32_img2 = float32_img[
+    position2[1] - radius : position2[1] + radius + 1,
+    position2[0] - radius : position2[0] + radius + 1,
+]
+features_overall_abs2 = descriptor.compute_features_overall_abs(
+    sub_float32_img2, border_size=1
+)
+descriptor_histos2_rotated2 = descriptor.compute_descriptor_histograms_1_2_rotated(
+    features_overall_abs2, sub_position
+)
+visu_descriptor.display_matched_histograms(
+    descriptor_histos2_rotated[0], descriptor_histos2_rotated2[0]
+)
+plt.show()
+# visu_descriptor.display_matched_descriptors(
+#     descriptor_histos2_rotated, descriptor_histos2_rotated2
+# )
 
 
 # #############################

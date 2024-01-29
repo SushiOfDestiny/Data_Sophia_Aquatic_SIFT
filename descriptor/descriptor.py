@@ -137,19 +137,6 @@ def compute_gaussian_mean(array, sigma):
 ###########################
 
 
-# def compute_angle(v1, v2, eps=1e-6):
-#     """
-#     Compute the angle between 2 vectors, in radians.
-#     horizontal vector is always passed as second argument.
-#     Return 0 if one of the vectors is null.
-#     """
-#     norms = [np.linalg.norm(v1), np.linalg.norm(v2)]
-#     if norms[0] < eps or norms[1] < eps:
-#         return 0.0
-#     angle = np.arccos(np.dot(v1, v2) / (norms[0] * norms[1]))
-#     return angle
-
-
 def compute_angle(v1, v2, eps=1e-6):
     """
     Compute the angle between 2 vectors, in radians, in [0,2*pi].
@@ -183,17 +170,6 @@ def compute_horiz_angles(arrvects):
     return horiz_angles
 
 
-# def split_eigenvalues(eigvals):
-#     # Compute for each array of eigenvalue, the arrays of their positive and negative parts
-#     eigvals1pos = eigvals[:, :, 0] * (eigvals[:, :, 0] > 0)
-#     eigvals1neg = eigvals[:, :, 0] * (eigvals[:, :, 0] < 0) * (-1)
-#     eigvals2pos = eigvals[:, :, 1] * (eigvals[:, :, 1] > 0)
-#     eigvals2neg = eigvals[:, :, 1] * (eigvals[:, :, 1] < 0) * (-1)
-
-#     # return list of features in specific order
-#     return [eigvals1pos, eigvals2pos, eigvals1neg, eigvals2neg]
-
-
 def split_posneg_parts(array):
     """
     Compute array of positive and negative parts of a given array.
@@ -205,7 +181,7 @@ def split_posneg_parts(array):
     return pos_array, neg_array
 
 
-def compute_features_overall(g_img, border_size=1):
+def compute_features_overall_posneg(g_img, border_size=1):
     """
     Compute useful features for all pixels of a grayscale image.
     Return a list of pairs of features arrays, each pair containing the feature values and the feature orientations.
@@ -269,7 +245,7 @@ def make_eigvals_positive(eigvals, eigvects):
     return signed_eigvects
 
 
-def compute_features_overall2(g_img, border_size=1):
+def compute_features_overall_abs(g_img, border_size=1):
     """
     Compute useful features for all pixels of a grayscale image.
     All angular features are in degrees in [0, 360[.
@@ -559,12 +535,17 @@ def compute_rotated_vector_histogram(
 ######################
 
 
-def compute_descriptor_histograms(
-    overall_features, kp_position, nb_bins=3, bin_radius=2, delta_angle=5.0, sigma=0
+def compute_descriptor_histograms_posneg(
+    overall_features_posneg,
+    kp_position,
+    nb_bins=3,
+    bin_radius=2,
+    delta_angle=5.0,
+    sigma=0,
 ):
     """
     Compute the histograms for the descriptor of a keypoint
-    overall_features: list of features arrays of all pixels of the image
+    overall_features_posneg: list of features arrays of all pixels of the image
     kp_position: (x, y) int pixel position of keypoint in the image frame
     return descriptor_histograms: list of 3 histograms, each of shape (nb_bins, nb_bins, nb_angular_bins)
     """
@@ -579,7 +560,7 @@ def compute_descriptor_histograms(
         eigvals2neg,
         gradients_norms,
         posdeg_orientations,
-    ) = overall_features
+    ) = overall_features_posneg
 
     # compute absolute value of keypoint eigenvalue for rescale
     kp_abs_eigval1 = eigvals1pos[y_kp, x_kp] + eigvals1neg[y_kp, x_kp]
@@ -675,12 +656,12 @@ def compute_descriptor_histograms(
     return descriptor_histograms
 
 
-def compute_descriptor_histograms2(
-    overall_features2, kp_position, nb_bins=3, bin_radius=2, delta_angle=5.0, sigma=0
+def compute_descriptor_histograms_1_2(
+    overall_features_1_2, kp_position, nb_bins=3, bin_radius=2, delta_angle=5.0, sigma=0
 ):
     """
     Compute the histograms for the descriptor of a keypoint
-    overall_features: list of features arrays of all pixels of the image
+    overall_features_posneg: list of features arrays of all pixels of the image
     kp_position: (x, y) int pixel position of keypoint in the image frame
     return descriptor_histograms: list of 3 histograms, each of shape (nb_bins, nb_bins, nb_angular_bins)
     1st histogram: first eigenvalues (highest signed value)
@@ -694,7 +675,7 @@ def compute_descriptor_histograms2(
         abs_eigvals,
         gradients_norms,
         posdeg_orientations,
-    ) = overall_features2
+    ) = overall_features_1_2
 
     # compute absolute value of keypoint eigenvalue for rescale
     kp_abs_eigvals = abs_eigvals[y_kp, x_kp]
@@ -753,12 +734,12 @@ def compute_descriptor_histograms2(
     return descriptor_histograms
 
 
-def compute_descriptor_histograms2_rotated(
-    overall_features2, kp_position, nb_bins=3, bin_radius=2, delta_angle=5.0, sigma=0
+def compute_descriptor_histograms_1_2_rotated(
+    overall_features_1_2, kp_position, nb_bins=3, bin_radius=2, delta_angle=5.0, sigma=0
 ):
     """
     Compute the histograms for the descriptor of a keypoint, with the rotated neighborhood.
-    overall_features: list of features arrays of all pixels of the image
+    overall_features_posneg: list of features arrays of all pixels of the image
     kp_position: (x, y) int pixel position of keypoint in the image frame
     return descriptor_histograms: list of 3 histograms, each of shape (nb_bins, nb_bins, nb_angular_bins)
     1st histogram: first eigenvalues (highest signed value)
@@ -772,7 +753,7 @@ def compute_descriptor_histograms2_rotated(
         abs_eigvals,
         gradients_norms,
         posdeg_orientations,
-    ) = overall_features2
+    ) = overall_features_1_2
 
     # compute absolute value of keypoint eigenvalue for rescale
     kp_abs_eigvals = abs_eigvals[y_kp, x_kp]
@@ -831,77 +812,6 @@ def compute_descriptor_histograms2_rotated(
     descriptor_histograms = [eigvals_hists[0], eigvals_hists[1], grad_hist]
 
     return descriptor_histograms
-
-
-############################
-# Descriptor Visualization #
-############################
-
-
-def display_histogram(histogram):
-    """
-    Display a histogram. On the abscissa is the angle in degrees, on the ordinate is the value.
-    histogram: numpy array of shape (nb_angular_bins,)
-    """
-    nb_angular_bins = histogram.shape[0]
-    angles = np.linspace(0.0, 360.0, nb_angular_bins)
-    plt.hist(angles, weights=histogram, bins=nb_angular_bins)
-    plt.show()
-
-
-def display_spatial_histograms(histograms, title="Spatial Histograms"):
-    """
-    Display all spatial histograms around a keypoint.
-    histograms: array of shape (nb_bins, nb_bins, nb_angular_bins)
-    """
-    nb_bins = histograms.shape[0]
-    nb_angular_bins = histograms.shape[2]
-    angles = np.linspace(0.0, 360.0, nb_angular_bins)
-
-    # make a figure with nb_bins * nb_bins subplots
-    fig, axs = plt.subplots(nb_bins, nb_bins, figsize=(nb_bins * 8, nb_bins * 8))
-
-    # loop over all subplots
-    for bin_j in range(nb_bins):
-        for bin_i in range(nb_bins):
-            # display the histogram
-            axs[bin_j, bin_i].bar(
-                angles,
-                histograms[bin_j, bin_i, :],
-            )
-            # set the title of the subplot
-            axs[bin_j, bin_i].set_title(
-                f"Bin ({bin_j}, {bin_i})",
-            )
-            # add axis labels
-            axs[bin_j, bin_i].set_xlabel("Angle (degrees)")
-
-    # set the title of the figure
-    fig.suptitle(title)
-
-    # Adjust the space between subplots
-    plt.subplots_adjust(hspace=0.5, wspace=0.5)
-
-    # plt.show()
-
-
-def display_descriptor(
-    descriptor_histograms,
-    descriptor_name="Descriptor",
-    values_names=["positive eigenvalues", "negative eigenvalues", "gradients"],
-):
-    """
-    Display the descriptor of a keypoint.
-    descriptor_histograms: list of 3 histograms, each of shape (nb_bins, nb_bins, nb_angular_bins)
-    """
-
-    for id_value in range(len(values_names)):
-        display_spatial_histograms(
-            descriptor_histograms[id_value],
-            title=f"{descriptor_name}, {values_names[id_value]}",
-        )
-
-    plt.show()
 
 
 #######################
