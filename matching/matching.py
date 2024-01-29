@@ -90,6 +90,7 @@ def draw_good_keypoints(im1, im2, good_keypoints_1, good_keypoints_2, good_match
 
 #TODO : Implement keypoint filtering with coded Blender functions
 def kp_filter(kp_filename_1, kp_filename_2, idxs):
+    '''Filter good keypoints based on their indexes'''
     kps_im_1 = load_keypoints(kp_filename_1)
     kps_im_2 = load_keypoints(kp_filename_2)
     filtered_kps_im_1 = [kps_im_1[i] for i in idxs]

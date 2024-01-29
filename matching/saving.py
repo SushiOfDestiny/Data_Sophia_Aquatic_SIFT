@@ -3,6 +3,7 @@ import pickle
 import numpy as np
 
 def save_keypoints(kp, filename):
+    '''Save OpenCV keypoints to file'''
     index = []
     for point in kp:
         temp = (point.pt, point.size, point.angle, point.response, point.octave, 
@@ -15,6 +16,7 @@ def save_keypoints(kp, filename):
         f.close()
 
 def save_matches(matches, filename):
+    '''Save OpenCV matches to file'''
     print(matches)
     index = []
     for match in matches:
