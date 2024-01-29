@@ -24,7 +24,15 @@ img = cv.imread(os.path.join("..", "images", "87_img_.png"), 0)
 float32_img = vh.convert_uint8_to_float32(img)
 
 # choose a keypoint
-position = (50, 50)
+position = (200, 200)
+
+# crop the image around the keypoint
+radius = 50
+sub_float32_img = float32_img[
+    position[1] - radius : position[1] + radius + 1,
+    position[0] - radius : position[0] + radius + 1,
+]
+sub_position = (radius, radius)
 
 
 ###########################
@@ -109,7 +117,7 @@ a = 2
 # # Test compute_features_overall #
 # #################################
 
-features_overall = descriptor.compute_features_overall(float32_img, border_size=1)
+# features_overall = descriptor.compute_features_overall(float32_img, border_size=1)
 
 # # # print("features_overall", features_overall)
 
@@ -117,7 +125,7 @@ features_overall = descriptor.compute_features_overall(float32_img, border_size=
 # # # Test compute_descriptor_histograms #
 # # ######################################
 
-descriptor_histos = descriptor.compute_descriptor_histograms(features_overall, position)
+# descriptor_histos = descriptor.compute_descriptor_histograms(features_overall, position)
 
 # # # print("histos", histos)
 
@@ -129,32 +137,65 @@ descriptor_histos = descriptor.compute_descriptor_histograms(features_overall, p
 # # # for id_value in range(len(histos)):
 # # #     descriptor.display_spatial_histograms(histos[id_value], titles[id_value])
 
-values_names = ["positive eigenvalues", "negative eigenvalues", "gradients"]
-descriptor.display_descriptor(descriptor_histos, values_names=values_names)
+# values_names = ["positive eigenvalues", "negative eigenvalues", "gradients"]
+# descriptor.display_descriptor(descriptor_histos, values_names=values_names)
 
 
 # ################################
 # Test compute_overall_features2 #
 ##################################
 
-features_overall2 = descriptor.compute_features_overall2(float32_img, border_size=1)
+# features_overall2 = descriptor.compute_features_overall2(float32_img, border_size=1)
 
 
 #######################################
 # Test compute_descriptor_histograms2 #
 #######################################
 
-descriptor_histos2 = descriptor.compute_descriptor_histograms2(
-    features_overall2, position
-)
+# descriptor_histos2 = descriptor.compute_descriptor_histograms2(
+#     features_overall2, position
+# )
+
 
 # # #################
 # # # Visualization 2 #
 # # #################
 
 values_names2 = ["1st eigenvalues", "2nd eigenvalues", "gradients"]
+# descriptor.display_descriptor(descriptor_histos2, values_names=values_names2)
 
-descriptor.display_descriptor(descriptor_histos2, values_names=values_names2)
+#####################
+# test rotate_pixel #
+#####################
+
+# arr = np.arange(25).reshape((5, 5)).astype(np.float32)
+# kp_x, kp_y = 2, 2
+# angle = 45.0
+# arr_rotated = np.zeros_like(arr, dtype=np.float32)
+# for i in range(arr.shape[0]):
+#     for j in range(arr.shape[1]):
+#         i_rot, j_rot = descriptor.rotate_pixel(i, j, kp_x, kp_y, angle)
+#         arr_rotated[i_rot, j_rot] = arr[i, j]
+# print("arr", arr)
+# print("arr_rotated", arr_rotated)
+
+import scipy.ndimage as ndimage
+
+
+# a = 2
+
+
+#######################################
+# Test compute_descriptor_histograms2_rotated #
+#######################################
+features_overall2 = descriptor.compute_features_overall2(sub_float32_img, border_size=1)
+
+descriptor_histos2_rotated = descriptor.compute_descriptor_histograms2_rotated(
+    features_overall2, sub_position
+)
+
+values_names2 = ["1st eigenvalues", "2nd eigenvalues", "gradients"]
+descriptor.display_descriptor(descriptor_histos2_rotated, values_names=values_names2)
 
 
 # #############################

@@ -59,6 +59,7 @@ def crop_image_around_keypoint(g_img, position, zoom_radius):
     g_img: float32 grayscale image
     position: (x,y) position of the keypoint
     zoom_radius: radius of the zoomed area in pixels
+    Pixels at x_kp + radius are included in the zoomed area.
     Return None if the zoomed area is not in the image.
     Return the cropped image
     """
@@ -75,8 +76,8 @@ def crop_image_around_keypoint(g_img, position, zoom_radius):
     if is_in_image:
         # crop image around keypoint
         sub_img = g_img[
-            y_kp - zoom_radius : y_kp + zoom_radius,
-            x_kp - zoom_radius : x_kp + zoom_radius,
+            y_kp - zoom_radius : y_kp + zoom_radius + 1,
+            x_kp - zoom_radius : x_kp + zoom_radius + 1,
         ]
 
         return sub_img
