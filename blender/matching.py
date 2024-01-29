@@ -1,7 +1,7 @@
 import bpy
 import sys
 import numpy as np
-sys.path.append('../../blender')
+sys.path.append('../../../blender')
 from line import check_correct_match_pt
 from shift import img_px_to_img_m
 from draw_points import draw_points
@@ -79,14 +79,12 @@ def save_correct_matches(correct_matches_idxs, idx_filename):
 '''
     np.save(idx_filename, np.array(correct_matches_idxs))
 
-#TODO: FIX COORDINATE SHIFT
-
 if __name__ == '__main__':
     print('----------------------------')
     cam_1 = bpy.data.objects['Cam_1']
     cam_2 = bpy.data.objects['Cam_2']
 
     epsilon = 0.1 # can be modified later
-    correct_matches, correct_matches_idxs, matched_3d_pts = check_correct_match([ob for ob in bpy.data.objects if ob.type == 'MESH'], 'keypoints.npy', cam_1, cam_2, epsilon)
+    correct_matches, correct_matches_idxs, matched_3d_pts = check_correct_match([ob for ob in bpy.data.objects if ob.type == 'MESH'], 'kp_pairs_arr.npy', cam_1, cam_2, epsilon)
 
     save_correct_matches(correct_matches_idxs, 'idxs')

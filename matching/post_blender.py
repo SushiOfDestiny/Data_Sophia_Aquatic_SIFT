@@ -8,9 +8,9 @@ from saving import load_matches, load_keypoints
 #TODO: Filter matches, not keypoints
 
 if __name__ == '__main__':
-    im_folder = '../data/blender/'
-    im_1 = cv.imread(im_folder + 'demo_cube_l.png', cv.IMREAD_GRAYSCALE)
-    im_2 = cv.imread(im_folder + 'demo_cube_r.png', cv.IMREAD_GRAYSCALE)
+    im_folder = '../data/blender/blue_cylinder_more_light/'
+    im_1 = cv.imread(im_folder + 'left.png', cv.IMREAD_GRAYSCALE)
+    im_2 = cv.imread(im_folder + 'right.png', cv.IMREAD_GRAYSCALE)
     kp1_filename = im_folder + "keypoints_1.txt"
     kp2_filename = im_folder + "keypoints_2.txt"
     idx_filename = im_folder + "idxs.npy"
