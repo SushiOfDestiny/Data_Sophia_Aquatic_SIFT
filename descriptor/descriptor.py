@@ -524,15 +524,18 @@ def compute_rotated_vector_histogram(
                     # compute rotated pixel position in the image frame
                     # because rotate_point_pixel rotate a positive angle clockwise,
                     # we need to rotate with -kp_gradient_orientation
-                    i_rot_img, j_rot_img = rotate_point_pixel(
-                        i, j, -kp_gradient_orientation, kp_position[1], kp_position[0]
-                    )
+                    try:
+                        i_rot_img, j_rot_img = rotate_point_pixel(
+                            i, j, -kp_gradient_orientation, kp_position[1], kp_position[0]
+                        )
 
-                    # compute the angle of the vector in the frame of the image
-                    angle = rotated_orientations[i_rot_img, j_rot_img]
-                    # compute the contribution of the vector in the frame of the image
-                    contribution = rescaled_values[i_rot_img, j_rot_img]
-
+                        # compute the angle of the vector in the frame of the image
+                        angle = rotated_orientations[i_rot_img, j_rot_img]
+                        # compute the contribution of the vector in the frame of the image
+                        contribution = rescaled_values[i_rot_img, j_rot_img]
+                    except IndexError:
+                        print(f"IndexError at position ({i},{j}), calculated image frame rotated + translated coordinates are ({i_rot_img}, {j_rot_img})")
+                        return None
                     # compute the gaussian weight of the vector with the distance in the image frame
                     weight = g_weight * np.exp(
                         -(
