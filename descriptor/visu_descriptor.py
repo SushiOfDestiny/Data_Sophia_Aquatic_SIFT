@@ -126,25 +126,3 @@ def display_matched_histograms(
     plt.subplots_adjust(hspace=0.5, wspace=0.5)
 
     # plt.show()
-
-
-def display_matched_descriptors(
-    desc1,
-    desc2,
-    title="Descriptors of matched keypoints",
-    hist_titles=["1st eigenvalues", "2nd eigenvalues", "gradients"],
-):
-    """
-    Display 3 plots each showing side by side corresponding histograms in the 2 descriptors.
-    desc1: list of 3 histograms, each of shape (nb_bins, nb_bins, nb_angular_bins)
-    desc2: same
-    """
-    for hist_idx in range(3):
-        fig, axs = plt.subplots(1, 2, figsize=(16, 8))
-        axs[0].imshow(desc1[hist_idx])
-        axs[0].set_title(f"Descriptor 1, {hist_idx}")
-        axs[1].imshow(desc2[hist_idx])
-        axs[1].set_title(f"Descriptor 2, {hist_idx}")
-        fig.suptitle(title)
-
-    plt.show()

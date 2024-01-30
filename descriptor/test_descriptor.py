@@ -215,11 +215,19 @@ sub_float32_img2 = float32_img[
 features_overall_abs2 = descriptor.compute_features_overall_abs(
     sub_float32_img2, border_size=1
 )
-descriptor_histos2_rotated2 = descriptor.compute_descriptor_histograms_1_2_rotated(
-    features_overall_abs2, sub_position
+# global normalization
+descriptor_histos2_rotated2_global = descriptor.compute_descriptor_histograms_1_2_rotated(
+    features_overall_abs2, sub_position, normalization_mode="global"
 )
 visu_descriptor.display_matched_histograms(
-    descriptor_histos2_rotated[0], descriptor_histos2_rotated2[0]
+    descriptor_histos2_rotated[0], descriptor_histos2_rotated2_global[0], hist_title="1st eigenvalues, global normalization"
+)
+# local normalization
+descriptor_histos2_rotated2_local = descriptor.compute_descriptor_histograms_1_2_rotated(
+    features_overall_abs2, sub_position, normalization_mode="local"
+)
+visu_descriptor.display_matched_histograms(
+    descriptor_histos2_rotated[0], descriptor_histos2_rotated2_local[0], hist_title="1st eigenvalues, local normalization"
 )
 plt.show()
 # visu_descriptor.display_matched_descriptors(
