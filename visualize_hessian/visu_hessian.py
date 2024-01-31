@@ -131,6 +131,67 @@ def compute_hessian_gradient_subimage(sub_img, border_size=1):
     return eigvals, eigvects, gradients
 
 
+# def visualize_curvature_values(g_img, keypoint, zoom_radius, figsize=(30, 10)):
+#     """
+#     Compute eigenvalues of the Hessian matrix of all pixels in a zoomed area around a keypoint.
+#     Does nothing if the zoomed area is not in the image.
+#     g_img: float32 grayscale image
+#     keypoint: SIFT keypoint
+#     zoom_radius: radius of the zoomed area in pixels
+#     Return: the matplotlib figure
+#     """
+#     # compute pixel coordinates of the keypoint
+#     x_kp, y_kp = np.round(keypoint.pt).astype(int)
+
+#     # try to crop subimage around keypoint
+#     sub_img = crop_image_around_keypoint(g_img, (x_kp, y_kp), zoom_radius)
+
+#     if sub_img is not None:
+#         # Compute hessian eigenvalues
+#         eigvals, _, _ = compute_hessian_gradient_subimage(sub_img)
+
+#         # Normalize eigenvalues with the max absolute value
+#         max_abs_eigvals = np.max(np.abs(eigvals))
+#         normalized_eigvals = eigvals / max_abs_eigvals
+
+#         # Compute colormap images
+#         eigvals1 = normalized_eigvals[:, :, 0]
+#         eigvals2 = normalized_eigvals[:, :, 1]
+
+#         # Affine transform eigenvalues from [-1,1] to [0, 1]
+#         eigvals1 = (eigvals1 + 1) / 2
+#         eigvals2 = (eigvals2 + 1) / 2
+
+#         # Plot subimage and eigenvalues
+#         fig, axs = plt.subplots(1, 3, figsize=figsize)
+
+#         # Define the images and titles
+#         images = [sub_img, eigvals1, eigvals2]
+#         titles = [f"zoomed image on keypoint", "eigenvalue 1", "eigenvalue 2"]
+#         v_min_max = [(None, None), (0, 1), (0, 1)]
+
+#         # Loop over the axes, images, and titles
+#         for ax, image, title in zip(axs, images, titles):
+#             vmin, vmax = v_min_max.pop(0)
+#             # Plot the image
+#             im = ax.imshow(image, cmap="gray", vmin=vmin, vmax=vmax)
+#             ax.set_title(title)
+#             ax.axis("off")
+
+#             # Add a red pixel on the keypoint
+#             ax.scatter([zoom_radius], [zoom_radius], c="r")
+
+#             # Add a colorbar and adjust its size so it matches the image
+#             fig.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
+
+#         # add legend
+#         fig.suptitle(
+#             f"SIFT Keypoint x:{x_kp}, y:{y_kp} (in red) \n radius={zoom_radius}",
+#             fontsize=10,
+#         )
+
+#         return fig
+
 def visualize_curvature_values(g_img, keypoint, zoom_radius, figsize=(30, 10)):
     """
     Compute eigenvalues of the Hessian matrix of all pixels in a zoomed area around a keypoint.
@@ -150,25 +211,31 @@ def visualize_curvature_values(g_img, keypoint, zoom_radius, figsize=(30, 10)):
         # Compute hessian eigenvalues
         eigvals, _, _ = compute_hessian_gradient_subimage(sub_img)
 
-        # Normalize eigenvalues with the max absolute value
-        max_abs_eigvals = np.max(np.abs(eigvals))
-        normalized_eigvals = eigvals / max_abs_eigvals
+        # # Normalize eigenvalues with the max absolute value
+        # max_abs_eigvals = np.max(np.abs(eigvals))
+        # normalized_eigvals = eigvals / max_abs_eigvals
 
-        # Compute colormap images
-        eigvals1 = normalized_eigvals[:, :, 0]
-        eigvals2 = normalized_eigvals[:, :, 1]
+        # # Compute colormap images
+        # eigvals1 = normalized_eigvals[:, :, 0]
+        # eigvals2 = normalized_eigvals[:, :, 1]
 
-        # Affine transform eigenvalues from [-1,1] to [0, 1]
-        eigvals1 = (eigvals1 + 1) / 2
-        eigvals2 = (eigvals2 + 1) / 2
+        # # Affine transform eigenvalues from [-1,1] to [0, 1]
+        # eigvals1 = (eigvals1 + 1) / 2
+        # eigvals2 = (eigvals2 + 1) / 2
 
         # Plot subimage and eigenvalues
         fig, axs = plt.subplots(1, 3, figsize=figsize)
 
+        # compute extrema of eigvals
+        eigvals1 = eigvals[:, :, 0]
+        eigvals2 = eigvals[:, :, 1]
+        vmins = [np.min(eigvals1), np.min(eigvals2)]
+        vmaxs = [np.max(eigvals1), np.max(eigvals2)]
+
         # Define the images and titles
         images = [sub_img, eigvals1, eigvals2]
         titles = [f"zoomed image on keypoint", "eigenvalue 1", "eigenvalue 2"]
-        v_min_max = [(None, None), (0, 1), (0, 1)]
+        v_min_max = [(None, None), (vmins[0], vmaxs[0]), (vmins[1], vmaxs[1])]
 
         # Loop over the axes, images, and titles
         for ax, image, title in zip(axs, images, titles):
@@ -186,7 +253,7 @@ def visualize_curvature_values(g_img, keypoint, zoom_radius, figsize=(30, 10)):
 
         # add legend
         fig.suptitle(
-            f"SIFT Keypoint x:{x_kp}, y:{y_kp} (in red) \n radius={zoom_radius}",
+            f"SIFT Keypoint x:{x_kp}, y:{y_kp} (in red) \n radius={zoom_radius}, unnormalized values",
             fontsize=10,
         )
 
