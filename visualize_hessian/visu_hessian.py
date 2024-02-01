@@ -6,6 +6,14 @@ import matplotlib.pyplot as plt
 from matplotlib import colors
 import numpy as np
 
+# add the path to the descriptor folder
+sys.path.append(os.path.join("..", "descriptor"))
+# import visualize_hessian.visu_hessian
+import descriptor as desc
+
+# return to the root directory
+sys.path.append(os.path.join(".."))
+
 
 def convert_uint8_to_float32(img):
     """
@@ -131,67 +139,6 @@ def compute_hessian_gradient_subimage(sub_img, border_size=1):
     return eigvals, eigvects, gradients
 
 
-# def visualize_curvature_values(g_img, keypoint, zoom_radius, figsize=(30, 10)):
-#     """
-#     Compute eigenvalues of the Hessian matrix of all pixels in a zoomed area around a keypoint.
-#     Does nothing if the zoomed area is not in the image.
-#     g_img: float32 grayscale image
-#     keypoint: SIFT keypoint
-#     zoom_radius: radius of the zoomed area in pixels
-#     Return: the matplotlib figure
-#     """
-#     # compute pixel coordinates of the keypoint
-#     x_kp, y_kp = np.round(keypoint.pt).astype(int)
-
-#     # try to crop subimage around keypoint
-#     sub_img = crop_image_around_keypoint(g_img, (x_kp, y_kp), zoom_radius)
-
-#     if sub_img is not None:
-#         # Compute hessian eigenvalues
-#         eigvals, _, _ = compute_hessian_gradient_subimage(sub_img)
-
-#         # Normalize eigenvalues with the max absolute value
-#         max_abs_eigvals = np.max(np.abs(eigvals))
-#         normalized_eigvals = eigvals / max_abs_eigvals
-
-#         # Compute colormap images
-#         eigvals1 = normalized_eigvals[:, :, 0]
-#         eigvals2 = normalized_eigvals[:, :, 1]
-
-#         # Affine transform eigenvalues from [-1,1] to [0, 1]
-#         eigvals1 = (eigvals1 + 1) / 2
-#         eigvals2 = (eigvals2 + 1) / 2
-
-#         # Plot subimage and eigenvalues
-#         fig, axs = plt.subplots(1, 3, figsize=figsize)
-
-#         # Define the images and titles
-#         images = [sub_img, eigvals1, eigvals2]
-#         titles = [f"zoomed image on keypoint", "eigenvalue 1", "eigenvalue 2"]
-#         v_min_max = [(None, None), (0, 1), (0, 1)]
-
-#         # Loop over the axes, images, and titles
-#         for ax, image, title in zip(axs, images, titles):
-#             vmin, vmax = v_min_max.pop(0)
-#             # Plot the image
-#             im = ax.imshow(image, cmap="gray", vmin=vmin, vmax=vmax)
-#             ax.set_title(title)
-#             ax.axis("off")
-
-#             # Add a red pixel on the keypoint
-#             ax.scatter([zoom_radius], [zoom_radius], c="r")
-
-#             # Add a colorbar and adjust its size so it matches the image
-#             fig.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
-
-#         # add legend
-#         fig.suptitle(
-#             f"SIFT Keypoint x:{x_kp}, y:{y_kp} (in red) \n radius={zoom_radius}",
-#             fontsize=10,
-#         )
-
-#         return fig
-
 def visualize_curvature_values(g_img, keypoint, zoom_radius, figsize=(30, 10)):
     """
     Compute eigenvalues of the Hessian matrix of all pixels in a zoomed area around a keypoint.
@@ -258,38 +205,142 @@ def visualize_curvature_values(g_img, keypoint, zoom_radius, figsize=(30, 10)):
         )
 
         return fig
-    
-    
-def visualize_curvature_values_position(g_img, position, zoom_radius, figsize=(30, 10)):
+
+
+# def rotate_subimage(g_img, x_kp, y_kp, orientation, zoom_radius):
+#     # define bigger radius for the subimage to crop to make sure all pixels to rotate are in the cropped image
+#     bigger_radius = 2 * int(0.5 * np.ceil(zoom_radius * np.sqrt(2))) + 1
+
+#     # try to crop subimage around keypoint
+#     big_sub_img = crop_image_around_keypoint(g_img, (x_kp, y_kp), bigger_radius)
+
+#     # define the coordinates of center of the bigger subimage
+#     x_big_sub_img_center, y_big_sub_img_center = 2 * bigger_radius, 2 * bigger_radius
+
+#     # put in a new array the rotated points of the square of radius zoom_radius
+#     rotated_big_sub_image = np.zero_like(
+#         big_sub_img, dtype=np.float32
+#     )
+#     # loop over cols and rows with the coordinates in the bigger subimage
+#     for i in range(
+#         y_big_sub_img_center - zoom_radius, y_big_sub_img_center + zoom_radius + 1
+#     ):
+#         for j in range(
+#             x_big_sub_img_center - zoom_radius, x_big_sub_img_center + zoom_radius + 1
+#         ):
+#             # rotate pixel
+#             rot_i, rot_j = desc.rotate_point_pixel(
+#                 i,
+#                 j,
+#                 y_big_sub_img_center,
+#                 x_big_sub_img_center,
+#                 -orientation,
+#             )
+#             # put pixel in the new array
+#             rotated_big_sub_image[rot_i, rot_j] = big_sub_img[i, j]
+
+#     return rotated_big_sub_image
+
+
+# def rotate_subimage(g_img, x_kp, y_kp, orientation, zoom_radius):
+#     # define bigger radius for the subimage to crop to make sure all pixels to rotate are in the cropped image
+#     bigger_radius = 2 * int(0.5 * np.ceil(zoom_radius * np.sqrt(2))) + 1
+
+#     # try to crop subimage around keypoint
+#     big_sub_img = crop_image_around_keypoint(g_img, (x_kp, y_kp), bigger_radius)
+
+#     # define the coordinates of center of the bigger subimage
+#     x_big_sub_img_center, y_big_sub_img_center = bigger_radius, bigger_radius
+
+#     # create a new array for the rotated image
+#     rotated_big_sub_image = np.zeros_like(big_sub_img, dtype=np.float32)
+
+#     # loop over cols and rows with the coordinates in the bigger subimage
+#     for i in range(
+#         y_big_sub_img_center - zoom_radius, y_big_sub_img_center + zoom_radius + 1
+#     ):
+#         for j in range(
+#             x_big_sub_img_center - zoom_radius, x_big_sub_img_center + zoom_radius + 1
+#         ):
+#             # rotate pixel
+#             rot_i, rot_j = desc.rotate_point_pixel(
+#                 i, j, -orientation, y_big_sub_img_center, x_big_sub_img_center
+#             )
+
+#             # check if the rotated coordinates are within the bounds of the new image array
+#             if (
+#                 0 <= rot_i < rotated_big_sub_image.shape[0]
+#                 and 0 <= rot_j < rotated_big_sub_image.shape[1]
+#             ):
+#                 # put pixel in the new array
+#                 rotated_big_sub_image[i, j] = big_sub_img[rot_i, rot_j]
+
+#     return rotated_big_sub_image
+
+
+def rotate_subimage(g_img, x_kp, y_kp, orientation, zoom_radius):
+    # define bigger radius for the subimage to crop to make sure all pixels to rotate are in the cropped image
+    bigger_radius = 2 * int(0.5 * np.ceil(zoom_radius * np.sqrt(2))) + 1
+
+    # try to crop subimage around keypoint
+    big_sub_img = crop_image_around_keypoint(g_img, (x_kp, y_kp), bigger_radius)
+
+    # define the coordinates of center of the bigger subimage
+    x_big_sub_img_center, y_big_sub_img_center = bigger_radius, bigger_radius
+
+    # create a new array for the rotated image, of radius zoom_radius
+    rot_shape = (2 * zoom_radius + 1, 2 * zoom_radius + 1)
+    rotated_sub_image = np.zeros(shape=rot_shape, dtype=np.float32)
+
+    # loop over cols and rows with the coordinates in the smaller subimage
+    for i in range(rotated_sub_image.shape[0]):
+        for j in range(rotated_sub_image.shape[1]):
+            # get the coordinates of the pixel in the bigger subimage
+            i_big_sub_img = i + y_big_sub_img_center - zoom_radius
+            j_big_sub_img = j + x_big_sub_img_center - zoom_radius
+
+            # rotate the pixel in the bigger subimage
+            rot_i, rot_j = desc.rotate_point_pixel(
+                i_big_sub_img,
+                j_big_sub_img,
+                -orientation,
+                y_big_sub_img_center,
+                x_big_sub_img_center,
+            )
+
+            # check if the rotated coordinates are within the bounds of the new image array
+            if 0 <= rot_i < big_sub_img.shape[0] and 0 <= rot_j < big_sub_img.shape[1]:
+                # compute rotated coordinates in the rotated subimage
+                rot_i_small = rot_i - y_big_sub_img_center + zoom_radius
+                rot_j_small = rot_j - x_big_sub_img_center + zoom_radius
+
+                # put pixel in the new array
+                rotated_sub_image[i, j] = big_sub_img[rot_i_small, rot_j_small]
+
+    return rotated_sub_image
+
+
+def visualize_curvature_values_rotated(
+    g_img, keypoint, orientation, zoom_radius, figsize=(30, 10)
+):
     """
     Compute eigenvalues of the Hessian matrix of all pixels in a zoomed area around a keypoint.
+    The area is rotated by the orientation of the keypoint in counterclockwise direction.
     Does nothing if the zoomed area is not in the image.
     g_img: float32 grayscale image
-    position: (x, y) pixel position
+    keypoint: SIFT keypoint
     zoom_radius: radius of the zoomed area in pixels
     Return: the matplotlib figure
     """
     # compute pixel coordinates of the keypoint
-    x_kp, y_kp = position
+    x_kp, y_kp = np.round(keypoint.pt).astype(int)
 
-    # try to crop subimage around keypoint
-    sub_img = crop_image_around_keypoint(g_img, (x_kp, y_kp), zoom_radius)
+    # crop subimage around keypoint
+    rot_sub_img = rotate_subimage(g_img, x_kp, y_kp, orientation, zoom_radius)
 
-    if sub_img is not None:
+    if rot_sub_img is not None:
         # Compute hessian eigenvalues
-        eigvals, _, _ = compute_hessian_gradient_subimage(sub_img)
-
-        # # Normalize eigenvalues with the max absolute value
-        # max_abs_eigvals = np.max(np.abs(eigvals))
-        # normalized_eigvals = eigvals / max_abs_eigvals
-
-        # # Compute colormap images
-        # eigvals1 = normalized_eigvals[:, :, 0]
-        # eigvals2 = normalized_eigvals[:, :, 1]
-
-        # # Affine transform eigenvalues from [-1,1] to [0, 1]
-        # eigvals1 = (eigvals1 + 1) / 2
-        # eigvals2 = (eigvals2 + 1) / 2
+        eigvals, _, _ = compute_hessian_gradient_subimage(rot_sub_img)
 
         # Plot subimage and eigenvalues
         fig, axs = plt.subplots(1, 3, figsize=figsize)
@@ -301,7 +352,7 @@ def visualize_curvature_values_position(g_img, position, zoom_radius, figsize=(3
         vmaxs = [np.max(eigvals1), np.max(eigvals2)]
 
         # Define the images and titles
-        images = [sub_img, eigvals1, eigvals2]
+        images = [rot_sub_img, eigvals1, eigvals2]
         titles = [f"zoomed image on keypoint", "eigenvalue 1", "eigenvalue 2"]
         v_min_max = [(None, None), (vmins[0], vmaxs[0]), (vmins[1], vmaxs[1])]
 
@@ -321,7 +372,7 @@ def visualize_curvature_values_position(g_img, position, zoom_radius, figsize=(3
 
         # add legend
         fig.suptitle(
-            f"SIFT Keypoint x:{x_kp}, y:{y_kp} (in red) \n radius={zoom_radius}, unnormalized values",
+            f"Rotated image around SIFT Keypoint x:{x_kp}, y:{y_kp} (in red) \n radius={zoom_radius}, unnormalized values, rotation={orientation:.2f}°",
             fontsize=10,
         )
 
@@ -431,7 +482,6 @@ def normalize_vectors_2D_array(array, eps=1e-8):
     return normalized_array
 
 
-
 def visualize_curvature_directions_ax_sm(
     g_img, keypoint, zoom_radius, ax, step_percentage=5, border_size=1
 ):
@@ -534,6 +584,108 @@ def visualize_curvature_directions_ax_sm(
     return sm
 
 
+def visualize_curvature_directions_ax_sm_rotated(
+    g_img, keypoint, zoom_radius, ax, orientation, step_percentage=5, border_size=1
+):
+    """
+    g_img: float32 grayscale image
+    keypoint: SIFT keypoint
+    zoom_radius: radius of the zoomed area in pixels
+    step_percentage: percentage of pixels to skip in the computation of the eigenvectors, w.r.t subimage size
+    ax: matplotlib axis
+    Compute eigenvectors of the Hessian matrix of all pixels in a zoomed area around a keypoint.
+    display the directions in 2 colors depending on the sign of the eigenvalues.
+    Does nothing if the zoomed area is not in the image.
+    Inplace modify the argument ax
+
+    Return: the scalable colormap of the arrows
+    """
+    # compute pixel coordinates of the keypoint
+    x_kp, y_kp = keypoint.pt
+    y_kp = np.round(y_kp).astype(int)
+    x_kp = np.round(x_kp).astype(int)
+
+    # try to crop image around keypoint
+    sub_img = rotate_subimage(g_img, x_kp, y_kp, orientation, zoom_radius)
+    h, w = sub_img.shape
+
+    # Compute hessian eigenvectors and eigenvalues of all pixels in subimage.
+    eigvals, eigvects, _ = compute_hessian_gradient_subimage(sub_img)
+
+    # Downsample the computations by taking 1 pixel every step in each direction, instead of all pixels
+    # We downsample within pixels that are not in the border
+    # Values of unconsidered pixels are set to 0
+    step = compute_downsampling_step(step_percentage, zoom_radius)
+    selected_eigvects = downsample_array(eigvects, step)
+    selected_eigvals = downsample_array(eigvals, step)
+    # Add values of the keypoint
+    selected_eigvects[zoom_radius, zoom_radius] = eigvects[zoom_radius, zoom_radius]
+    selected_eigvals[zoom_radius, zoom_radius] = eigvals[zoom_radius, zoom_radius]
+
+    # normalize eigenvectors
+    vect_size = zoom_radius * 0.05
+    normalized_eigvects = np.zeros_like(selected_eigvects, dtype=np.float32)
+    for eigvect_id in range(2):
+        normalized_eigvects[:, :, eigvect_id] = normalize_vectors_2D_array(
+            selected_eigvects[:, :, eigvect_id]
+        )
+    normalized_eigvects *= vect_size
+
+    # draw eigenvectors on ax
+    # define colormap for eigenvectors depending on the value of the eigenvalues
+    # the higher the eigenvalue, the more red the eigenvector, the lower the eigenvalue, the more blue the eigenvector
+    colormap = plt.cm.get_cmap("RdBu")
+
+    # normalize eigenvalues with the min and max eigenvalues
+    vmin, vmax = np.min(selected_eigvals), np.max(selected_eigvals)
+    norm = colors.Normalize(vmin=vmin, vmax=vmax)
+
+    # draw eigenvectors on ax
+    ax.imshow(sub_img, cmap="gray")
+
+    # draw eigenvectors of all pixels
+    for eigvect_id in range(2):
+        # first avoid keypoint
+        draw_vectors_on_ax(
+            ax,
+            colormap,
+            norm,
+            selected_eigvals[:, :, eigvect_id],
+            normalized_eigvects[:, :, eigvect_id],
+            (h, w),
+            step,
+            border_size,
+        )
+        # then draw keypoint
+        add_vector_to_ax(
+            colormap,
+            norm,
+            selected_eigvals[zoom_radius, zoom_radius, eigvect_id],
+            zoom_radius,
+            zoom_radius,
+            normalized_eigvects[zoom_radius, zoom_radius, eigvect_id],
+            ax,
+        )
+
+    # add red pixel on the keypoint, with variable size
+    kp_factor = zoom_radius * 0.05
+    ax.scatter(
+        [zoom_radius],
+        [zoom_radius],
+        c="r",
+        s=zoom_radius * kp_factor,
+    )
+    ax.set_title(f"eigenvectors rotated by {orientation:.2f}°")
+    ax.axis("off")
+
+    # add the blue to red colormap of the arrows
+    # create a ScalarMappable with the same colormap and normalization as the arrows
+    sm = plt.cm.ScalarMappable(cmap=colormap, norm=norm)
+    sm.set_array([])
+
+    return sm
+
+
 def compare_directions(
     g_img1,
     g_img2,
@@ -579,6 +731,58 @@ def compare_directions(
     # add legend
     fig.suptitle(
         f"Principal direction near matched SIFT Keypoints \n zoom_radius = {zoom_radius}",
+        fontsize=10,
+    )
+
+    return fig
+
+
+def compare_directions_rotated(
+    g_img1,
+    g_img2,
+    kp1,
+    kp2,
+    orientations,
+    zoom_radius=15,
+    figsize=(20, 10),
+    dpi=600,
+    step_percentage=5,
+    border_size=1,
+):
+    """
+    g_img1, g_img2: grayscale images
+    kp1, kp2: SIFT keypoints
+    zoom_radius: radius of the zoomed area in pixels
+    figsize: size of the figure
+    dpi: resolution of the figure
+
+    Compute the principal directions of the 2 images and display them side by side
+
+    Return: the matplotlib figure
+    """
+
+    # create figure and ax
+    fig, ax = plt.subplots(1, 2, figsize=figsize, dpi=dpi)
+
+    # compute eigenvectors and add them to the ax
+    sm1 = visualize_curvature_directions_ax_sm(
+        g_img1, kp1, orientations[0], zoom_radius, ax[0], step_percentage, border_size
+    )
+    sm2 = visualize_curvature_directions_ax_sm(
+        g_img2, kp2, orientations[1], zoom_radius, ax[1], step_percentage, border_size
+    )
+
+    # add the colorbar of the colormap of the arrows
+    fig.colorbar(sm1, ax=ax[0], fraction=0.046, pad=0.04)
+    fig.colorbar(sm2, ax=ax[1], fraction=0.046, pad=0.04)
+
+    # add title to each subplot
+    ax[0].set_title("Image 1")
+    ax[1].set_title("Image 2")
+
+    # add legend
+    fig.suptitle(
+        f"Rotated principal direction near matched SIFT Keypoints \n zoom_radius = {zoom_radius}",
         fontsize=10,
     )
 

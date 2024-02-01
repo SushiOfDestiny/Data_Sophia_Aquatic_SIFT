@@ -6,7 +6,15 @@ import matplotlib.pyplot as plt
 from matplotlib import colors
 import numpy as np
 
-import visu_hessian
+import visu_hessian as vh
+
+# add the path to the descriptor folder
+sys.path.append(os.path.join("..", "descriptor"))
+# import visualize_hessian.visu_hessian
+import descriptor as desc
+
+# return to the root directory
+sys.path.append(os.path.join(".."))
 
 logger = logging.getLogger(__name__)
 print("oui")
@@ -25,21 +33,21 @@ img = cv.imread(f"{im_name}.{img_ext}", 0)
 # # plt.show()
 
 # define folder to save images
-img_folder = "zoomed_kp"
-img_resolution = 400  # in dpi
+# img_folder = "zoomed_kp"
+# img_resolution = 400  # in dpi
 
 #########################################
 # calculate sift keypoints and descriptors
 #########################################
 
-sift = cv.SIFT_create()
-keypoints, descriptors = sift.detectAndCompute(img, None)
+# sift = cv.SIFT_create()
+# keypoints, descriptors = sift.detectAndCompute(img, None)
 
-# draw keypoints on image
-img_kp = cv.drawKeypoints(
-    img, keypoints, None, flags=cv.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS
-)
-nb_kp = len(keypoints)
+# # draw keypoints on image
+# img_kp = cv.drawKeypoints(
+#     img, keypoints, None, flags=cv.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS
+# )
+# nb_kp = len(keypoints)
 # plt.imshow(img_kp)
 # plt.title(f"{nb_kp} SIFT keypoints")
 # # # save figure
@@ -50,17 +58,17 @@ nb_kp = len(keypoints)
 # plt.show()
 
 # draw colormap of eigenvalues of Hessian matrix for 1 keypoint
-kp0 = keypoints[90]
-x_kp0, y_kp0 = np.round(kp0.pt).astype(int)
-position = (x_kp0, y_kp0)
+# kp0 = keypoints[90]
+# x_kp0, y_kp0 = np.round(kp0.pt).astype(int)
+# position = (x_kp0, y_kp0)
 # print(kp0.pt)
 
 ################################
 # test convert_uint8_to_float32
 ################################
 
-img_float32 = visu_hessian.convert_uint8_to_float32(img)
-print(img_float32.min(), img_float32.max())
+img_float32 = vh.convert_uint8_to_float32(img)
+# print(img_float32.min(), img_float32.max())
 # plt.imshow(img_float32, cmap="gray")
 # plt.show()
 
@@ -68,10 +76,10 @@ print(img_float32.min(), img_float32.max())
 ##################################
 # test crop_subimage_around_keypoint
 ##################################
-zoom_radius = 30
+# zoom_radius = 30
 
-sub_img = visu_hessian.crop_image_around_keypoint(img_float32, position, zoom_radius)
-print(sub_img.min(), sub_img.max())
+# sub_img = vh.crop_image_around_keypoint(img_float32, position, zoom_radius)
+# print(sub_img.min(), sub_img.max())
 
 # plt.imshow(sub_img, cmap="gray")
 # plt.show()
@@ -80,16 +88,16 @@ print(sub_img.min(), sub_img.max())
 # test compute_gradient_subimage
 ##################################
 
-eigvals, eigvects, gradients = visu_hessian.compute_hessian_gradient_subimage(sub_img)
-print(eigvals.shape, eigvects.shape, gradients.shape)
+# eigvals, eigvects, gradients = vh.compute_hessian_gradient_subimage(sub_img)
+# print(eigvals.shape, eigvects.shape, gradients.shape)
 
 
 ###################################
 # Test visualize_curvature_values #
 ###################################
-x_kp0, y_kp0 = np.round(kp0.pt).astype(int)
+# x_kp0, y_kp0 = np.round(kp0.pt).astype(int)
 
-# eigval_fig = visu_hessian.visualize_curvature_values(img_float32, kp0, 30)
+# eigval_fig = vh.visualize_curvature_values(img_float32, kp0, 30)
 
 # plt.figure(eigval_fig.number)
 # plt.show()
@@ -110,7 +118,7 @@ x_kp0, y_kp0 = np.round(kp0.pt).astype(int)
 #######################################
 
 # zoom_radius = 30
-# eig_fig = visu_hessian.visualize_curvature_directions(img_float32, kp0, zoom_radius)
+# eig_fig = vh.visualize_curvature_directions(img_float32, kp0, zoom_radius)
 
 # plt.figure(eig_fig.number)
 # plt.show()
@@ -137,7 +145,7 @@ x_kp0, y_kp0 = np.round(kp0.pt).astype(int)
 ###############
 
 # arr = np.ones((10, 10, 2))
-# d_arr = visu_hessian.downsample_array(arr, 2)
+# d_arr = vh.downsample_array(arr, 2)
 # print(d_arr[:, :, 0])
 # print(d_arr[:, :, 1])
 
@@ -149,28 +157,28 @@ x_kp0, y_kp0 = np.round(kp0.pt).astype(int)
 # test visualise_curvature_directions_ax_sm
 ##############
 
-# create figure and ax
-fig, ax = plt.subplots(1, 1, figsize=(20, 20))
+# # create figure and ax
+# fig, ax = plt.subplots(1, 1, figsize=(20, 20))
 
-# compute eigenvectors and add them to the ax
-sm = visu_hessian.visualize_curvature_directions_ax_sm(
-    img_float32, kp0, zoom_radius, ax=ax
-)
+# # compute eigenvectors and add them to the ax
+# sm = vh.visualize_curvature_directions_ax_sm(
+#     img_float32, kp0, zoom_radius, ax=ax
+# )
 
-# add the colorbar of the colormap of the arrows
-fig.colorbar(sm, ax=ax, fraction=0.046, pad=0.04)
+# # add the colorbar of the colormap of the arrows
+# fig.colorbar(sm, ax=ax, fraction=0.046, pad=0.04)
 
-# add legend
-fig.suptitle(f"unfinished", fontsize=10)
+# # add legend
+# fig.suptitle(f"unfinished", fontsize=10)
 
-plt.show()
+# plt.show()
 
 
 ################
 # Test gradients
 ################
 
-# grad_fig = visu_hessian.visualize_gradients(img_float32, kp0, zoom_radius)
+# grad_fig = vh.visualize_gradients(img_float32, kp0, zoom_radius)
 
 # plt.figure(grad_fig.number)
 # plt.show()
@@ -179,19 +187,19 @@ plt.show()
 # test visualize_gradients_ax_sm
 ##################
 
-# create figure and ax
-fig, ax = plt.subplots(1, 1, figsize=(20, 20))
+# # create figure and ax
+# fig, ax = plt.subplots(1, 1, figsize=(20, 20))
 
-# compute eigenvectors and add them to the ax
-sm = visu_hessian.visualize_gradients_ax_sm(img_float32, kp0, zoom_radius, ax=ax)
+# # compute eigenvectors and add them to the ax
+# sm = vh.visualize_gradients_ax_sm(img_float32, kp0, zoom_radius, ax=ax)
 
-# add the colorbar of the colormap of the arrows
-fig.colorbar(sm, ax=ax, fraction=0.046, pad=0.04)
+# # add the colorbar of the colormap of the arrows
+# fig.colorbar(sm, ax=ax, fraction=0.046, pad=0.04)
 
-# add legend
-fig.suptitle(f"unfinished", fontsize=10)
+# # add legend
+# fig.suptitle(f"unfinished", fontsize=10)
 
-plt.show()
+# plt.show()
 
 ##################
 # Test compare directions
@@ -206,8 +214,8 @@ plt.show()
 # g_img2 = cv.imread(f"{img_path}/{im_name2}.{img_ext}", 0)
 
 # # compute float32 images
-# float32_g_img1 = visu_hessian.convert_uint8_to_float32(g_img1)
-# float32_g_img2 = visu_hessian.convert_uint8_to_float32(g_img2)
+# float32_g_img1 = vh.convert_uint8_to_float32(g_img1)
+# float32_g_img2 = vh.convert_uint8_to_float32(g_img2)
 
 # # calculate sift keypoints and descriptors
 # sift = cv.SIFT_create()
@@ -223,7 +231,7 @@ plt.show()
 # kp2 = keypoints2[matches[0][0].trainIdx]
 
 # compare directions
-# dir_fig = visu_hessian.compare_directions(
+# dir_fig = vh.compare_directions(
 #     float32_g_img1, float32_g_img2, kp1, kp2, zoom_radius=30
 # )
 
@@ -235,10 +243,76 @@ plt.show()
 # # Test compare gradients
 # ##################
 
-# grad_fig = visu_hessian.compare_gradients(
+# grad_fig = vh.compare_gradients(
 #     float32_g_img1, float32_g_img2, kp1, kp2, zoom_radius=15
 # )
 
 # # show figure
 # plt.figure(grad_fig.number)
 # plt.show()
+
+########################
+# Test rotate_subimage #
+########################
+
+# position = (500, 500)
+# zoom_radius = 150
+# orientation = 45.0
+# bigger_radius = 2 * int(0.5 * np.ceil(zoom_radius * np.sqrt(2))) + 1
+
+# big_sub_image = vh.crop_image_around_keypoint(img_float32, position, bigger_radius)
+# rotated_big_sub_image = vh.rotate_subimage(
+#     img_float32, position[0], position[1], orientation, zoom_radius
+# )
+# fig, ax = plt.subplots(1, 2, figsize=(40, 20))
+# ax[0].imshow(big_sub_image, cmap="gray")
+# ax[1].imshow(rotated_big_sub_image, cmap="gray")
+# plt.show()
+
+######################################
+# visualize_curvature_values_rotated #
+######################################
+img_path = "../data"
+im_name = "dumbbell"
+img_ext = "jpg"
+# img = cv.imread(f"{img_path}/{im_name}.{img_ext}", 0)
+img = cv.imread(f"{im_name}.{img_ext}", 0)
+
+position = (500, 500)
+kp = cv.KeyPoint(x=position[0], y=position[1], size=1)
+zoom_radius = 30
+
+kp_gradient_orientation = desc.compute_orientation(img_float32, position)
+kp_gradient_orientation = desc.convert_angles_to_pos_degrees(kp_gradient_orientation)
+angle_2 = kp_gradient_orientation + 45
+print("kp_gradient_orientation", kp_gradient_orientation)
+figs = [
+    vh.visualize_curvature_values_rotated(img_float32, kp, angle, zoom_radius)
+    for angle in (kp_gradient_orientation, angle_2)
+]
+
+for fig in figs:
+    plt.figure(fig.number)
+    plt.show()
+
+
+######################################
+# visualize_gradients_ax_sm_rotated #
+######################################
+# position = (500, 500)
+# kp = cv.KeyPoint(x=position[0], y=position[1], size=1)
+# zoom_radius = 30
+
+# kp_gradient_orientation = desc.compute_orientation(img_float32, position)
+# kp_gradient_orientation = desc.convert_angles_to_pos_degrees(kp_gradient_orientation)
+# angle_2 = kp_gradient_orientation + 45
+# print("kp_gradient_orientation", kp_gradient_orientation)
+
+# figs = [
+#     vh.visualize_curvature_values_rotated(img_float32, kp, angle, zoom_radius)
+#     for angle in (kp_gradient_orientation, angle_2)
+# ]
+
+# for fig in figs:
+#     plt.figure(fig.number)
+#     plt.show()
