@@ -15,9 +15,6 @@ def point_cloud(ob_name, coords, edges=[], faces=[]):
     # Make a mesh from a list of vertices/edges/faces
     me.from_pydata(coords, edges, faces)
 
-    # Display name and update the mesh
-    ob.show_name = True
-    ob.show_texture_space = True
     me.update()
     return ob
 

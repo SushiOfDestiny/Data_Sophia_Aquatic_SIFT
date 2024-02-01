@@ -28,7 +28,6 @@ def check_correct_match(objs, kp_arr_file, cam_1, cam_2, epsilon=None):
 
     for i in range(kp_arr.shape[1]):
 
-        # Careful with coordinates (x is second dimension in opencv images, y first)
         x1_cv_px = round(kp_arr[0, i, 0]) # careful : rounding
         y1_cv_px = round(kp_arr[0, i, 1])
 
@@ -85,6 +84,6 @@ if __name__ == '__main__':
     cam_2 = bpy.data.objects['Cam_2']
 
     #epsilon = 0.1 # can be modified later
-    correct_matches, correct_matches_idxs, matched_3d_pts = check_correct_match([ob for ob in bpy.data.objects if ob.type == 'MESH'], 'kp_pairs_arr.npy', cam_1, cam_2)
+    correct_matches, correct_matches_idxs, matched_3d_pts = check_correct_match([bpy.data.objects['Cube']], 'kp_pairs_arr.npy', cam_1, cam_2)
 
     save_correct_matches(correct_matches_idxs, 'idxs')
