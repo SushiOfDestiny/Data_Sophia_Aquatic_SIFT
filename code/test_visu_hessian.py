@@ -7,14 +7,7 @@ from matplotlib import colors
 import numpy as np
 
 import visu_hessian as vh
-
-# add the path to the descriptor folder
-sys.path.append(os.path.join("..", "descriptor"))
-# import visualize_hessian.visu_hessian
 import descriptor as desc
-
-# return to the root directory
-sys.path.append(os.path.join(".."))
 
 logger = logging.getLogger(__name__)
 print("oui")
@@ -23,14 +16,14 @@ print("oui")
 # load grayscale image
 ######################
 
-# img_path = "../images"
+img_path = "../data"
 im_name = "dumbbell"
 img_ext = "jpg"
 # img = cv.imread(f"{img_path}/{im_name}.{img_ext}", 0)
-img = cv.imread(f"{im_name}.{img_ext}", 0)
+img = cv.imread(f"{img_path}/{im_name}.{img_ext}", 0)
 # # show image
-# # plt.imshow(img, cmap="gray")
-# # plt.show()
+plt.imshow(img, cmap="gray")
+plt.show()
 
 # define folder to save images
 # img_folder = "zoomed_kp"
@@ -255,28 +248,23 @@ img_float32 = vh.convert_uint8_to_float32(img)
 # Test rotate_subimage #
 ########################
 
-# position = (500, 500)
-# zoom_radius = 150
-# orientation = 45.0
-# bigger_radius = 2 * int(0.5 * np.ceil(zoom_radius * np.sqrt(2))) + 1
+position = (500, 500)
+zoom_radius = 200
+orientation = 45.0
+bigger_radius = 2 * int(0.5 * np.ceil(zoom_radius * np.sqrt(2))) + 1
 
-# big_sub_image = vh.crop_image_around_keypoint(img_float32, position, bigger_radius)
-# rotated_big_sub_image = vh.rotate_subimage(
-#     img_float32, position[0], position[1], orientation, zoom_radius
-# )
-# fig, ax = plt.subplots(1, 2, figsize=(40, 20))
-# ax[0].imshow(big_sub_image, cmap="gray")
-# ax[1].imshow(rotated_big_sub_image, cmap="gray")
-# plt.show()
+big_sub_image = vh.crop_image_around_keypoint(img_float32, position, bigger_radius)
+rotated_big_sub_image = vh.rotate_subimage(
+    img_float32, position[0], position[1], orientation, zoom_radius
+)
+fig, ax = plt.subplots(1, 2, figsize=(40, 20))
+ax[0].imshow(big_sub_image, cmap="gray")
+ax[1].imshow(rotated_big_sub_image, cmap="gray")
+plt.show()
 
 ######################################
 # visualize_curvature_values_rotated #
 ######################################
-img_path = "../data"
-im_name = "dumbbell"
-img_ext = "jpg"
-# img = cv.imread(f"{img_path}/{im_name}.{img_ext}", 0)
-img = cv.imread(f"{im_name}.{img_ext}", 0)
 
 position = (500, 500)
 kp = cv.KeyPoint(x=position[0], y=position[1], size=1)
