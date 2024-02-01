@@ -4,10 +4,9 @@ import numpy as np
 sys.path.append('../../../blender')
 from line import check_correct_match_pt
 from shift import img_px_to_img_m
-from draw_points import draw_points
 from mathutils import Vector
 
-def check_correct_match(objs, kp_arr_file, cam_1, cam_2, epsilon):
+def check_correct_match(objs, kp_arr_file, cam_1, cam_2, epsilon=None):
     '''Checks the validity of pairs of matched keypoints in stereo imagery
     
     Returns :
@@ -30,19 +29,20 @@ def check_correct_match(objs, kp_arr_file, cam_1, cam_2, epsilon):
     for i in range(kp_arr.shape[1]):
 
         # Careful with coordinates (x is second dimension in opencv images, y first)
-        x1_cv_px = kp_arr[0, i, 0]
-        y1_cv_px = kp_arr[0, i, 1]
-        x1_b_m, y1_b_m = img_px_to_img_m(x1_cv_px, y1_cv_px, params_cam_1, cam_1, scene)
+        x1_cv_px = round(kp_arr[0, i, 0]) # careful : rounding
+        y1_cv_px = round(kp_arr[0, i, 1])
 
-        x2_cv_px = kp_arr[1, i, 0]
-        y2_cv_px = kp_arr[1, i, 1]
-        x2_b_m, y2_b_m = img_px_to_img_m(x2_cv_px, y2_cv_px, params_cam_2, cam_2, scene)
+        x2_cv_px = round(kp_arr[1, i, 0])
+        y2_cv_px = round(kp_arr[1, i, 1])
 
-        r, vec = check_correct_match_pt(objs, x1_b_m, y1_b_m, x2_b_m, y2_b_m, cam_1, cam_2, epsilon)
+        r, vec = check_correct_match_pt(
+            objs, x1_cv_px, y1_cv_px, x2_cv_px, y2_cv_px, 
+            cam_1, params_cam_1, cam_2, params_cam_2, scene, epsilon
+        )
         
         if r:
-            correct_matches.append(((x1_b_m, y1_b_m), (x2_b_m, y2_b_m)))
-            print(((x1_b_m, y1_b_m), (x2_b_m, y2_b_m)))
+            correct_matches.append(((x1_cv_px, y1_cv_px), (x2_cv_px, y2_cv_px))) # WARNING : Px coordinates used here, will not work if you try to show the points in Blender
+            print(((x1_cv_px, y1_cv_px), (x2_cv_px, y2_cv_px)))
             correct_matches_idxs.append(i)
             matched_3d_pts.append(vec)
 
@@ -84,7 +84,7 @@ if __name__ == '__main__':
     cam_1 = bpy.data.objects['Cam_1']
     cam_2 = bpy.data.objects['Cam_2']
 
-    epsilon = 0.1 # can be modified later
-    correct_matches, correct_matches_idxs, matched_3d_pts = check_correct_match([ob for ob in bpy.data.objects if ob.type == 'MESH'], 'kp_pairs_arr.npy', cam_1, cam_2, epsilon)
+    #epsilon = 0.1 # can be modified later
+    correct_matches, correct_matches_idxs, matched_3d_pts = check_correct_match([ob for ob in bpy.data.objects if ob.type == 'MESH'], 'kp_pairs_arr.npy', cam_1, cam_2)
 
     save_correct_matches(correct_matches_idxs, 'idxs')

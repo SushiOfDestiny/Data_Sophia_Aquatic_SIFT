@@ -9,7 +9,7 @@ from visualise_hessian.visu_hessian import convert_uint8_to_float32
 import matplotlib.pyplot as plt
 
 if __name__ == '__main__':
-    im_folder = '../data/blender/blue_cylinder_more_light/'
+    im_folder = '../data/blender/demo_cube/'
     im_name_1 = im_folder + 'left.png'
     im_name_2 = im_folder + 'right.png'
     kp_pairs, matches, kp_1, kp_2 = get_keypoint_pairs(im_name_1, im_name_2)
