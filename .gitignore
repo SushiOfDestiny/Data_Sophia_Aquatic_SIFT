@@ -3,4 +3,8 @@ PythonSIFT-master.zip
 algo_sift_v0/images
 discover_opencv/images
 **/_pycache_
+**/**/__pycache__
 **/*.pyc
+visualize_hessian/zoomed_kp
+images
+plotted_results
