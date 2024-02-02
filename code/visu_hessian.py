@@ -6,6 +6,9 @@ import matplotlib.pyplot as plt
 from matplotlib import colors
 import numpy as np
 
+from tqdm import tqdm
+from numba import njit
+
 # add the path to the descriptor folder
 sys.path.append(os.path.join("..", "descriptor"))
 # import visualize_hessian.visu_hessian
@@ -28,6 +31,7 @@ def convert_uint8_to_float32(img):
     return img
 
 
+@njit
 def compute_gradient(g_img, position):
     """
     Compute gradient with finite differences at order 1.
@@ -41,6 +45,7 @@ def compute_gradient(g_img, position):
     return np.array([dx, dy])
 
 
+@njit
 def compute_hessian(g_img, position):
     """
     Compute hessian with finite differences at order 2.
@@ -96,6 +101,7 @@ def crop_image_around_keypoint(g_img, position, zoom_radius):
         )
 
 
+@njit
 def compute_hessian_gradient_subimage(sub_img, border_size=1):
     """
     Compute hessian and gradient of neighbors of the keypoint within a square neighborhood.
@@ -131,9 +137,9 @@ def compute_hessian_gradient_subimage(sub_img, border_size=1):
             eigvects_col = eigvects_col[:, idx]
 
             # eigvect_col is a 2*2 array, each column is an eigenvector
-            eigvects[
-                y, x
-            ] = eigvects_col.T  # we want the eigenvectors as rows (convention)
+            eigvects[y, x] = (
+                eigvects_col.T
+            )  # we want the eigenvectors as rows (convention)
             gradients[y, x] = compute_gradient(sub_img, (x, y))
 
     return eigvals, eigvects, gradients
@@ -1023,7 +1029,15 @@ def compare_gradients_rotated(
 
 
 def topological_visualization_pipeline(
-    kps, uint_ims, float_ims, zoom_radius=20, figsize=(20, 20), show_kps=True, show_curvatures=True, show_directions=True, show_gradients=True
+    kps,
+    uint_ims,
+    float_ims,
+    zoom_radius=20,
+    figsize=(20, 20),
+    show_kps=True,
+    show_curvatures=True,
+    show_directions=True,
+    show_gradients=True,
 ):
     """
     Plot curvatures values and directions, and also gradients of the pair of keypoints on the pair of images
@@ -1048,7 +1062,7 @@ def topological_visualization_pipeline(
             plt.title(f"Selected keypoint in image {id_kp+1}")
 
     # display curvature values
-    if show_curvatures:        
+    if show_curvatures:
         for id_kp in range(2):
             # display curvature values
             eigval_fig = visualize_curvature_values(
@@ -1057,7 +1071,7 @@ def topological_visualization_pipeline(
             plt.figure(eigval_fig.number)
 
     # display curvature directions side by side
-    if show_directions:        
+    if show_directions:
         dir_fig = compare_directions(
             float_ims[0],
             float_ims[1],
@@ -1070,7 +1084,7 @@ def topological_visualization_pipeline(
         plt.figure(dir_fig.number)
 
     # display gradients side by side
-    if show_gradients:               
+    if show_gradients:
         grad_fig = compare_gradients(
             float_ims[0],
             float_ims[1],
