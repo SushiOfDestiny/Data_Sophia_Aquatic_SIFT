@@ -31,4 +31,21 @@ def img_px_to_img_m(x_cv, y_cv, cam_params, cam, scene):
     # and y direction in OpenCV is -v here
 
     return ((x_cv - res_u_px/2)*px_size_u, (-y_cv + res_v_px/2)*px_size_v)
+
+def img_m_to_img_px(x_m, y_m, cam_params, cam, scene):
+
+    res_u_px = cam_params['res_x_px']
+    res_v_px = cam_params['res_y_px']
+
+    bb_ur, bb_dr, bb_dl, bb_ul = get_camera_keyframe_bounding_points(cam, scene)
+    image_plane_width = bb_ur[0] - bb_ul[0]
+    image_plane_height = bb_ur[1] - bb_dr[1]
+
+    px_density_u = res_u_px/image_plane_width
+    px_size_u = 1.0/px_density_u
+    px_density_v = res_v_px/image_plane_height
+    px_size_v = 1.0/px_density_v
+
+    return (x_m/px_size_u + res_u_px/2, -(y_m/px_size_v - res_v_px/2))
+
     
