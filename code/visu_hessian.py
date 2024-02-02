@@ -524,7 +524,7 @@ def visualize_curvature_directions_ax_sm(
         )
 
     # add red pixel on the keypoint, with variable size
-    kp_factor = zoom_radius * 0.05
+    kp_factor = zoom_radius * 0.03
     ax.scatter(
         [zoom_radius],
         [zoom_radius],
@@ -626,7 +626,7 @@ def visualize_curvature_directions_ax_sm_rotated(
         )
 
     # add red pixel on the keypoint, with variable size
-    kp_factor = zoom_radius * 0.05
+    kp_factor = zoom_radius * 0.03
     ax.scatter(
         [zoom_radius],
         [zoom_radius],
@@ -820,7 +820,7 @@ def visualize_gradients_ax_sm(
     )
 
     # add red pixel on the keypoint
-    kp_factor = zoom_radius * 0.05
+    kp_factor = zoom_radius * 0.03
     ax.scatter([zoom_radius], [zoom_radius], c="r", s=zoom_radius * kp_factor)
     ax.set_title(f"gradients, the reder, the bigger, radius={zoom_radius}")
     ax.axis("off")
@@ -905,7 +905,7 @@ def visualize_gradients_ax_sm_rotated(
     )
 
     # add red pixel on the keypoint
-    kp_factor = zoom_radius * 0.05
+    kp_factor = zoom_radius * 0.03
     ax.scatter([zoom_radius], [zoom_radius], c="r", s=zoom_radius * kp_factor)
     ax.set_title(
         f"gradients, the reder, the bigger, radius={zoom_radius}, rotation={orientation:.2f}°"
@@ -1020,3 +1020,66 @@ def compare_gradients_rotated(
     )
 
     return fig
+
+
+def topological_visualization_pipeline(
+    kps, uint_ims, float_ims, zoom_radius=20, figsize=(20, 20), show_kps=True, show_curvatures=True, show_directions=True, show_gradients=True
+):
+    """
+    Plot curvatures values and directions, and also gradients of the pair of keypoints on the pair of images
+    kps: list of 2 SIFT keypoints
+    uint_ims: list of 2 grayscale images, dtype=np.uint8
+    float_ims: list of 2 grayscale images, dtype=np.float32
+    zoom_radius: radius of the zoomed area in pixels
+    """
+    # compute figsize for side by side display
+    double_figsize = (2 * figsize[0], figsize[1])
+    triple_figsize = (3 * figsize[0], figsize[1])
+
+    # display keypoints values on both images
+    if show_kps:
+        for id_kp in range(2):
+            kp_img_draw_single = cv.drawKeypoints(
+                uint_ims[id_kp], kps[id_kp : id_kp + 1], None, flags=None
+            )
+            plt.figure(figsize=figsize)
+            plt.imshow(kp_img_draw_single)
+            plt.axis("off")
+            plt.title(f"Selected keypoint in image {id_kp+1}")
+
+    # display curvature values
+    if show_curvatures:        
+        for id_kp in range(2):
+            # display curvature values
+            eigval_fig = visualize_curvature_values(
+                float_ims[id_kp], kps[id_kp], zoom_radius, figsize=triple_figsize
+            )
+            plt.figure(eigval_fig.number)
+
+    # display curvature directions side by side
+    if show_directions:        
+        dir_fig = compare_directions(
+            float_ims[0],
+            float_ims[1],
+            kps[0],
+            kps[1],
+            zoom_radius,
+            dpi=800,
+            figsize=double_figsize,
+        )
+        plt.figure(dir_fig.number)
+
+    # display gradients side by side
+    if show_gradients:               
+        grad_fig = compare_gradients(
+            float_ims[0],
+            float_ims[1],
+            kps[0],
+            kps[1],
+            zoom_radius,
+            dpi=800,
+            figsize=double_figsize,
+        )
+        plt.figure(grad_fig.number)
+
+    plt.show()
