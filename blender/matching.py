@@ -6,7 +6,7 @@ from line import check_correct_match_pt
 from shift import img_px_to_img_m
 from mathutils import Vector
 
-def check_correct_match(objs, kp_arr_file, cam_1, cam_2, epsilon=None):
+def check_correct_match(kp_arr_file, cam_1, cam_2, epsilon=None):
     '''Checks the validity of pairs of matched keypoints in stereo imagery
     
     Returns :
@@ -35,8 +35,8 @@ def check_correct_match(objs, kp_arr_file, cam_1, cam_2, epsilon=None):
         y2_cv_px = round(kp_arr[1, i, 1])
 
         r, vec = check_correct_match_pt(
-            objs, x1_cv_px, y1_cv_px, x2_cv_px, y2_cv_px, 
-            cam_1, params_cam_1, cam_2, params_cam_2, scene, epsilon
+            scene, x1_cv_px, y1_cv_px, x2_cv_px, y2_cv_px, 
+            cam_1, params_cam_1, cam_2, params_cam_2, epsilon
         )
         
         if r:
@@ -83,7 +83,7 @@ if __name__ == '__main__':
     cam_1 = bpy.data.objects['Cam_1']
     cam_2 = bpy.data.objects['Cam_2']
 
-    #epsilon = 0.1 # can be modified later
-    correct_matches, correct_matches_idxs, matched_3d_pts = check_correct_match([bpy.data.objects['Cube']], 'kp_pairs_arr.npy', cam_1, cam_2)
+    #epsilon = 0.001 # can be modified later
+    correct_matches, correct_matches_idxs, matched_3d_pts = check_correct_match('kp_pairs_arr.npy', cam_1, cam_2, epsilon)
 
     save_correct_matches(correct_matches_idxs, 'idxs')
