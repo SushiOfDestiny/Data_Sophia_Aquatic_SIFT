@@ -16,8 +16,10 @@ def save_keypoints(kp, filename):
         f.close()
 
 def save_matches(matches, filename):
-    '''Save OpenCV matches to file'''
-    print(matches)
+    """Save OpenCV matches to file.
+    Recall cv.BFMatcher.knnMatch() returns a list of matches, each being a tuple of DMatch objects.
+    """
+    # print(matches)
     index = []
     for match in matches:
         temp = [(match[0].distance, match[0].trainIdx, match[0].queryIdx, match[0].imgIdx)]
@@ -27,6 +29,24 @@ def save_matches(matches, filename):
         f.write(pickle.dumps(index))
     finally:
         f.close()
+
+
+def save_Dmatches(dmatches, filename):
+    """
+    Save OpenCV DMatch objects to file
+    Created file is similar to the one created by save_matches
+    """
+    # print(matches)
+    index = []
+    for match in dmatches:
+        temp = [(match.distance, match.trainIdx, match.queryIdx, match.imgIdx)]
+        index.append(temp)
+    f = open(filename, "wb")
+    try:
+        f.write(pickle.dumps(index))
+    finally:
+        f.close()
+
 
 def load_matches(filename):
     with open(filename, 'rb') as f:
