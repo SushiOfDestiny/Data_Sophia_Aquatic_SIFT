@@ -1,18 +1,25 @@
 import bpy
 import sys
 import numpy as np
-sys.path.append('../../../blender')
+
+# current working directory corresponds to the one of the virtual scene
+# therefore in data/blender/rocks for instance
+
+# add the path to the filtering script
+sys.path.append("../../../blender")
 from line import check_correct_match_pt
 from shift import img_px_to_img_m
 from mathutils import Vector
 
+
 def check_correct_match(kp_arr_file, cam_1, cam_2, epsilon=None):
-    '''Checks the validity of pairs of matched keypoints in stereo imagery
-    
+    """Checks the validity of pairs of matched keypoints in stereo imagery
+
     Returns :
-    (correct_matches, matched_points) where 
+    (correct_matches, matched_points) where
     - correct_matches (list of tuples) contains tuples of correctly matched pairs of keypoint coordinates
-    - matched_points (list of Vector) contains the coordinates of the corresponding 3D points'''
+    - matched_points (list of Vector) contains the coordinates of the corresponding 3D points
+    """
 
     # Get camera parameters
     params_cam_1 = get_cam_parameters(cam_1)
@@ -28,24 +35,35 @@ def check_correct_match(kp_arr_file, cam_1, cam_2, epsilon=None):
 
     for i in range(kp_arr.shape[1]):
 
-        x1_cv_px = round(kp_arr[0, i, 0]) # careful : rounding
+        x1_cv_px = round(kp_arr[0, i, 0])  # careful : rounding
         y1_cv_px = round(kp_arr[0, i, 1])
 
         x2_cv_px = round(kp_arr[1, i, 0])
         y2_cv_px = round(kp_arr[1, i, 1])
 
         r, vec = check_correct_match_pt(
-            scene, x1_cv_px, y1_cv_px, x2_cv_px, y2_cv_px, 
-            cam_1, params_cam_1, cam_2, params_cam_2, epsilon
+            scene,
+            x1_cv_px,
+            y1_cv_px,
+            x2_cv_px,
+            y2_cv_px,
+            cam_1,
+            params_cam_1,
+            cam_2,
+            params_cam_2,
+            epsilon,
         )
-        
+
         if r:
-            correct_matches.append(((x1_cv_px, y1_cv_px), (x2_cv_px, y2_cv_px))) # WARNING : Px coordinates used here, will not work if you try to show the points in Blender
+            correct_matches.append(
+                ((x1_cv_px, y1_cv_px), (x2_cv_px, y2_cv_px))
+            )  # WARNING : Px coordinates used here, will not work if you try to show the points in Blender
             print(((x1_cv_px, y1_cv_px), (x2_cv_px, y2_cv_px)))
             correct_matches_idxs.append(i)
             matched_3d_pts.append(vec)
 
     return correct_matches, correct_matches_idxs, matched_3d_pts
+
 
 def get_cam_parameters(cam):
     camd = cam.data
@@ -59,31 +77,39 @@ def get_cam_parameters(cam):
 
     pixels_in_u_per_mm = resolution_x_in_px * scale / sensor_width_mm
     pixels_in_v_per_mm = resolution_y_in_px * scale * aspect_ratio / sensor_height_mm
-    pixel_size_in_u_direction = 1/pixels_in_u_per_mm
-    pixel_size_in_v_direction = 1/pixels_in_v_per_mm
+    pixel_size_in_u_direction = 1 / pixels_in_u_per_mm
+    pixel_size_in_v_direction = 1 / pixels_in_v_per_mm
 
-    return {'res_x_px': resolution_x_in_px, 
-            'res_y_px': resolution_y_in_px,
-            'px_size_u_sensor': pixel_size_in_u_direction,
-            'px_size_v_sensor': pixel_size_in_v_direction,
-            'sensor_width_mm': sensor_width_mm,
-            'sensor_height_mm': sensor_height_mm,
-            'px_size_u_img_plane': None,
-            'px_size_v_img_plane': None}
+    return {
+        "res_x_px": resolution_x_in_px,
+        "res_y_px": resolution_y_in_px,
+        "px_size_u_sensor": pixel_size_in_u_direction,
+        "px_size_v_sensor": pixel_size_in_v_direction,
+        "sensor_width_mm": sensor_width_mm,
+        "sensor_height_mm": sensor_height_mm,
+        "px_size_u_img_plane": None,
+        "px_size_v_img_plane": None,
+    }
+
 
 def save_correct_matches(correct_matches_idxs, idx_filename):
-    '''
+    """
     - correct_matches_idxs (list of int)
     - idx_filename (str)
-'''
+    """
     np.save(idx_filename, np.array(correct_matches_idxs))
 
-if __name__ == '__main__':
-    print('----------------------------')
-    cam_1 = bpy.data.objects['Cam_1']
-    cam_2 = bpy.data.objects['Cam_2']
 
-    #epsilon = 0.001 # can be modified later
-    correct_matches, correct_matches_idxs, matched_3d_pts = check_correct_match('kp_pairs_arr.npy', cam_1, cam_2, epsilon)
+if __name__ == "__main__":
+    print("----------------------------")
+    cam_1 = bpy.data.objects["Cam_1"]
+    cam_2 = bpy.data.objects["Cam_2"]
 
-    save_correct_matches(correct_matches_idxs, 'idxs')
+    filepath = "kp_pairs_arr.npy"
+
+    # epsilon = 0.001 # can be modified later
+    correct_matches, correct_matches_idxs, matched_3d_pts = check_correct_match(
+        filepath, cam_1, cam_2, epsilon
+    )
+
+    save_correct_matches(correct_matches_idxs, "idxs")
