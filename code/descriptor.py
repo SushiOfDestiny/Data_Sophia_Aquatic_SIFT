@@ -456,19 +456,16 @@ def compute_descriptor_histograms_1_2_rotated(
 #######################
 
 
+@njit
 def flatten_descriptor(descriptor_histograms):
     """
     Flatten the descriptor histograms into a 1D vector.
     descriptor_histograms: list of 3 histograms, each of shape (nb_bins, nb_bins, nb_angular_bins)
     return descriptor: 1D numpy array, length = nb_bins * nb_bins * nb_angular_bins * 3
     """
-    descriptor = np.concatenate(
-        [
-            descriptor_histograms[0].flatten(),
-            descriptor_histograms[1].flatten(),
-            descriptor_histograms[2].flatten(),
-        ]
-    )
+    flat_histograms = [descriptor_histograms[i].ravel() for i in range(3)]
+    descriptor = np.hstack((flat_histograms[0], flat_histograms[1], flat_histograms[2]))
+
     return descriptor
 
 

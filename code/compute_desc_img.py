@@ -49,63 +49,12 @@ def compute_desc_pixels(
     return img_descriptors, coords_array
 
 
-# @njit(parallel=True)
-# def compute_desc_pixels(
-#     overall_features,
-#     y_start,
-#     y_length,
-#     x_start,
-#     x_length,
-#     border_size=1,
-#     nb_bins=1,
-#     bin_radius=2,
-#     delta_angle=5.0,
-# ):
-#     """
-#     Compute descriptors for a set of pixels in an image
-#     overall_features: overall features for the image, computed within a border
-#     return 2 lists: list of flattened descriptors, and list of pixels coordinates in the same order as the pixels
-#     pixel_position is (x, y)
-#     """
-#     # compute length of descriptor
-#     desc_length = 3 * nb_bins * nb_bins * (int(360 / delta_angle) + 1)
-#     # initialize null arrays for pixel descriptors and coordinates
-#     # img_descriptors = [[None for j in range(x_length)] for i in range(y_length)]
-#     img_descriptors = np.zeros((y_length, x_length, desc_length), dtype=np.float32)
-#     img_coords = np.zeros((y_length, x_length, 2), dtype=np.int32)
-#     print(f"shape of img_descriptors: {img_descriptors.shape}")
-
-#     # use numba.prange for parallelization
-#     for i in numba.prange(y_start, y_start + y_length):
-#         for j in range(x_start, x_start + x_length):
-#             # ensure kp_position is (horizontal=rows, vertical=cols)
-#             pixel_position = (j, i)
-
-#             descrip = desc.compute_descriptor_histograms_1_2_rotated(
-#                 overall_features_1_2=overall_features,
-#                 kp_position=pixel_position,
-#                 nb_bins=nb_bins,
-#                 bin_radius=bin_radius,
-#                 delta_angle=delta_angle,
-#                 sigma=0,
-#                 normalization_mode="global",
-#             )
-
-#             # flatten the list
-#             flat_descrip = desc.flatten_descriptor(descrip)
-
-#             img_descriptors[i - y_start, j - x_start] = flat_descrip
-#             img_coords[i - y_start, j - x_start] = pixel_position
-
-#     return img_descriptors, img_coords
-
-
 if __name__ == "__main__":
 
     relative_path = "../data"
     img_folder = "blender/rocks"
-    im_name1 = "rock_1_left"
-    im_name2 = "rock_1_right"
+    im_name1 = "left"
+    im_name2 = "right"
     im_names = (im_name1, im_name2)
     im_ext = "png"
 

@@ -71,11 +71,11 @@ if __name__ == "__main__":
     # load distances matches, and keypoints coordinates of matches
     storage_folder = "computed_distances"
     storage_filename_suffixes = ["dists", "coords_im1", "coords_im2"]
-    filename_preffix = f"{photo_name}_y_{y_starts[0]}_{y_starts[1]}_{y_lengths[0]}_{y_lengths[1]}_{x_starts[0]}_{x_starts[1]}_{x_lengths[0]}_{x_lengths[1]}"
+    filename_prefix = f"{photo_name}_y_{y_starts[0]}_{y_starts[1]}_{y_lengths[0]}_{y_lengths[1]}_{x_starts[0]}_{x_starts[1]}_{x_lengths[0]}_{x_lengths[1]}"
     loaded_objects = [None for i in range(3)]
     for id_obj in range(3):
         loaded_objects[id_obj] = np.load(
-            f"{storage_folder}/{filename_preffix}_{storage_filename_suffixes[id_obj]}.npy"
+            f"{storage_folder}/{filename_prefix}_{storage_filename_suffixes[id_obj]}.npy"
         )
 
     # unpack the multiples lists
@@ -101,22 +101,22 @@ if __name__ == "__main__":
 
     # save the matches and keypoints using function from matching/saving.py
     target_folder = "computed_matches"
-    target_filename_preffix = f"{photo_name}_y_{y_starts[0]}_{y_starts[1]}_{y_lengths[0]}_{y_lengths[1]}_{x_starts[0]}_{x_starts[1]}_{x_lengths[0]}_{x_lengths[1]}"
+    target_filename_prefix = f"{photo_name}_y_{y_starts[0]}_{y_starts[1]}_{y_lengths[0]}_{y_lengths[1]}_{x_starts[0]}_{x_starts[1]}_{x_lengths[0]}_{x_lengths[1]}"
 
     save_kp_pairs_to_arr(
         kp_pairs,
-        f"{target_folder}/{target_filename_preffix}_kp_pairs",
+        f"{target_folder}/{target_filename_prefix}_kp_pairs",
     )
     print("finished saving kp_pairs")
 
     save_Dmatches(
         matches_list,
-        f"{target_folder}/{target_filename_preffix}_matches.txt",
+        f"{target_folder}/{target_filename_prefix}_matches.txt",
     )
     print("finished saving matches")
 
     for id_img in range(2):
         save_keypoints(
             kp_ims_matches[id_img],
-            f"{target_folder}/{target_filename_preffix}_kp_{id_img}.txt",
+            f"{target_folder}/{target_filename_prefix}_kp_{id_img}.txt",
         )

@@ -18,22 +18,6 @@ from tqdm import tqdm
 # first use bruteforce matching
 
 
-# @njit(parallel=True)
-# def compute_distances_pairs(subimage_descriptors, y_lengths, x_lengths):
-#     distances = []
-
-#     for pixel_im1 in range(y_lengths[0] * x_lengths[0]):
-#         for pixel_im2 in range(y_lengths[1] * x_lengths[1]):
-#             distances.append(
-#                 desc.compute_descriptor_distance_unflat(
-#                     subimage_descriptors[0][pixel_im1],
-#                     subimage_descriptors[1][pixel_im2],
-#                 )
-#             )
-
-#     return distances
-
-
 def compute_distances_matches_pairs(
     subimage_descriptors, subimage_coords, y_lengths, x_lengths
 ):
@@ -44,37 +28,35 @@ def compute_distances_matches_pairs(
     return:
     - 1D array of distances_matches, with distances_matches[id_pix1 * nb_pix2 + id_pix2] = distance between pixel
     of coords subimage_coords[0][id_pix1] of image 1 and pixel subimage_coords[2][id_pix2] of image 2
-    - 1D array of coordinates of pixels in image 1, in the same order as the distances_matches
-    - 1D array of coordinates of pixels in image 2, in the same order as the distances_matches
+    - 1D array of indices in subimage_coords[0] of the pixel in image 1 that appears in the match in distances_matches, at the same position
+    - 1D array of indices in subimage_coords[1] of the pixel in image 2 that appears in the match in distances_matches, at the same position
     """
 
     # initialize null array of distances_matches
     nb_matches = y_lengths[0] * x_lengths[0] * y_lengths[1] * x_lengths[1]
     distances_matches = np.zeros((nb_matches,), dtype=np.float32)
-    coords_im1_matches = np.zeros((nb_matches, 2), dtype=np.int32)
-    coords_im2_matches = np.zeros((nb_matches, 2), dtype=np.int32)
+    idx1_matches = np.zeros((nb_matches,), dtype=np.int32)
+    idx2_matches = np.zeros((nb_matches,), dtype=np.int32)
 
-    for pixel_im1 in tqdm(range(len(subimage_descriptors[0]))):
+    for idx_pixel_im1 in tqdm(range(len(subimage_descriptors[0]))):
 
-        descrip_pixel_im1 = subimage_descriptors[0][pixel_im1]
-        coords_pixel_im1 = subimage_coords[0][pixel_im1]
+        descrip_pixel_im1 = subimage_descriptors[0][idx_pixel_im1]
 
-        for pixel_im2 in range(len(subimage_descriptors[1])):
+        for idx_pixel_im2 in range(len(subimage_descriptors[1])):
 
-            descrip_pixel_im2 = subimage_descriptors[1][pixel_im2]
-            coords_pixel_im2 = subimage_coords[1][pixel_im2]
+            descrip_pixel_im2 = subimage_descriptors[1][idx_pixel_im2]
 
             # compute index of distance in the distances_matches array
-            dist_idx = pixel_im1 * len(subimage_descriptors[1]) + pixel_im2
+            dist_idx = idx_pixel_im1 * len(subimage_descriptors[1]) + idx_pixel_im2
             distances_matches[dist_idx] = desc.compute_descriptor_distance(
                 descrip_pixel_im1, descrip_pixel_im2
             )
 
             # store coordinates
-            coords_im1_matches[dist_idx] = coords_pixel_im1
-            coords_im2_matches[dist_idx] = coords_pixel_im2
+            idx1_matches[dist_idx] = idx_pixel_im1
+            idx2_matches[dist_idx] = idx_pixel_im1
 
-    return distances_matches, coords_im1_matches, coords_im2_matches
+    return distances_matches, idx1_matches, idx2_matches
 
 
 if __name__ == "__main__":
@@ -146,7 +128,7 @@ if __name__ == "__main__":
 
     # try to njit it, and to parallelize it, but encounters an issue with the
     # compute_descriptor_distance_unflat function
-    distances_matches, coords_im1_matches, coords_im2_matches = (
+    distances_matches, idx_im1_matches, idx_im2_matches = (
         compute_distances_matches_pairs(
             subimage_descriptors, subimage_coords, y_lengths, x_lengths
         )
@@ -158,11 +140,11 @@ if __name__ == "__main__":
 
     # 6 250 000 distances computed in 1'20"
 
-    # save distances
+    # save distances and indices of pixels in the matches
     # where to save the distances
     target_folder = "computed_distances"
-    target_filename_suffixes = ["dists", "coords_im1", "coords_im2"]
-    objects_to_save = [distances_matches, coords_im1_matches, coords_im2_matches]
+    target_filename_suffixes = ["dists", "matched_idx_im1", "matched_idx_im2"]
+    objects_to_save = [distances_matches, idx_im1_matches, idx_im2_matches]
     target_filename_prefix = f"{photo_name}_y_{y_starts[0]}_{y_starts[1]}_{y_lengths[0]}_{y_lengths[1]}_{x_starts[0]}_{x_starts[1]}_{x_lengths[0]}_{x_lengths[1]}"
 
     for id_object in range(3):
