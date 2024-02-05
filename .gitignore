@@ -8,3 +8,4 @@ discover_opencv/images
 visualize_hessian/zoomed_kp
 images
 plotted_results
+code/*/
