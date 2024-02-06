@@ -70,6 +70,7 @@ if __name__ == "__main__":
 
     relative_path = "../data"
     img_folder = "blender/rocks"
+    photo_name = "rock_1"
     im_name1 = "left"
     im_name2 = "right"
     im_names = (im_name1, im_name2)
@@ -96,13 +97,14 @@ if __name__ == "__main__":
     blur_sigma = 1.0
     float_ims = [desc.convolve_2D_gaussian(float_ims[i], blur_sigma) for i in range(2)]
 
-    # compute descriptors for 2 images
-    y_starts = [400, 400]
-    y_lengths = [5, 5]
-    x_starts = [800, 800]
-    x_lengths = [5, 5]
+    # set the coordinates of the subimages
+    y_starts = [386, 459]
+    y_lengths = [10, 10]
+    x_starts = [803, 806]
+    x_lengths = [20, 20]
     storage_folder = "computed_descriptors"
 
+    # compute descriptors for 2 images
     for id_image in range(2):
 
         # compute for 2 image overall features
@@ -135,7 +137,7 @@ if __name__ == "__main__":
         print(f"desc compute time for image {id_image}", after - before)
 
         # save img_descriptors and list of coordinates
-        filename_prefix = f"{im_names[id_image]}_y_{y_starts[id_image]}_{y_lengths[id_image]}_x_{x_starts[id_image]}_{x_lengths[id_image]}"
+        filename_prefix = f"{photo_name}_{im_names[id_image]}_y_{y_starts[id_image]}_{y_lengths[id_image]}_x_{x_starts[id_image]}_{x_lengths[id_image]}"
 
         np.save(
             f"computed_descriptors/{filename_prefix}_descs.npy",

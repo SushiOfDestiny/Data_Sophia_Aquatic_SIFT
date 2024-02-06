@@ -21,10 +21,11 @@ if __name__ == "__main__":
 
     storage_folders = ["computed_descriptors", "computed_distances", "computed_matches"]
 
-    y_starts = [400, 400]
-    y_lengths = [5, 5]
-    x_starts = [800, 800]
-    x_lengths = [5, 5]
+    # set the coordinates of the subimages
+    y_starts = [386, 459]
+    y_lengths = [10, 10]
+    x_starts = [803, 806]
+    x_lengths = [20, 20]
 
     # load all computed objects
     matches_filename_prefix = f"{photo_name}_y_{y_starts[0]}_{y_starts[1]}_{y_lengths[0]}_{y_lengths[1]}_{x_starts[0]}_{x_starts[1]}_{x_lengths[0]}_{x_lengths[1]}"

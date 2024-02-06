@@ -62,10 +62,11 @@ if __name__ == "__main__":
     photo_name = "rock_1"
     im_names = ["rock_1_left", "rock_1_right"]
 
-    y_starts = [400, 400]
-    y_lengths = [5, 5]
-    x_starts = [800, 800]
-    x_lengths = [5, 5]
+    # set the coordinates of the subimages
+    y_starts = [386, 459]
+    y_lengths = [10, 10]
+    x_starts = [803, 806]
+    x_lengths = [20, 20]
 
     # load keypoints coordinates
     kp_coords_filename_prefixes = [
