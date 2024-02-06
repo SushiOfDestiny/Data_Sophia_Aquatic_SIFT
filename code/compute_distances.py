@@ -118,7 +118,7 @@ def compute_and_save_distances(
     y_starts,
     x_starts,
     photo_name,
-    distance_type="all",
+    distance_type="min",
 ):
     before = datetime.now()
     print(f"Start computing distances: {before}")
@@ -143,17 +143,16 @@ def compute_and_save_distances(
 
     # save distances and indices of pixels in the matches
     np.save(
-        f"{dist_path}/{dist_filename_prefix}_dists.npy",
+        f"{dist_path}/{dist_filename}.npy",
         distances_matches,
     )
-    np.save(
-        f"{dist_path}/{dist_filename_prefix}_matched_idx_im1.npy",
-        idx_im1_matches,
-    )
-    np.save(
-        f"{dist_path}/{dist_filename_prefix}_matched_idx_im2.npy",
-        idx_im2_matches,
-    )
+
+    idx_ims_matches = [idx_im1_matches, idx_im2_matches]
+    for id_image in range(2):
+        np.save(
+            f"{dist_path}/{matched_idx_filenames[id_image]}.npy",
+            idx_ims_matches[id_image],
+        )
 
 
 if __name__ == "__main__":
@@ -171,10 +170,10 @@ if __name__ == "__main__":
     for id_image in range(nb_images):
 
         subimage_descriptors[id_image] = np.load(
-            f"{descrip_path}/{descrip_filename_prefixes[id_image]}_descs.npy"
+            f"{descrip_path}/{descrip_filenames[id_image]}"
         )
         subimage_coords[id_image] = np.load(
-            f"{descrip_path}/{descrip_filename_prefixes[id_image]}_coords.npy"
+            f"{descrip_path}/{kp_coords_filenames[id_image]}"
         )
 
         # Look at shapes

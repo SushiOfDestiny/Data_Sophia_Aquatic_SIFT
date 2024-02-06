@@ -34,5 +34,5 @@ if __name__ == "__main__":
     )  # first convert to numpy array
 
     matching.save_correct_matches(
-        correct_matches_idxs_arr, f"{matches_path}/{correct_matches_idxs_filename}.npy"
+        correct_matches_idxs_arr, f"{storage_folder}/{correct_matches_idxs_filename}"
     )

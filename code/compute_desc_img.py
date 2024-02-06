@@ -72,7 +72,7 @@ def compute_desc_pixels(
 
 if __name__ == "__main__":
     # Load preprocessed images as numpy arrays
-    float_ims = np.load(blurred_imgs_path)
+    float_ims = np.load(f"{blurred_imgs_path}.npy")
 
     # compute descriptors for 2 images
     for id_image in range(2):
@@ -108,10 +108,10 @@ if __name__ == "__main__":
         # save img_descriptors and list of coordinates
 
         np.save(
-            f"{descrip_path}/{descrip_filename_prefixes[id_image]}_descs.npy",
+            f"{descrip_path}/{descrip_filenames[id_image]}",
             img_descriptors,
         )
         np.save(
-            f"{descrip_path}/{descrip_filename_prefixes[id_image]}_coords.npy",
+            f"{descrip_path}/{kp_coords_filenames[id_image]}",
             coords,
         )

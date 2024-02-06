@@ -71,9 +71,9 @@ if __name__ == "__main__":
     ]
 
     # load distances matches, and keypoints coordinates of matches
-    distances_matches = np.load(f"{dist_path}/{dist_filename_prefix}_dists.npy")
+    distances_matches = np.load(f"{dist_path}/{dist_filename}.npy")
     matched_idx_ims = [
-        np.load(f"{dist_path}/{matched_idx_filename_prefix}{id_image+1}.npy")
+        np.load(f"{dist_path}/{matched_idx_filenames[id_image]}.npy")
         for id_image in range(2)
     ]
 
@@ -110,8 +110,8 @@ if __name__ == "__main__":
     )
     print("finished saving matches")
 
-    for id_img in range(2):
+    for id_image in range(2):
         save_keypoints(
-            kps_ims_objs[id_img],
-            f"{matches_path}/{kp_filenames[id_images]}",
+            kps_ims_objs[id_image],
+            f"{matches_path}/{kp_filenames[id_image]}",
         )

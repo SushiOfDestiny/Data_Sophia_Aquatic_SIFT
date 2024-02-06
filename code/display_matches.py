@@ -74,16 +74,22 @@ if __name__ == "__main__":
     # load all computed objects
 
     # load unfiltered keypoints coordinates
-    kps_coords = [np.load(kp_coords_filenames[id_image]) for id_image in range(2)]
+    kps_coords = [
+        np.load(f"{descrip_path}/{kp_coords_filenames[id_image]}")
+        for id_image in range(2)
+    ]
     descs = [
         np.load(
-            descrip_filenames[id_image],
+            f"{descrip_path}/{descrip_filenames[id_image]}",
         )
         for id_image in range(2)
     ]
 
     # load unfiltered keypoints, matches and index of good matches
-    kps = [load_keypoints(kp_filenames[id_image]) for id_image in range(2)]
+    kps = [
+        load_keypoints(f"{matches_path}/{kp_filenames[id_image]}")
+        for id_image in range(2)
+    ]
 
     matches_idxs = np.load(f"{matches_path}/{correct_matches_idxs_filename}.npy")
 
@@ -118,12 +124,26 @@ if __name__ == "__main__":
     # pabo
     good_matches_kps_1 = [kps_coords[0][dmatch[0].queryIdx] for dmatch in good_matches]
     good_matches_kps_2 = [kps_coords[1][dmatch[0].trainIdx] for dmatch in good_matches]
-    good_matches_kps_1_idxs = np.array([(kp[1] - y_starts[0])*x_lengths[0]+(kp[0] - x_starts[0]) for kp in good_matches_kps_1])
-    good_matches_kps_2_idxs = np.array([(kp[1] - y_starts[1])*x_lengths[0]+(kp[0] - x_starts[1]) for kp in good_matches_kps_2])
+    good_matches_kps_1_idxs = np.array(
+        [
+            (kp[1] - y_starts[0]) * x_lengths[0] + (kp[0] - x_starts[0])
+            for kp in good_matches_kps_1
+        ]
+    )
+    good_matches_kps_2_idxs = np.array(
+        [
+            (kp[1] - y_starts[1]) * x_lengths[0] + (kp[0] - x_starts[1])
+            for kp in good_matches_kps_2
+        ]
+    )
     good_descs_1 = descs[0][good_matches_kps_1_idxs]
     good_descs_2 = descs[1][good_matches_kps_2_idxs]
 
     avg_desc_1 = np.mean(good_descs_1, axis=0)
     avg_desc_2 = np.mean(good_descs_2, axis=0)
 
-    display_descriptor(unflatten_descriptor(avg_desc_1, nb_bins=1, nb_angular_bins=(int(360.0/5.0)+1)))
+    display_descriptor(
+        unflatten_descriptor(
+            avg_desc_1, nb_bins=1, nb_angular_bins=(int(360.0 / 5.0) + 1)
+        )
+    )

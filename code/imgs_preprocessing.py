@@ -16,7 +16,7 @@ import visu_hessian as vh
 # Load hyperparameters for the computation pipeline
 from computation_pipeline_hyper_params import *
 
-from filenames_creation import original_imgs_path_prefix, blurred_imgs_path
+from filenames_creation import *
 
 if __name__ == "__main__":
     # Load images
