@@ -479,6 +479,21 @@ def compute_descriptor_distance(descriptor1, descriptor2):
     return distance
 
 
+def unflatten_descriptor(flat_descriptor, nb_bins=3, nb_angular_bins=73):
+    """
+    Unflatten the descriptor into the list of 3 histograms.
+    """
+    hist_size = nb_bins * nb_bins * nb_angular_bins
+    flat_hists = [
+        flat_descriptor[i * hist_size : (i + 1) * hist_size] for i in range(3)
+    ]
+    hists = [
+        flat_hist.reshape((nb_bins, nb_bins, nb_angular_bins))
+        for flat_hist in flat_hists
+    ]
+    return hists
+
+
 ###########################################################################
 ###########################################################################
 

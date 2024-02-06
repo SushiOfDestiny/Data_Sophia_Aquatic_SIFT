@@ -34,7 +34,7 @@ if __name__ == "__main__":
     kp_pairs_file = f"{storage_folder}/{matches_filename_prefix}_kp_pairs_arr.npy"
 
     # define filtering precision threshold
-    epsilon = 1
+    epsilon = None
 
     # filter matches
     correct_matches, correct_matches_idxs, matched_3d_pts = (

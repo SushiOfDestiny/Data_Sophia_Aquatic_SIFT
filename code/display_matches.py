@@ -18,6 +18,7 @@ def display_match(
     filename_prefix=None,
     dpi=800,
     epsilon=1,
+    distance_type="min",
 ):
     """
     Plot a match between the 2 images
@@ -43,7 +44,9 @@ def display_match(
         )
 
     # add title
-    title = f"Match between image 1 and image 2, with distance {dmatch.distance}, \n at coordinates {np.round(matched_kps_pos[0])} and {np.round(matched_kps_pos[1])}, \n with precision threshold {epsilon}"
+    comment_dist_type = "minimal for pixel1" if distance_type == "min" else ""
+    title = f"Match between image 1 and image 2, with distance {dmatch.distance} {comment_dist_type}, \n at coordinates {np.round(matched_kps_pos[0])} and {np.round(matched_kps_pos[1])}, \n with precision threshold {epsilon} pixels"
+    plt.suptitle(title)
 
     if save_path is not None and filename_prefix is not None:
         filename_suffix = f"_{matched_kps_pos[0][0]}_{matched_kps_pos[0][1]}_{matched_kps_pos[1][0]}_{matched_kps_pos[1][1]}"
@@ -65,11 +68,10 @@ if __name__ == "__main__":
     ims = [im_1, im_2]
 
     # set the coordinates of the subimages
-    y_starts = [210, 290]
-    y_lengths = [30, 30]
-    x_starts = [766, 787]
+    y_starts = [386, 459]
+    y_lengths = [10, 10]
+    x_starts = [803, 806]
     x_lengths = [20, 20]
-
     # define distance type suffix
     distance_type = "min"
     prefixes_extension = "" if distance_type == "all" else "_min"
@@ -92,7 +94,10 @@ if __name__ == "__main__":
     kps_coords = [np.load(kps_coords_filenames[id_image]) for id_image in range(2)]
 
     # load filtered keypoints, matches and index of good matches
-    kps = [load_keypoints(f"computed_matches/{matches_filename_prefix}_kp_{id_image}.txt") for id_image in range(2)]
+    kps = [
+        load_keypoints(f"computed_matches/{matches_filename_prefix}_kp_{id_image}.txt")
+        for id_image in range(2)
+    ]
 
     matches_idxs_filename = (
         f"computed_matches/{matches_filename_prefix}_correct_idxs.npy"
