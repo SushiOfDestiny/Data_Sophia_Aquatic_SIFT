@@ -92,6 +92,12 @@ if __name__ == "__main__":
         for id_image in range(2)
     ]
     kps_coords = [np.load(kps_coords_filenames[id_image]) for id_image in range(2)]
+    descs = [
+        np.load(
+            f"computed_descriptors/{unfiltered_filename_prefixes[id_image]}_descs.npy"
+        )
+        for id_image in range(2)
+    ]
 
     # load filtered keypoints, matches and index of good matches
     kps = [
@@ -123,12 +129,24 @@ if __name__ == "__main__":
         # we get here only the Dmatch
         chosen_Dmatch = good_matches[match_idx][0]
 
-        display_match(
-            ims,
-            chosen_Dmatch,
-            kps_coords,
-            show_plot=True,
-            save_path="filtered_keypoints",
-            filename_prefix=f"{matches_filename_prefix}_correct_match",
-            dpi=800,
-        )
+    display_match(
+        ims,
+        chosen_Dmatch,
+        kps_coords,
+        show_plot=True,
+        save_path="filtered_keypoints",
+        filename_prefix=f"{matches_filename_prefix}_correct_match",
+        dpi=800,
+    
+    # pabo
+    good_matches_kps_1 = [kps_coords[0][dmatch.queryIdx] for dmatch in good_matches]
+    good_matches_kps_2 = [kps_coords[1][dmatch.trainIdx] for dmatch in good_matches]
+    good_matches_kps_1_idxs = np.array([(kp[1] - y_starts[0])*x_lengths[0]+(kp[0] - x_starts[0])] for kp in good_matches_kps_1)
+    good_matches_kps_2_idxs = np.array([(kp[1] - y_starts[1])*x_lengths[0]+(kp[0] - x_starts[1])] for kp in good_matches_kps_2)
+    good_descs_1 = descs[0][good_matches_kps_1_idxs]
+    good_descs_2 = descs[1][good_matches_kps_2_idxs]
+    
+    avg_desc_1 = np.mean(good_descs_1, axis=0)
+    avg_desc_2 = np.mean(good_descs_2, axis=0)
+
+    
