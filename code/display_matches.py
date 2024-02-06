@@ -65,9 +65,9 @@ if __name__ == "__main__":
     ims = [im_1, im_2]
 
     # set the coordinates of the subimages
-    y_starts = [386, 459]
-    y_lengths = [10, 10]
-    x_starts = [803, 806]
+    y_starts = [210, 290]
+    y_lengths = [30, 30]
+    x_starts = [766, 787]
     x_lengths = [20, 20]
 
     # define distance type suffix
@@ -92,11 +92,7 @@ if __name__ == "__main__":
     kps_coords = [np.load(kps_coords_filenames[id_image]) for id_image in range(2)]
 
     # load filtered keypoints, matches and index of good matches
-    all_kps_obj_filenames = [
-        f"computed_matches/{matches_filename_prefix}_kp_{id_image}.txt"
-        for id_image in range(2)
-    ]
-    kps = [load_keypoints(kps_filename) for kps_filename in all_kps_obj_filenames]
+    kps = [load_keypoints(f"computed_matches/{matches_filename_prefix}_kp_{id_image}.txt") for id_image in range(2)]
 
     matches_idxs_filename = (
         f"computed_matches/{matches_filename_prefix}_correct_idxs.npy"
