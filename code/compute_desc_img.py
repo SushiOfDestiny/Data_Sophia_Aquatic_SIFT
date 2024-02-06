@@ -5,14 +5,15 @@ import sys
 
 import matplotlib.pyplot as plt
 
-import descriptor as desc
-import visu_hessian as vh
-
-
 from datetime import datetime
 
 from numba import njit
 import numba
+
+import descriptor as desc
+import visu_hessian as vh
+
+from computation_pipeline_hyper_params import y_starts, y_lengths, x_starts, x_lengths
 
 
 @njit(parallel=True)
@@ -97,11 +98,6 @@ if __name__ == "__main__":
     blur_sigma = 1.0
     float_ims = [desc.convolve_2D_gaussian(float_ims[i], blur_sigma) for i in range(2)]
 
-    # set the coordinates of the subimages
-    y_starts = [386, 459]
-    y_lengths = [10, 10]
-    x_starts = [803, 806]
-    x_lengths = [20, 20]
     storage_folder = "computed_descriptors"
 
     # compute descriptors for 2 images

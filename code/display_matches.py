@@ -47,7 +47,7 @@ def display_match(
 
     # add title
     comment_dist_type = "minimal for pixel1" if distance_type == "min" else ""
-    title = f"Match between image 1 and image 2, with distance {dmatch.distance} {comment_dist_type}, \n at coordinates {np.round(matched_kps_pos[0])} and {np.round(matched_kps_pos[1])}, \n with precision threshold {epsilon} pixels"
+    title = f"Match between image 1 and image 2, with distance {dmatch.distance:.2f} {comment_dist_type}, \n at coordinates {np.round(matched_kps_pos[0])} and {np.round(matched_kps_pos[1])}, \n with precision threshold {epsilon} pixels"
     plt.suptitle(title)
 
     if save_path is not None and filename_prefix is not None:
@@ -94,7 +94,12 @@ if __name__ == "__main__":
         for id_image in range(2)
     ]
     kps_coords = [np.load(kps_coords_filenames[id_image]) for id_image in range(2)]
-    descs = [np.load(f"computed_descriptors/{unfiltered_filename_prefixes[id_image]}_descs.npy") for id_image in range(2)]
+    descs = [
+        np.load(
+            f"computed_descriptors/{unfiltered_filename_prefixes[id_image]}_descs.npy"
+        )
+        for id_image in range(2)
+    ]
 
     # load filtered keypoints, matches and index of good matches
     kps = [
@@ -119,22 +124,12 @@ if __name__ == "__main__":
     print("number of unfiltered matches", len(matches))
     print("nb good matches", len(good_matches))
 
-    # draw matches
-    matches_img = cv.drawMatchesKnn(
-        # Warning : the number of matches to draw is not specified here
-        img1=im_1,
-        keypoints1=kps[0],
-        img2=im_2,
-        keypoints2=kps[1],
-        matches1to2=good_matches,
-        outImg=None,
-        singlePointColor=(255, 0, 0),
-    )
-
-    # display 1 match, object here is not DMatch, but a couple of DMatch, as Sift returns
-    match_idx = 0
-    # we get here only the Dmatch
-    chosen_Dmatch = good_matches[match_idx][0]
+    # look at some matches
+    chosen_matches_idx = [1, 2, 3]
+    for match_idx in chosen_matches_idx:
+        # display 1 match, object here is not DMatch, but a couple of DMatch, as Sift returns
+        # we get here only the Dmatch
+        chosen_Dmatch = good_matches[match_idx][0]
 
     display_match(
         ims,
@@ -144,7 +139,6 @@ if __name__ == "__main__":
         save_path="filtered_keypoints",
         filename_prefix=f"{matches_filename_prefix}_correct_match",
         dpi=800,
-    )
     
     # pabo
     good_matches_kps_1 = [kps_coords[0][dmatch[0].queryIdx] for dmatch in good_matches]
