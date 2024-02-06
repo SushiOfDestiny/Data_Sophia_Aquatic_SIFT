@@ -4,6 +4,8 @@ import sys
 import cv2 as cv
 import numpy as np
 import matplotlib.pyplot as plt
+from descriptor import unflatten_descriptor
+from visu_descriptor import display_descriptor
 
 sys.path.append("../matching")
 from saving import load_matches, load_keypoints
@@ -145,14 +147,14 @@ if __name__ == "__main__":
     )
     
     # pabo
-    good_matches_kps_1 = [kps_coords[0][dmatch.queryIdx] for dmatch in good_matches]
-    good_matches_kps_2 = [kps_coords[1][dmatch.trainIdx] for dmatch in good_matches]
-    good_matches_kps_1_idxs = np.array([(kp[1] - y_starts[0])*x_lengths[0]+(kp[0] - x_starts[0])] for kp in good_matches_kps_1)
-    good_matches_kps_2_idxs = np.array([(kp[1] - y_starts[1])*x_lengths[0]+(kp[0] - x_starts[1])] for kp in good_matches_kps_2)
+    good_matches_kps_1 = [kps_coords[0][dmatch[0].queryIdx] for dmatch in good_matches]
+    good_matches_kps_2 = [kps_coords[1][dmatch[0].trainIdx] for dmatch in good_matches]
+    good_matches_kps_1_idxs = np.array([(kp[1] - y_starts[0])*x_lengths[0]+(kp[0] - x_starts[0]) for kp in good_matches_kps_1])
+    good_matches_kps_2_idxs = np.array([(kp[1] - y_starts[1])*x_lengths[0]+(kp[0] - x_starts[1]) for kp in good_matches_kps_2])
     good_descs_1 = descs[0][good_matches_kps_1_idxs]
     good_descs_2 = descs[1][good_matches_kps_2_idxs]
     
     avg_desc_1 = np.mean(good_descs_1, axis=0)
     avg_desc_2 = np.mean(good_descs_2, axis=0)
 
-    
+    display_descriptor(unflatten_descriptor(avg_desc_1, nb_bins=1, nb_angular_bins=(int(360.0/5.0)+1)))
