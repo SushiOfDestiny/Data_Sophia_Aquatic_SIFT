@@ -26,7 +26,7 @@ if __name__ == "__main__":
     x_lengths = [20, 20]
 
     storage_folder = "../../../code/computed_matches"
-    matches_filename_prefix = f"{photo_name}_y_{y_starts[0]}_{y_starts[1]}_{y_lengths[0]}_{y_lengths[1]}_{x_starts[0]}_{x_starts[1]}_{x_lengths[0]}_{x_lengths[1]}"
+    matches_filename_prefix = f"{photo_name}_y_{y_starts[0]}_{y_starts[1]}_{y_lengths[0]}_{y_lengths[1]}_x_{x_starts[0]}_{x_starts[1]}_{x_lengths[0]}_{x_lengths[1]}"
 
     kp_pairs_file = f"{storage_folder}/{matches_filename_prefix}_kp_pairs_arr.npy"
 

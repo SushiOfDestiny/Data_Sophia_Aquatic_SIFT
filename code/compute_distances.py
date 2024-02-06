@@ -137,7 +137,7 @@ if __name__ == "__main__":
     # 6 250 000 distances computed in 1'20"
 
     # save distances and indices of pixels in the matches
-    target_filename_prefix = f"{photo_name}_y_{y_starts[0]}_{y_starts[1]}_{y_lengths[0]}_{y_lengths[1]}_{x_starts[0]}_{x_starts[1]}_{x_lengths[0]}_{x_lengths[1]}"
+    target_filename_prefix = f"{photo_name}_y_{y_starts[0]}_{y_starts[1]}_{y_lengths[0]}_{y_lengths[1]}_x_{x_starts[0]}_{x_starts[1]}_{x_lengths[0]}_{x_lengths[1]}"
 
     np.save(
         f"computed_distances/{target_filename_prefix}_dists.npy",
