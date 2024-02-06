@@ -22,9 +22,9 @@ if __name__ == "__main__":
     storage_folders = ["computed_descriptors", "computed_distances", "computed_matches"]
 
     # set the coordinates of the subimages
-    y_starts = [386, 459]
-    y_lengths = [10, 10]
-    x_starts = [803, 806]
+    y_starts = [210, 290]
+    y_lengths = [30, 30]
+    x_starts = [766, 787]
     x_lengths = [20, 20]
 
     # load all computed objects
@@ -35,11 +35,8 @@ if __name__ == "__main__":
     ]
 
     # load unfiltered keypoints coordinates
-    kps_coords_filenames = [
-        f"computed_descriptors/{unfiltered_filename_prefixes[id_image]}_coords.npy"
-        for id_image in range(2)
-    ]
-    kps_coords = [np.load(kps_coords_filenames[id_image]) for id_image in range(2)]
+    kps_coords = [np.load(f"computed_descriptors/{unfiltered_filename_prefixes[id_image]}_coords.npy") for id_image in range(2)]
+    descs = [np.load(f"computed_descriptors/{unfiltered_filename_prefixes[id_image]}_descs.npy") for id_image in range(2)]
 
     # display unfiltered keypoints
     for id_image in range(2):
@@ -53,11 +50,7 @@ if __name__ == "__main__":
         plt.show()
 
     # load filtered keypoints, matches and index of good matches
-    all_kps_obj_filenames = [
-        f"computed_matches/{matches_filename_prefix}_kp_{id_image}.txt"
-        for id_image in range(2)
-    ]
-    kps = [load_keypoints(kps_filename) for kps_filename in all_kps_obj_filenames]
+    kps = [load_keypoints(f"computed_matches/{matches_filename_prefix}_kp_{id_image}.txt") for id_image in range(2)]
 
     matches_idxs_filename = (
         f"computed_matches/{matches_filename_prefix}_correct_idxs.npy"
@@ -67,7 +60,7 @@ if __name__ == "__main__":
     matches_filename = f"computed_matches/{matches_filename_prefix}_matches.txt"
     matches = load_matches(matches_filename)
 
-    # filter goode matches according to blender
+    # filter good matches according to blender
     good_matches = [matches[i] for i in matches_idxs]
 
     for id_image in range(2):
