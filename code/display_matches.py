@@ -17,6 +17,7 @@ def display_match(
     save_path="filtered_keypoints",
     filename_prefix=None,
     dpi=800,
+    epsilon=1,
 ):
     """
     Plot a match between the 2 images
@@ -40,6 +41,9 @@ def display_match(
         axs[id_image].scatter(
             matched_kps_pos[id_image][0], matched_kps_pos[id_image][1], c="r", s=10
         )
+
+    # add title
+    title = f"Match between image 1 and image 2, with distance {dmatch.distance}, \n at coordinates {np.round(matched_kps_pos[0])} and {np.round(matched_kps_pos[1])}, \n with precision threshold {epsilon}"
 
     if save_path is not None and filename_prefix is not None:
         filename_suffix = f"_{matched_kps_pos[0][0]}_{matched_kps_pos[0][1]}_{matched_kps_pos[1][0]}_{matched_kps_pos[1][1]}"
