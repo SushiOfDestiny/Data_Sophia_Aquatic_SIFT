@@ -41,7 +41,7 @@ def display_spatial_histograms(histograms, title="Spatial Histograms"):
     for bin_j in range(nb_bins):
         for bin_i in range(nb_bins):
             # get the current subplot
-            ax = axs[bin_j, bin_i] if nb_bins > 1 else axs[bin_i]
+            ax = axs if nb_bins == 1 else axs[bin_j, bin_i]
 
             # display the histogram
             ax.bar(angles, histograms[bin_j, bin_i, :])
