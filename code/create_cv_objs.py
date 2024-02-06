@@ -62,11 +62,15 @@ if __name__ == "__main__":
     photo_name = "rock_1"
     im_names = ["rock_1_left", "rock_1_right"]
 
+    # parameters choices
     # set the coordinates of the subimages
     y_starts = [386, 459]
     y_lengths = [10, 10]
     x_starts = [803, 806]
     x_lengths = [20, 20]
+
+    distance_type = "min"
+    prefixes_extension = "" if distance_type == "all" else "_min"
 
     # load keypoints coordinates
     kp_coords_filename_prefixes = [
@@ -81,7 +85,8 @@ if __name__ == "__main__":
     ]
 
     # load distances matches, and keypoints coordinates of matches
-    matched_filename_prefix = f"{photo_name}_y_{y_starts[0]}_{y_starts[1]}_{y_lengths[0]}_{y_lengths[1]}_x_{x_starts[0]}_{x_starts[1]}_{x_lengths[0]}_{x_lengths[1]}"
+
+    matched_filename_prefix = f"{photo_name}_y_{y_starts[0]}_{y_starts[1]}_{y_lengths[0]}_{y_lengths[1]}_x_{x_starts[0]}_{x_starts[1]}_{x_lengths[0]}_{x_lengths[1]}{prefixes_extension}"
 
     distances_matches = np.load(
         f"computed_distances/{matched_filename_prefix}_dists.npy"
@@ -114,7 +119,7 @@ if __name__ == "__main__":
     print("beginning saving opencv objects to file")
 
     # save the matches and keypoints using function from matching/saving.py
-    target_matched_filename_prefix = f"{photo_name}_y_{y_starts[0]}_{y_starts[1]}_{y_lengths[0]}_{y_lengths[1]}_x_{x_starts[0]}_{x_starts[1]}_{x_lengths[0]}_{x_lengths[1]}"
+    target_matched_filename_prefix = f"{photo_name}_y_{y_starts[0]}_{y_starts[1]}_{y_lengths[0]}_{y_lengths[1]}_x_{x_starts[0]}_{x_starts[1]}_{x_lengths[0]}_{x_lengths[1]}{prefixes_extension}"
 
     save_kp_pairs_to_arr(
         kp_pairs,

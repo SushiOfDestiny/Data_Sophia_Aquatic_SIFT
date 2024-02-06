@@ -70,11 +70,15 @@ if __name__ == "__main__":
     x_starts = [803, 806]
     x_lengths = [20, 20]
 
+    # define distance type suffix
+    distance_type = "min"
+    prefixes_extension = "" if distance_type == "all" else "_min"
+
     # redefine the threshold used
     epsilon = 1
 
     # load all computed objects
-    matches_filename_prefix = f"{photo_name}_y_{y_starts[0]}_{y_starts[1]}_{y_lengths[0]}_{y_lengths[1]}_x_{x_starts[0]}_{x_starts[1]}_{x_lengths[0]}_{x_lengths[1]}"
+    matches_filename_prefix = f"{photo_name}_y_{y_starts[0]}_{y_starts[1]}_{y_lengths[0]}_{y_lengths[1]}_x_{x_starts[0]}_{x_starts[1]}_{x_lengths[0]}_{x_lengths[1]}{prefixes_extension}"
     unfiltered_filename_prefixes = [
         f"{im_names[id_image]}_y_{y_starts[id_image]}_{y_lengths[id_image]}_x_{x_starts[id_image]}_{x_lengths[id_image]}"
         for id_image in range(2)
@@ -122,9 +126,6 @@ if __name__ == "__main__":
         outImg=None,
         singlePointColor=(255, 0, 0),
     )
-
-    # define filename for saving matches
-    matches_filename = f"filtered_keypoints/{photo_name}_matches.png"
 
     # display 1 match, object here is not DMatch, but a couple of DMatch, as Sift returns
     match_idx = 0
