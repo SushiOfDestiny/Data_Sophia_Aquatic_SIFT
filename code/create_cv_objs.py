@@ -87,7 +87,7 @@ if __name__ == "__main__":
     )
     matched_idx_ims = [
         np.load(
-            f"computed_distances/{matched_filename_prefix}_matched_idx_im{id_image}.npy"
+            f"computed_distances/{matched_filename_prefix}_matched_idx_im{id_image+1}.npy"
         )
         for id_image in range(2)
     ]
@@ -106,7 +106,7 @@ if __name__ == "__main__":
     ]
 
     # create opencv matches list
-    matches_list = create_matches_list(distances_matches)
+    matches_list = create_matches_list(distances_matches, matched_idx_ims)
 
     print("finished creating opencv objects")
 
