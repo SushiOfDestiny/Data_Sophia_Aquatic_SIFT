@@ -21,6 +21,10 @@ from datetime import datetime
 from numba import njit
 import numba
 
+from computation_pipeline_hyper_params import *
+
+from filenames_creation import *
+
 # Goal is to convert into opencv objects such as keypoints and matches, the numpy arrays of distances and coordinates
 
 
@@ -59,42 +63,17 @@ def create_matches_list(distances_matches, matched_idx_ims):
 
 
 if __name__ == "__main__":
-    photo_name = "rock_1"
-    im_names = ["rock_1_left", "rock_1_right"]
-
-    # parameters choices
-    # set the coordinates of the subimages
-    y_starts = [386, 459]
-    y_lengths = [10, 10]
-    x_starts = [803, 806]
-    x_lengths = [20, 20]
-
-    distance_type = "min"
-    prefixes_extension = "" if distance_type == "all" else "_min"
 
     # load keypoints coordinates
-    kp_coords_filename_prefixes = [
-        f"{im_names[id_image]}_y_{y_starts[id_image]}_{y_lengths[id_image]}_x_{x_starts[id_image]}_{x_lengths[id_image]}"
-        for id_image in range(2)
-    ]
     kp_coords = [
-        np.load(
-            f"computed_descriptors/{kp_coords_filename_prefixes[id_image]}_coords.npy"
-        )
+        np.load(f"{descrip_path}/{kp_coords_filenames[id_image]}")
         for id_image in range(2)
     ]
 
     # load distances matches, and keypoints coordinates of matches
-
-    matched_filename_prefix = f"{photo_name}_y_{y_starts[0]}_{y_starts[1]}_{y_lengths[0]}_{y_lengths[1]}_x_{x_starts[0]}_{x_starts[1]}_{x_lengths[0]}_{x_lengths[1]}{prefixes_extension}"
-
-    distances_matches = np.load(
-        f"computed_distances/{matched_filename_prefix}_dists.npy"
-    )
+    distances_matches = np.load(f"{dist_path}/{dist_filename_prefix}_dists.npy")
     matched_idx_ims = [
-        np.load(
-            f"computed_distances/{matched_filename_prefix}_matched_idx_im{id_image+1}.npy"
-        )
+        np.load(f"{dist_path}/{matched_idx_filename_prefix}{id_image+1}.npy")
         for id_image in range(2)
     ]
 
@@ -119,22 +98,20 @@ if __name__ == "__main__":
     print("beginning saving opencv objects to file")
 
     # save the matches and keypoints using function from matching/saving.py
-    target_matched_filename_prefix = f"{photo_name}_y_{y_starts[0]}_{y_starts[1]}_{y_lengths[0]}_{y_lengths[1]}_x_{x_starts[0]}_{x_starts[1]}_{x_lengths[0]}_{x_lengths[1]}{prefixes_extension}"
-
     save_kp_pairs_to_arr(
         kp_pairs,
-        f"computed_matches/{target_matched_filename_prefix}_kp_pairs_arr",
+        f"{matches_path}/{kp_pairs_filename}",
     )
     print("finished saving kp_pairs")
 
     save_Dmatches(
         matches_list,
-        f"computed_matches/{target_matched_filename_prefix}_matches.txt",
+        f"{matches_path}/{matches_filename}",
     )
     print("finished saving matches")
 
     for id_img in range(2):
         save_keypoints(
             kps_ims_objs[id_img],
-            f"computed_matches/{target_matched_filename_prefix}_kp_{id_img}.txt",
+            f"{matches_path}/{kp_filenames[id_images]}",
         )

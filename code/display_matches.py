@@ -8,6 +8,10 @@ import matplotlib.pyplot as plt
 sys.path.append("../matching")
 from saving import load_matches, load_keypoints
 
+from computation_pipeline_hyper_params import *
+
+from filenames_creation import *
+
 
 def display_match(
     ims,
@@ -59,59 +63,29 @@ def display_match(
 
 
 if __name__ == "__main__":
-    im_folder = "../data/blender/rocks/"
-    photo_name = "rock_1"
-    im_names = ["rock_1_left", "rock_1_right"]
 
-    im_1 = cv.imread(im_folder + "left.png", cv.IMREAD_GRAYSCALE)
-    im_2 = cv.imread(im_folder + "right.png", cv.IMREAD_GRAYSCALE)
-    ims = [im_1, im_2]
-
-    # set the coordinates of the subimages
-    y_starts = [386, 459]
-    y_lengths = [10, 10]
-    x_starts = [803, 806]
-    x_lengths = [20, 20]
-    # define distance type suffix
-    distance_type = "min"
-    prefixes_extension = "" if distance_type == "all" else "_min"
-
-    # redefine the threshold used
-    epsilon = 1
+    ims = [
+        cv.imread(f"{img_folder}/{im_names[id_image]}.{im_ext}", cv.IMREAD_GRAYSCALE)
+        for id_image in range(2)
+    ]
 
     # load all computed objects
-    matches_filename_prefix = f"{photo_name}_y_{y_starts[0]}_{y_starts[1]}_{y_lengths[0]}_{y_lengths[1]}_x_{x_starts[0]}_{x_starts[1]}_{x_lengths[0]}_{x_lengths[1]}{prefixes_extension}"
-    unfiltered_filename_prefixes = [
-        f"{im_names[id_image]}_y_{y_starts[id_image]}_{y_lengths[id_image]}_x_{x_starts[id_image]}_{x_lengths[id_image]}"
-        for id_image in range(2)
-    ]
 
     # load unfiltered keypoints coordinates
-    kps_coords_filenames = [
-        f"computed_descriptors/{unfiltered_filename_prefixes[id_image]}_coords.npy"
-        for id_image in range(2)
-    ]
-    kps_coords = [np.load(kps_coords_filenames[id_image]) for id_image in range(2)]
+    kps_coords = [np.load(kp_coords_filenames[id_image]) for id_image in range(2)]
     descs = [
         np.load(
-            f"computed_descriptors/{unfiltered_filename_prefixes[id_image]}_descs.npy"
+            descrip_filenames[id_image],
         )
         for id_image in range(2)
     ]
 
-    # load filtered keypoints, matches and index of good matches
-    kps = [
-        load_keypoints(f"computed_matches/{matches_filename_prefix}_kp_{id_image}.txt")
-        for id_image in range(2)
-    ]
+    # load unfiltered keypoints, matches and index of good matches
+    kps = [load_keypoints(kp_filenames[id_image]) for id_image in range(2)]
 
-    matches_idxs_filename = (
-        f"computed_matches/{matches_filename_prefix}_correct_idxs.npy"
-    )
-    matches_idxs = np.load(matches_idxs_filename)
+    matches_idxs = np.load(f"{matches_path}/{correct_matches_idxs_filename}.npy")
 
-    matches_filename = f"computed_matches/{matches_filename_prefix}_matches.txt"
-    matches = load_matches(matches_filename)
+    matches = load_matches(f"{matches_path}/{matches_filename}")
 
     # filter good matches according to blender
     good_matches = [matches[i] for i in matches_idxs]
@@ -135,18 +109,23 @@ if __name__ == "__main__":
         kps_coords,
         show_plot=True,
         save_path="filtered_keypoints",
-        filename_prefix=f"{matches_filename_prefix}_correct_match",
+        filename_prefix=correct_match_filename_prefix,
         dpi=800,
-    
+    )
+
     # pabo
     good_matches_kps_1 = [kps_coords[0][dmatch.queryIdx] for dmatch in good_matches]
     good_matches_kps_2 = [kps_coords[1][dmatch.trainIdx] for dmatch in good_matches]
-    good_matches_kps_1_idxs = np.array([(kp[1] - y_starts[0])*x_lengths[0]+(kp[0] - x_starts[0])] for kp in good_matches_kps_1)
-    good_matches_kps_2_idxs = np.array([(kp[1] - y_starts[1])*x_lengths[0]+(kp[0] - x_starts[1])] for kp in good_matches_kps_2)
+    good_matches_kps_1_idxs = np.array(
+        [(kp[1] - y_starts[0]) * x_lengths[0] + (kp[0] - x_starts[0])]
+        for kp in good_matches_kps_1
+    )
+    good_matches_kps_2_idxs = np.array(
+        [(kp[1] - y_starts[1]) * x_lengths[0] + (kp[0] - x_starts[1])]
+        for kp in good_matches_kps_2
+    )
     good_descs_1 = descs[0][good_matches_kps_1_idxs]
     good_descs_2 = descs[1][good_matches_kps_2_idxs]
-    
+
     avg_desc_1 = np.mean(good_descs_1, axis=0)
     avg_desc_2 = np.mean(good_descs_2, axis=0)
-
-    
