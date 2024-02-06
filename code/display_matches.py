@@ -41,16 +41,16 @@ if __name__ == "__main__":
     ]
     kps_coords = [np.load(kps_coords_filenames[id_image]) for id_image in range(2)]
 
-    # display unfiltered keypoints
-    for id_image in range(2):
-        pos_xs = kps_coords[id_image][:, 0]
-        pos_ys = kps_coords[id_image][:, 1]
+    # # display unfiltered keypoints
+    # for id_image in range(2):
+    #     pos_xs = kps_coords[id_image][:, 0]
+    #     pos_ys = kps_coords[id_image][:, 1]
 
-        plt.figure(figsize=(10, 10))
-        plt.imshow(ims[id_image], cmap="gray")
-        plt.scatter(pos_xs, pos_ys, c="r", s=10)
-        plt.axis("off")
-        plt.show()
+    #     plt.figure(figsize=(10, 10))
+    #     plt.imshow(ims[id_image], cmap="gray")
+    #     plt.scatter(pos_xs, pos_ys, c="r", s=10)
+    #     plt.axis("off")
+    #     plt.show()
 
     # load filtered keypoints, matches and index of good matches
     all_kps_obj_filenames = [
@@ -67,14 +67,14 @@ if __name__ == "__main__":
     matches_filename = f"computed_matches/{matches_filename_prefix}_matches.txt"
     matches = load_matches(matches_filename)
 
-    # filter goode matches according to blender
+    # filter good matches according to blender
     good_matches = [matches[i] for i in matches_idxs]
 
     for id_image in range(2):
         print(f"number of keypoints in image {id_image}", len(kps[id_image]))
-        print(f"some keypoints positions in image {id_image}", kps_coords[id_image][10])
+        # print(f"some keypoints positions in image {id_image}", kps_coords[id_image][10])
     print("number of unfiltered matches", len(matches))
-    print("good matches", good_matches)
+    print("nb good matches", len(good_matches))
 
     # draw matches
     matches_img = cv.drawMatchesKnn(
@@ -88,7 +88,25 @@ if __name__ == "__main__":
         singlePointColor=(255, 0, 0),
     )
 
-    plt.figure(figsize=(10, 5))
-    plt.imshow(matches_img)
-    plt.axis("off")
+    # plt.figure(figsize=(10, 5))
+    # plt.imshow(matches_img)
+    # plt.axis("off")
+    # plt.show()
+
+    # display 1 match, object here is not DMatch, but a couple of DMatch, as Sift returns
+    match_idx = 0
+    # we get here only the Dmatch
+    chosen_Dmatch = good_matches[match_idx][0]
+    matched_kps_pos = (
+        kps_coords[0][chosen_Dmatch.queryIdx],
+        kps_coords[1][chosen_Dmatch.trainIdx],
+    )
+
+    fig, axs = plt.subplots(1, 2, figsize=(20, 10))
+
+    for id_image in range(2):
+        axs[id_image].imshow(ims[id_image], cmap="gray")
+        axs[id_image].scatter(
+            matched_kps_pos[id_image][0], matched_kps_pos[id_image][1], c="r", s=10
+        )
     plt.show()
