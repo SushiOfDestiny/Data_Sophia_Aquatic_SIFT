@@ -107,11 +107,16 @@ def compute_minimal_distances_matches_pairs(subimage_descriptors, y_lengths, x_l
 
 
 def compute_and_save_distances(
-    subimage_descriptors, y_lengths, x_lengths, y_starts, x_starts, photo_name, distance_type="all"
+    subimage_descriptors,
+    y_lengths,
+    x_lengths,
+    y_starts,
+    x_starts,
+    photo_name,
+    distance_type="all",
 ):
     before = datetime.now()
-    nb_matches = y_lengths[0] * x_lengths[0] * y_lengths[1] * x_lengths[1]
-    print(f"Start computing n={nb_matches} distances: {before}")
+    print(f"Start computing distances: {before}")
 
     if distance_type == "all":
         distances_matches, idx_im1_matches, idx_im2_matches = (
@@ -119,18 +124,23 @@ def compute_and_save_distances(
         )
     elif distance_type == "min":
         distances_matches, idx_im1_matches, idx_im2_matches = (
-            compute_minimal_distances_matches_pairs(subimage_descriptors, y_lengths, x_lengths)
+            compute_minimal_distances_matches_pairs(
+                subimage_descriptors, y_lengths, x_lengths
+            )
         )
     else:
         raise ValueError("Invalid distance_type. Expected 'all' or 'min'.")
-    dist_type_suffix = "all" if distance_type == "all" else "min"
-
 
     after = datetime.now()
-    print(f"End computing n={nb_matches} distances: {after}")
+    print(f"End computing distances: {after}")
     print(f"Compute time: {after - before}")
+    print(f"Chosen distance type: {distance_type}")
 
-    target_filename_prefix = f"{photo_name}_y_{y_starts[0]}_{y_starts[1]}_{y_lengths[0]}_{y_lengths[1]}_x_{x_starts[0]}_{x_starts[1]}_{x_lengths[0]}_{x_lengths[1]}"
+    # save distances and indices of pixels in the matches
+    # define suffix for filename
+    dist_type_suffix = "" if distance_type == "all" else "_min"
+    # define filename prefix with distance type suffix
+    target_filename_prefix = f"{photo_name}_y_{y_starts[0]}_{y_starts[1]}_{y_lengths[0]}_{y_lengths[1]}_x_{x_starts[0]}_{x_starts[1]}_{x_lengths[0]}_{x_lengths[1]}{dist_type_suffix}"
 
     np.save(
         f"computed_distances/{target_filename_prefix}_dists.npy",
@@ -185,92 +195,15 @@ if __name__ == "__main__":
             f"also equal to the number of pixels: {subimage_descriptors[id_image].shape[0] == y_lengths[id_image] * x_lengths[id_image]}"
         )
 
-    # Remark: some descriptors are missing, especially at the border of the cropped image
-    # they shouldn't
-
-    # display them
-    # for id_image in range(nb_images):
-    #     # display first descriptor of the image
-    #     for i in range(1):
-    #         for j in range(1):
-    #             visu_desc.display_descriptor(
-    #                 subimage_descriptors[id_image][i * x_lengths[id_image] + j]
-    #             )
-    #     visu_desc.display_descriptor(subimage_descriptors[i])
-
-    # # flatten them
-    # flat_descriptors = [
-    #     [
-    #         desc.flatten_descriptor(subimage_descriptors[i][pixel_pos])
-    #         for pixel_pos in range(y_lengths[i] * x_lengths[i])
-    #     ]
-    #     for i in range(nb_images)
-    # ]
-
-    # compute distances from descriptors
-
     # choose between all distances or minimal distances
+    distance_type = ["all", "min"]
 
-    before = datetime.now()
-    nb_matches = y_lengths[0] * x_lengths[0] * y_lengths[1] * x_lengths[1]
-    print(f"Start computing n={nb_matches} distances: {before}")
-
-    # try to njit it, and to parallelize it, but encounters an issue with the
-
-    # compute_descriptor_distance_unflat function
-    distances_matches, idx_im1_matches, idx_im2_matches = (
-        compute_distances_matches_pairs(subimage_descriptors, y_lengths, x_lengths)
-    )
-
-    after = datetime.now()
-    print(f"End computing n={nb_matches} distances: {after}")
-    print(f"Compute time: {after - before}")
-
-    # 6 250 000 distances computed in 1'20"
-
-    # save distances and indices of pixels in the matches
-    target_filename_prefix = f"{photo_name}_y_{y_starts[0]}_{y_starts[1]}_{y_lengths[0]}_{y_lengths[1]}_x_{x_starts[0]}_{x_starts[1]}_{x_lengths[0]}_{x_lengths[1]}"
-
-    np.save(
-        f"computed_distances/{target_filename_prefix}_dists.npy",
-        distances_matches,
-    )
-    np.save(
-        f"computed_distances/{target_filename_prefix}_matched_idx_im1.npy",
-        idx_im1_matches,
-    )
-    np.save(
-        f"computed_distances/{target_filename_prefix}_matched_idx_im2.npy",
-        idx_im2_matches,
-    )
-
-    # compute minimal distances to pixels of image 1
-    before = datetime.now()
-    min_nb_matches = y_lengths[0] * x_lengths[0]
-    print(f"Start computing n={min_nb_matches} distances: {before}")
-
-    # compute_descriptor_min_distance_unflat function
-    min_distances_matches, min_idx_im1_matches, min_idx_im2_matches = (
-        compute_minimal_distances_matches_pairs(
-            subimage_descriptors, y_lengths, x_lengths
-        )
-    )
-
-    after = datetime.now()
-    print(f"End computing n={min_nb_matches} min_distances: {after}")
-    print(f"Compute time: {after - before}")
-
-    # save min_distances and indices of pixels in the matches
-
-    np.save(
-        f"computed_distances/{target_filename_prefix}_min_dists.npy",
-        min_distances_matches,
-    )
-    np.save(
-        f"computed_distances/{target_filename_prefix}_matched_min_idx_im1.npy",
-        min_idx_im1_matches,
-    )
-    np.save(
-        f"computed_distances/{target_filename_prefix}_matched_min_idx_im2.npy",
-        min_idx_im2_matches,
+    compute_and_save_distances(
+        subimage_descriptors,
+        y_lengths,
+        x_lengths,
+        y_starts,
+        x_starts,
+        photo_name,
+        distance_type=distance_type[1],
     )
