@@ -25,12 +25,12 @@ if __name__ == "__main__":
     x_lengths = [5, 5]
 
     storage_folder = "../../../code/computed_matches"
-    filename_prefix = f"{photo_name}_y_{y_starts[0]}_{y_starts[1]}_{y_lengths[0]}_{y_lengths[1]}_{x_starts[0]}_{x_starts[1]}_{x_lengths[0]}_{x_lengths[1]}"
+    matches_filename_prefix = f"{photo_name}_y_{y_starts[0]}_{y_starts[1]}_{y_lengths[0]}_{y_lengths[1]}_{x_starts[0]}_{x_starts[1]}_{x_lengths[0]}_{x_lengths[1]}"
 
-    kp_pairs_file = f"{storage_folder}/{filename_prefix}_kp_pairs.npy"
+    kp_pairs_file = f"{storage_folder}/{matches_filename_prefix}_kp_pairs_arr.npy"
 
     # define filtering precision threshold
-    epsilon = 1e-3
+    epsilon = 1
 
     # filter matches
     correct_matches, correct_matches_idxs, matched_3d_pts = (
@@ -42,7 +42,9 @@ if __name__ == "__main__":
         correct_matches_idxs, dtype=np.int32
     )  # first convert to numpy array
 
-    correct_matches_idxs_filename = f"{storage_folder}/{filename_prefix}_idxs"
+    correct_matches_idxs_filename = (
+        f"{storage_folder}/{matches_filename_prefix}_correct_idxs"
+    )
     matching.save_correct_matches(
         correct_matches_idxs_arr, correct_matches_idxs_filename
     )

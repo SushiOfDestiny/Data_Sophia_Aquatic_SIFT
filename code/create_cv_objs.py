@@ -8,13 +8,7 @@ import visu_hessian as vh
 import visu_descriptor as visu_desc
 
 
-matching_path = os.path.join(os.getcwd(), "../matching")
-if os.path.exists(matching_path):
-    sys.path.append(matching_path)
-else:
-    print(f"Directory {matching_path} does not exist")
-
-
+sys.path.append("../matching")
 from matching.saving import (
     save_keypoints,
     save_Dmatches,
@@ -47,14 +41,19 @@ def coords_to_kps(coords):
     return kp_list
 
 
-def create_matches_list(distances_matches):
+def create_matches_list(distances_matches, matched_idx_ims):
     """
     Create a list of OpenCV matches from a numpy array of distances
-    distances_matches: np.array of shape (n, ), of dtype float32
+    distances_matches: numpy array of shape (n, ), of dtype float32
+    matched_idx_ims: list of 2 np.array of shape (n, )
     """
     matches_list = []
     for i in range(len(distances_matches)):
-        match = cv.DMatch(_distance=distances_matches[i], _queryIdx=i, _trainIdx=i)
+        match = cv.DMatch(
+            _distance=distances_matches[i],
+            _queryIdx=matched_idx_ims[0][i],
+            _trainIdx=matched_idx_ims[1][i],
+        )
         matches_list.append(match)
     return matches_list
 
@@ -68,28 +67,42 @@ if __name__ == "__main__":
     x_starts = [800, 800]
     x_lengths = [5, 5]
 
-    # load distances matches, and keypoints coordinates of matches
-    storage_folder = "computed_distances"
-    storage_filename_suffixes = ["dists", "coords_im1", "coords_im2"]
-    filename_prefix = f"{photo_name}_y_{y_starts[0]}_{y_starts[1]}_{y_lengths[0]}_{y_lengths[1]}_{x_starts[0]}_{x_starts[1]}_{x_lengths[0]}_{x_lengths[1]}"
-    loaded_objects = [None for i in range(3)]
-    for id_obj in range(3):
-        loaded_objects[id_obj] = np.load(
-            f"{storage_folder}/{filename_prefix}_{storage_filename_suffixes[id_obj]}.npy"
-        )
-
-    # unpack the multiples lists
-    distances_matches = loaded_objects[0]
-    coords_ims_matches = loaded_objects[1:]  # shape = (2, n, 2)
-
-    # create opencv lists of keypoints ordered like the distances
-    kp_ims_matches = [
-        coords_to_kps(coords_ims_matches[id_image]) for id_image in range(2)
+    # load keypoints coordinates
+    kp_coords_filename_prefixes = [
+        f"{im_names[id_image]}_y_{y_starts[id_image]}_{y_lengths[id_image]}_x_{x_starts[id_image]}_{x_lengths[id_image]}"
+        for id_image in range(2)
     ]
+    kp_coords = [
+        np.load(
+            f"computed_descriptors/{kp_coords_filename_prefixes[id_image]}_coords.npy"
+        )
+        for id_image in range(2)
+    ]
+
+    # load distances matches, and keypoints coordinates of matches
+    matched_filename_prefix = f"{photo_name}_y_{y_starts[0]}_{y_starts[1]}_{y_lengths[0]}_{y_lengths[1]}_{x_starts[0]}_{x_starts[1]}_{x_lengths[0]}_{x_lengths[1]}"
+
+    distances_matches = np.load(
+        f"computed_distances/{matched_filename_prefix}_dists.npy"
+    )
+    matched_idx_ims = [
+        np.load(
+            f"computed_distances/{matched_filename_prefix}_matched_idx_im{id_image}.npy"
+        )
+        for id_image in range(2)
+    ]
+
+    # create opencv lists of original keypoints
+    # kps_ims_objs[id_image][k, l] is the l-th coordinate of the k-th keypoint of image id_image
+    kps_ims_objs = [coords_to_kps(kp_coords[id_image]) for id_image in range(2)]
+
     # create list of keypoints pairs, ordered like the distances
     kp_pairs = [
-        (kp_ims_matches[0][i], kp_ims_matches[1][i])
-        for i in range(len(kp_ims_matches[0]))
+        (
+            kps_ims_objs[0][matched_idx_ims[0][id_dist]],
+            kps_ims_objs[1][matched_idx_ims[1][id_dist]],
+        )
+        for id_dist in range(len(distances_matches))
     ]
 
     # create opencv matches list
@@ -100,23 +113,22 @@ if __name__ == "__main__":
     print("beginning saving opencv objects to file")
 
     # save the matches and keypoints using function from matching/saving.py
-    target_folder = "computed_matches"
-    target_filename_prefix = f"{photo_name}_y_{y_starts[0]}_{y_starts[1]}_{y_lengths[0]}_{y_lengths[1]}_{x_starts[0]}_{x_starts[1]}_{x_lengths[0]}_{x_lengths[1]}"
+    target_matched_filename_prefix = f"{photo_name}_y_{y_starts[0]}_{y_starts[1]}_{y_lengths[0]}_{y_lengths[1]}_{x_starts[0]}_{x_starts[1]}_{x_lengths[0]}_{x_lengths[1]}"
 
     save_kp_pairs_to_arr(
         kp_pairs,
-        f"{target_folder}/{target_filename_prefix}_kp_pairs",
+        f"computed_matches/{target_matched_filename_prefix}_kp_pairs_arr",
     )
     print("finished saving kp_pairs")
 
     save_Dmatches(
         matches_list,
-        f"{target_folder}/{target_filename_prefix}_matches.txt",
+        f"computed_matches/{target_matched_filename_prefix}_matches.txt",
     )
     print("finished saving matches")
 
     for id_img in range(2):
         save_keypoints(
-            kp_ims_matches[id_img],
-            f"{target_folder}/{target_filename_prefix}_kp_{id_img}.txt",
+            kps_ims_objs[id_img],
+            f"computed_matches/{target_matched_filename_prefix}_kp_{id_img}.txt",
         )

@@ -34,18 +34,16 @@ if __name__ == "__main__":
     ]
 
     # load unfiltered keypoints coordinates
-    unfiltered_kps_pos_filenames = [
-        f"{storage_folders[0]}/{unfiltered_filename_prefixes[id_image]}_coords.npy"
+    kps_coords_filenames = [
+        f"computed_descriptors/{unfiltered_filename_prefixes[id_image]}_coords.npy"
         for id_image in range(2)
     ]
-    unfiltered_kps_pos = [
-        np.load(unfiltered_kps_pos_filenames[id_image]) for id_image in range(2)
-    ]
+    kps_coords = [np.load(kps_coords_filenames[id_image]) for id_image in range(2)]
 
     # display unfiltered keypoints
     for id_image in range(2):
-        pos_xs = unfiltered_kps_pos[id_image][:, 0]
-        pos_ys = unfiltered_kps_pos[id_image][:, 1]
+        pos_xs = kps_coords[id_image][:, 0]
+        pos_ys = kps_coords[id_image][:, 1]
 
         plt.figure(figsize=(10, 10))
         plt.imshow(ims[id_image], cmap="gray")
@@ -54,37 +52,36 @@ if __name__ == "__main__":
         plt.show()
 
     # load filtered keypoints, matches and index of good matches
-    matched_kps_filenames = [
-        f"{storage_folders[2]}/{matches_filename_prefix}_kp_{id_image}.txt"
+    all_kps_obj_filenames = [
+        f"computed_matches/{matches_filename_prefix}_kp_{id_image}.txt"
         for id_image in range(2)
     ]
-    matched_kps = [
-        load_keypoints(kps_filename) for kps_filename in matched_kps_filenames
-    ]
+    kps = [load_keypoints(kps_filename) for kps_filename in all_kps_obj_filenames]
 
-    matches_idxs_filename = f"{storage_folders[2]}/{matches_filename_prefix}_idxs.npy"
+    matches_idxs_filename = (
+        f"computed_matches/{matches_filename_prefix}_correct_idxs.npy"
+    )
     matches_idxs = np.load(matches_idxs_filename)
 
-    matches_filename = f"{storage_folders[2]}/{matches_filename_prefix}_matches.txt"
+    matches_filename = f"computed_matches/{matches_filename_prefix}_matches.txt"
     matches = load_matches(matches_filename)
 
+    # filter goode matches according to blender
     good_matches = [matches[i] for i in matches_idxs]
 
     for id_image in range(2):
-        print(f"number of keypoints in image {id_image}", len(matched_kps[id_image]))
-        print(
-            f"some keypoints positions in image {id_image}", matched_kps[id_image][10]
-        )
-    print("number of matches", len(matches))
+        print(f"number of keypoints in image {id_image}", len(kps[id_image]))
+        print(f"some keypoints positions in image {id_image}", kps_coords[id_image][10])
+    print("number of unfiltered matches", len(matches))
     print("good matches", good_matches)
 
     # draw matches
     matches_img = cv.drawMatchesKnn(
         # Warning : the number of matches to draw is not specified here
         img1=im_1,
-        keypoints1=matched_kps[0],
+        keypoints1=kps[0],
         img2=im_2,
-        keypoints2=matched_kps[1],
+        keypoints2=kps[1],
         matches1to2=good_matches,
         outImg=None,
         singlePointColor=(255, 0, 0),

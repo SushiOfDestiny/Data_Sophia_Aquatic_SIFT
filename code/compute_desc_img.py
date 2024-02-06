@@ -17,16 +17,32 @@ import numba
 
 @njit(parallel=True)
 def compute_desc_pixels(
-    overall_features, y_start, y_length, x_start, x_length, border_size=1
+    overall_features,
+    y_start,
+    y_length,
+    x_start,
+    x_length,
+    border_size=1,
+    nb_bins=1,
+    bin_radius=2,
+    delta_angle=5.0,
 ):
     """
     Compute descriptors for a set of pixels in an image
     overall_features: overall features for the image, computed within a border
-    return 2 lists: list of flattened descriptors, and list of pixels coordinates in the same order as the pixels
+    return numpy arrays:
+    numpyarray of flattened descriptors, of shape (n, 3 * nb_bins * nb_bins * nb_angular_bins)
+    numpy array of pixels coordinates in the same order as the pixels, of shape (n, 2)
+    where n is the number of pixels = y_length * x_length
     pixel_position is (x, y)
     """
-    img_descriptors = []
-    coords_array = []
+    # initialize the descriptors and coords array
+    nb_angular_bins = int(360.0 / delta_angle) + 1
+    n = y_length * x_length
+    img_descriptors = np.zeros(
+        (n, 3 * nb_bins * nb_bins * nb_angular_bins), dtype=np.float32
+    )
+    coords = np.zeros((n, 2), dtype=np.int32)
     # use numba.prange for parallelization
     for i in numba.prange(y_start, y_start + y_length):
         for j in range(x_start, x_start + x_length):
@@ -36,17 +52,18 @@ def compute_desc_pixels(
             descrip = desc.compute_descriptor_histograms_1_2_rotated(
                 overall_features_1_2=overall_features,
                 kp_position=pixel_position,
-                nb_bins=1,
-                bin_radius=2,
+                nb_bins=nb_bins,
+                bin_radius=bin_radius,
+                delta_angle=delta_angle,
             )
 
             # flatten the list
             flat_descrip = desc.flatten_descriptor(descrip)
+            arr_idx = (i - y_start) * x_length + (j - x_start)
+            img_descriptors[arr_idx] = flat_descrip
+            coords[arr_idx] = np.array(pixel_position)
 
-            img_descriptors.append(flat_descrip)
-            coords_array.append(pixel_position)
-
-    return img_descriptors, coords_array
+    return img_descriptors, coords
 
 
 if __name__ == "__main__":
@@ -105,7 +122,7 @@ if __name__ == "__main__":
 
         before = datetime.now()
         print(f"desc computation beginning for image {id_image}", before)
-        img_descriptors, coords_array = compute_desc_pixels(
+        img_descriptors, coords = compute_desc_pixels(
             overall_features,
             y_starts[id_image],
             y_lengths[id_image],
@@ -118,12 +135,13 @@ if __name__ == "__main__":
         print(f"desc compute time for image {id_image}", after - before)
 
         # save img_descriptors and list of coordinates
-        objects_to_save = [img_descriptors, coords_array]
         filename_prefix = f"{im_names[id_image]}_y_{y_starts[id_image]}_{y_lengths[id_image]}_x_{x_starts[id_image]}_{x_lengths[id_image]}"
-        filename_suffixes = ["descs", "coords"]
 
-        for id_object in range(2):
-            np.save(
-                f"{storage_folder}/{filename_prefix}_{filename_suffixes[id_object]}.npy",
-                objects_to_save[id_object],
-            )
+        np.save(
+            f"computed_descriptors/{filename_prefix}_descs.npy",
+            img_descriptors,
+        )
+        np.save(
+            f"computed_descriptors/{filename_prefix}_coords.npy",
+            coords,
+        )
