@@ -139,7 +139,8 @@ if __name__ == "__main__":
         save_path="filtered_keypoints",
         filename_prefix=f"{matches_filename_prefix}_correct_match",
         dpi=800,
-    
+    )
+
     # pabo
     good_matches_kps_1 = [kps_coords[0][dmatch[0].queryIdx] for dmatch in good_matches]
     good_matches_kps_2 = [kps_coords[1][dmatch[0].trainIdx] for dmatch in good_matches]
@@ -148,7 +149,27 @@ if __name__ == "__main__":
     good_descs_1 = descs[0][good_matches_kps_1_idxs]
     good_descs_2 = descs[1][good_matches_kps_2_idxs]
     
+    # calculate rest of idx set
+    print(np.setdiff1d(np.arange(np.shape(descs[0])[0]), good_matches_kps_1_idxs))
+    bad_descs_1 = descs[0][np.setdiff1d(np.arange(np.shape(descs[0])[0]), good_matches_kps_1_idxs)]
+    bad_descs_2 = descs[1][np.setdiff1d(np.arange(np.shape(descs[1])[0]), good_matches_kps_2_idxs)]
+    
     avg_desc_1 = np.mean(good_descs_1, axis=0)
     avg_desc_2 = np.mean(good_descs_2, axis=0)
 
-    display_descriptor(unflatten_descriptor(avg_desc_1, nb_bins=1, nb_angular_bins=(int(360.0/5.0)+1)))
+    #display_descriptor(unflatten_descriptor(avg_desc_1, nb_bins=1, nb_angular_bins=(int(360.0/5.0)+1)), "Average good descriptor for left image")
+    #display_descriptor(unflatten_descriptor(avg_desc_2, nb_bins=1, nb_angular_bins=(int(360.0/5.0)+1)), "Average good descriptor for right image")
+
+    avg_bad_desc_1 = np.mean(bad_descs_1, axis=0)
+    avg_bad_desc_2 = np.mean(bad_descs_2, axis=0)
+
+    #display_descriptor(unflatten_descriptor(avg_bad_desc_1, nb_bins=1, nb_angular_bins=(int(360.0/5.0)+1)), "Average bad descriptor for left image")
+    #display_descriptor(unflatten_descriptor(avg_bad_desc_2, nb_bins=1, nb_angular_bins=(int(360.0/5.0)+1)), "Average bad descriptor for right image")
+
+    diff_of_avg = avg_desc_1 - avg_bad_desc_1
+    #display_descriptor(unflatten_descriptor(diff_of_avg, nb_bins=1, nb_angular_bins=(int(360.0/5.0)+1)), "Difference of average descriptors between good and bad matches")
+
+    std_desc_1 = np.std(good_descs_1, axis=0)
+    std_bad_desc_1 = np.std(bad_descs_1, axis=0)
+    display_descriptor(unflatten_descriptor(std_desc_1, nb_bins=1, nb_angular_bins=(int(360.0/5.0)+1)), "Standard deviation in left image good keypoints")
+    display_descriptor(unflatten_descriptor(std_bad_desc_1, nb_bins=1, nb_angular_bins=(int(360.0/5.0)+1)), "Standard deviation in left image bad keypoints")
