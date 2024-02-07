@@ -19,9 +19,9 @@ im_ext = "png"
 
 # 2nd set
 y_starts = [530, 560]
-y_lengths = [200, 200]
+y_lengths = [20, 20]
 x_starts = [1200, 1200]
-x_lengths = [200, 200]
+x_lengths = [20, 20]
 
 # define sigma for the gaussian blur
 blur_sigma = 1.0
@@ -30,12 +30,13 @@ blur_sigma = 1.0
 border_size = 1
 
 # define descriptor parameters
-nb_bins = 1
+nb_bins = 3
 bin_radius = 2
 delta_angle = 5.0
 sigma = 0
 normalization_mode = "global"
 neigh_radius = (2 * bin_radius + 1) * nb_bins // 2 + bin_radius
+nb_angular_bins = int(360.0 / delta_angle) + 1
 
 # set the distance type, between "min" and "all"
 distance_type = "min"

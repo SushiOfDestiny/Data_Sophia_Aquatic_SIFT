@@ -30,6 +30,8 @@ def compute_desc_pixels(
     nb_bins=1,
     bin_radius=2,
     delta_angle=5.0,
+    sigma=0,
+    normalization_mode="global",
 ):
     """
     Compute descriptors for a set of pixels in an image
@@ -59,6 +61,8 @@ def compute_desc_pixels(
                 nb_bins=nb_bins,
                 bin_radius=bin_radius,
                 delta_angle=delta_angle,
+                sigma=sigma,
+                normalization_mode=normalization_mode,
             )
 
             # flatten the list

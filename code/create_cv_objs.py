@@ -115,3 +115,4 @@ if __name__ == "__main__":
             kps_ims_objs[id_image],
             f"{matches_path}/{kp_filenames[id_image]}",
         )
+    print("finished saving keypoints")

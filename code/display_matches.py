@@ -65,34 +65,6 @@ def display_match(
         plt.show()
 
 
-def compute_averaged_descriptor(matches):
-    """
-    Compute the average descriptor of a list of Match objects, for each image
-    matches: list of Match objects (each is a list of at most 2 Dmatch objects)
-    return: list of 2 numpy arrays of shape (3 * nb_bins * nb_bins * nb_angular_bins)
-    """
-    good_matches_kps = [
-        [kps_coords[0][match[0].queryIdx] for match in matches],
-        [kps_coords[1][match[0].trainIdx] for match in matches]
-    ]
-    good_matches_kps_idx = [
-        np.array(
-            [
-                (kp[1] - y_starts[id_image]) * x_lengths[id_image]
-                + (kp[0] - x_starts[id_image])
-                for kp in good_matches_kps[id_image]
-            ]
-        )
-        for id_image in range(2)
-    ]
-    good_descs_ims = [
-        descs[id_image][good_matches_kps_idx[id_image]] for id_image in range(2)
-    ]
-    avg_descs = [np.mean(good_descs_ims[id_image], axis=0) for id_image in range(2)]
-
-    return avg_descs
-
-
 if __name__ == "__main__":
     # load images
     ims = [
@@ -154,41 +126,27 @@ if __name__ == "__main__":
             ims,
             chosen_Dmatch,
             kps_coords,
-            show_plot=True,
+            show_plot=False,
             # save_path=filtered_kp_path,  # comment or pass None to not save the image
             filename_prefix=correct_match_filename_prefix,
             dpi=800,
         )
 
-        
         # display topological properties
         chosen_kps = [kps[0][chosen_Dmatch.queryIdx], kps[1][chosen_Dmatch.trainIdx]]
         vh.topological_visualization_pipeline(
-            kps=chosen_kps, uint_ims=ims, float_ims=float_ims, zoom_radius=20
+            kps=chosen_kps,
+            uint_ims=ims,
+            float_ims=float_ims,
+            zoom_radius=20,
+            show_directions=False,
+            show_gradients=False,
         )
 
     # look at the average descriptors of the good matches
-    avg_descs = compute_averaged_descriptor(good_matches)
-    desc_names = [
-        f"Averaged descriptor of good matches for image {id_image}\n with nb_bins={nb_bins}, bin_radius={bin_radius}, delta_angle={delta_angle} and sigma={sigma}"
-        for id_image in range(2)
-    ]
-    for id_image in range(2):
-        visu_desc.display_descriptor(
-            descriptor_histograms=unflatten_descriptor(
-                avg_descs[id_image], nb_bins=1, nb_angular_bins=(int(360.0 / 5.0) + 1)
-            ),
-            descriptor_name=desc_names[id_image],
-            show_plot=False
-        )
-
-    plt.show()
-
-
-    # calculate rest of idx set
     good_matches_kps = [
-        [kps_coords[0][match[0].queryIdx] for match in matches],
-        [kps_coords[1][match[0].trainIdx] for match in matches]
+        [kps_coords[0][match[0].queryIdx] for match in good_matches],
+        [kps_coords[1][match[0].trainIdx] for match in good_matches],
     ]
     good_matches_kps_idx = [
         np.array(
@@ -200,16 +158,55 @@ if __name__ == "__main__":
         )
         for id_image in range(2)
     ]
+
     good_descs_ims = [
         descs[id_image][good_matches_kps_idx[id_image]] for id_image in range(2)
     ]
-    print(np.setdiff1d(np.arange(np.shape(descs[0])[0]), good_matches_kps_idxs[0]))
-    bad_descs_1 = descs[0][np.setdiff1d(np.arange(np.shape(descs[0])[0]), good_matches_kps_idxs[0])]
-    bad_descs_2 = descs[1][np.setdiff1d(np.arange(np.shape(descs[1])[0]), good_matches_kps_idxs[1])]
-    
-    avg_bad_descs = [np.mean(bad_descs_1, axis=0), np.mean(bad_descs_2, axis=0)]
+    avg_good_descs = [
+        np.mean(good_descs_ims[id_image], axis=0) for id_image in range(2)
+    ]
 
-    visu_desc.display_descriptor(
-        unflatten_descriptor(
-            avg_bad_descs[0], nb_bins=nb_bins, nb_angular_bins=(int(360.0 / 5.0) + 1))
-    )
+    good_descs_names = [
+        f"Averaged descriptor of good matches for image {id_image}\n with nb_bins={nb_bins}, bin_radius={bin_radius}, delta_angle={delta_angle} and sigma={sigma}"
+        for id_image in range(2)
+    ]
+    for id_image in range(1):
+        visu_desc.display_descriptor(
+            descriptor_histograms=unflatten_descriptor(
+                avg_good_descs[id_image],
+                nb_bins=nb_bins,
+                nb_angular_bins=nb_angular_bins,
+            ),
+            descriptor_name=good_descs_names[id_image],
+            show_plot=False,
+        )
+
+    # look at averaged bad descriptor
+    bad_descs = [
+        descs[id_image][
+            np.setdiff1d(
+                np.arange(np.shape(descs[id_image])[0]), good_matches_kps_idx[id_image]
+            )
+        ]
+        for id_image in range(2)
+    ]
+
+    avg_bad_descs = [np.mean(bad_descs[id_image], axis=0) for id_image in range(2)]
+
+    bad_descs_names = [
+        f"Averaged descriptor of bad matches for image {id_image}\n with nb_bins={nb_bins}, bin_radius={bin_radius}, delta_angle={delta_angle} and sigma={sigma}"
+        for id_image in range(2)
+    ]
+
+    for id_image in range(1):
+        visu_desc.display_descriptor(
+            descriptor_histograms=unflatten_descriptor(
+                avg_bad_descs[id_image],
+                nb_bins=nb_bins,
+                nb_angular_bins=nb_angular_bins,
+            ),
+            descriptor_name=bad_descs_names[id_image],
+            show_plot=False,
+        )
+
+    plt.show()
