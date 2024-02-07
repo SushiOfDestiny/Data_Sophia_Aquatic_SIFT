@@ -160,6 +160,7 @@ if __name__ == "__main__":
             dpi=800,
         )
 
+        
         # display topological properties
         chosen_kps = [kps[0][chosen_Dmatch.queryIdx], kps[1][chosen_Dmatch.trainIdx]]
         vh.topological_visualization_pipeline(
@@ -182,3 +183,33 @@ if __name__ == "__main__":
         )
 
     plt.show()
+
+
+    # calculate rest of idx set
+    good_matches_kps = [
+        [kps_coords[0][match[0].queryIdx] for match in matches],
+        [kps_coords[1][match[0].trainIdx] for match in matches]
+    ]
+    good_matches_kps_idx = [
+        np.array(
+            [
+                (kp[1] - y_starts[id_image]) * x_lengths[id_image]
+                + (kp[0] - x_starts[id_image])
+                for kp in good_matches_kps[id_image]
+            ]
+        )
+        for id_image in range(2)
+    ]
+    good_descs_ims = [
+        descs[id_image][good_matches_kps_idx[id_image]] for id_image in range(2)
+    ]
+    print(np.setdiff1d(np.arange(np.shape(descs[0])[0]), good_matches_kps_idxs[0]))
+    bad_descs_1 = descs[0][np.setdiff1d(np.arange(np.shape(descs[0])[0]), good_matches_kps_idxs[0])]
+    bad_descs_2 = descs[1][np.setdiff1d(np.arange(np.shape(descs[1])[0]), good_matches_kps_idxs[1])]
+    
+    avg_bad_descs = [np.mean(bad_descs_1, axis=0), np.mean(bad_descs_2, axis=0)]
+
+    visu_desc.display_descriptor(
+        unflatten_descriptor(
+            avg_bad_descs[0], nb_bins=nb_bins, nb_angular_bins=(int(360.0 / 5.0) + 1))
+    )
