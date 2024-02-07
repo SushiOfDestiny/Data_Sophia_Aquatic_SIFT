@@ -13,7 +13,10 @@ import numba
 import descriptor as desc
 import visu_hessian as vh
 
-from computation_pipeline_hyper_params import y_starts, y_lengths, x_starts, x_lengths
+# Load hyperparameters for the computation pipeline
+from computation_pipeline_hyper_params import *
+
+from filenames_creation import *
 
 
 @njit(parallel=True)
@@ -68,37 +71,8 @@ def compute_desc_pixels(
 
 
 if __name__ == "__main__":
-
-    relative_path = "../data"
-    img_folder = "blender/rocks"
-    photo_name = "rock_1"
-    im_name1 = "left"
-    im_name2 = "right"
-    im_names = (im_name1, im_name2)
-    im_ext = "png"
-
-    ims = [
-        cv.imread(
-            f"{relative_path}/{img_folder}/{im_names[i]}.{im_ext}", cv.IMREAD_GRAYSCALE
-        )
-        for i in range(2)
-    ]
-
-    # plt.imshow(ims[0], cmap="gray")
-    # plt.show()
-    # plt.imshow(ims[1], cmap="gray")
-    # plt.show()
-
-    print("shapes of images", ims[0].shape, ims[1].shape)
-
-    # compute float32 versions for calculations
-    float_ims = [vh.convert_uint8_to_float32(ims[i]) for i in range(2)]
-
-    # arbitrary sigma
-    blur_sigma = 1.0
-    float_ims = [desc.convolve_2D_gaussian(float_ims[i], blur_sigma) for i in range(2)]
-
-    storage_folder = "computed_descriptors"
+    # Load preprocessed images as numpy arrays
+    float_ims = np.load(f"{blurred_imgs_path}.npy")
 
     # compute descriptors for 2 images
     for id_image in range(2):
@@ -106,7 +80,6 @@ if __name__ == "__main__":
         # compute for 2 image overall features
         before = datetime.now()
         print(f"feat computation beginning for image {id_image}:", before)
-        border_size = 1
         overall_features = desc.compute_features_overall_abs(
             float_ims[id_image], border_size=border_size
         )
@@ -133,13 +106,12 @@ if __name__ == "__main__":
         print(f"desc compute time for image {id_image}", after - before)
 
         # save img_descriptors and list of coordinates
-        filename_prefix = f"{photo_name}_{im_names[id_image]}_y_{y_starts[id_image]}_{y_lengths[id_image]}_x_{x_starts[id_image]}_{x_lengths[id_image]}"
 
         np.save(
-            f"computed_descriptors/{filename_prefix}_descs.npy",
+            f"{descrip_path}/{descrip_filenames[id_image]}",
             img_descriptors,
         )
         np.save(
-            f"computed_descriptors/{filename_prefix}_coords.npy",
+            f"{descrip_path}/{kp_coords_filenames[id_image]}",
             coords,
         )

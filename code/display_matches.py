@@ -10,6 +10,10 @@ from visu_descriptor import display_descriptor
 sys.path.append("../matching")
 from saving import load_matches, load_keypoints
 
+from computation_pipeline_hyper_params import *
+
+from filenames_creation import *
+
 
 def display_match(
     ims,
@@ -61,59 +65,38 @@ def display_match(
 
 
 if __name__ == "__main__":
-    im_folder = "../data/blender/rocks/"
-    photo_name = "rock_1"
-    im_names = ["rock_1_left", "rock_1_right"]
 
-    im_1 = cv.imread(im_folder + "left.png", cv.IMREAD_GRAYSCALE)
-    im_2 = cv.imread(im_folder + "right.png", cv.IMREAD_GRAYSCALE)
-    ims = [im_1, im_2]
-
-    # set the coordinates of the subimages
-    y_starts = [386, 459]
-    y_lengths = [10, 10]
-    x_starts = [803, 806]
-    x_lengths = [20, 20]
-    # define distance type suffix
-    distance_type = "min"
-    prefixes_extension = "" if distance_type == "all" else "_min"
-
-    # redefine the threshold used
-    epsilon = 1
-
-    # load all computed objects
-    matches_filename_prefix = f"{photo_name}_y_{y_starts[0]}_{y_starts[1]}_{y_lengths[0]}_{y_lengths[1]}_x_{x_starts[0]}_{x_starts[1]}_{x_lengths[0]}_{x_lengths[1]}{prefixes_extension}"
-    unfiltered_filename_prefixes = [
-        f"{im_names[id_image]}_y_{y_starts[id_image]}_{y_lengths[id_image]}_x_{x_starts[id_image]}_{x_lengths[id_image]}"
-        for id_image in range(2)
-    ]
-
-    # load unfiltered keypoints coordinates
-    kps_coords_filenames = [
-        f"computed_descriptors/{unfiltered_filename_prefixes[id_image]}_coords.npy"
-        for id_image in range(2)
-    ]
-    kps_coords = [np.load(kps_coords_filenames[id_image]) for id_image in range(2)]
-    descs = [
-        np.load(
-            f"computed_descriptors/{unfiltered_filename_prefixes[id_image]}_descs.npy"
+    ims = [
+        cv.imread(
+            f"{relative_path}/{img_folder}/{im_names[id_image]}.{im_ext}",
+            cv.IMREAD_GRAYSCALE,
         )
         for id_image in range(2)
     ]
 
-    # load filtered keypoints, matches and index of good matches
-    kps = [
-        load_keypoints(f"computed_matches/{matches_filename_prefix}_kp_{id_image}.txt")
+    # load all computed objects
+
+    # load unfiltered keypoints coordinates
+    kps_coords = [
+        np.load(f"{descrip_path}/{kp_coords_filenames[id_image]}")
+        for id_image in range(2)
+    ]
+    descs = [
+        np.load(
+            f"{descrip_path}/{descrip_filenames[id_image]}",
+        )
         for id_image in range(2)
     ]
 
-    matches_idxs_filename = (
-        f"computed_matches/{matches_filename_prefix}_correct_idxs.npy"
-    )
-    matches_idxs = np.load(matches_idxs_filename)
+    # load unfiltered keypoints, matches and index of good matches
+    kps = [
+        load_keypoints(f"{matches_path}/{kp_filenames[id_image]}")
+        for id_image in range(2)
+    ]
 
-    matches_filename = f"computed_matches/{matches_filename_prefix}_matches.txt"
-    matches = load_matches(matches_filename)
+    matches_idxs = np.load(f"{matches_path}/{correct_matches_idxs_filename}.npy")
+
+    matches = load_matches(f"{matches_path}/{matches_filename}")
 
     # filter good matches according to blender
     good_matches = [matches[i] for i in matches_idxs]
@@ -131,21 +114,31 @@ if __name__ == "__main__":
         # we get here only the Dmatch
         chosen_Dmatch = good_matches[match_idx][0]
 
-    display_match(
-        ims,
-        chosen_Dmatch,
-        kps_coords,
-        show_plot=True,
-        save_path="filtered_keypoints",
-        filename_prefix=f"{matches_filename_prefix}_correct_match",
-        dpi=800,
-    )
+        display_match(
+            ims,
+            chosen_Dmatch,
+            kps_coords,
+            show_plot=True,
+            save_path="filtered_keypoints",
+            filename_prefix=correct_match_filename_prefix,
+            dpi=800,
+        )
 
     # pabo
     good_matches_kps_1 = [kps_coords[0][dmatch[0].queryIdx] for dmatch in good_matches]
     good_matches_kps_2 = [kps_coords[1][dmatch[0].trainIdx] for dmatch in good_matches]
-    good_matches_kps_1_idxs = np.array([(kp[1] - y_starts[0])*x_lengths[0]+(kp[0] - x_starts[0]) for kp in good_matches_kps_1])
-    good_matches_kps_2_idxs = np.array([(kp[1] - y_starts[1])*x_lengths[0]+(kp[0] - x_starts[1]) for kp in good_matches_kps_2])
+    good_matches_kps_1_idxs = np.array(
+        [
+            (kp[1] - y_starts[0]) * x_lengths[0] + (kp[0] - x_starts[0])
+            for kp in good_matches_kps_1
+        ]
+    )
+    good_matches_kps_2_idxs = np.array(
+        [
+            (kp[1] - y_starts[1]) * x_lengths[0] + (kp[0] - x_starts[1])
+            for kp in good_matches_kps_2
+        ]
+    )
     good_descs_1 = descs[0][good_matches_kps_1_idxs]
     good_descs_2 = descs[1][good_matches_kps_2_idxs]
     
@@ -157,19 +150,8 @@ if __name__ == "__main__":
     avg_desc_1 = np.mean(good_descs_1, axis=0)
     avg_desc_2 = np.mean(good_descs_2, axis=0)
 
-    #display_descriptor(unflatten_descriptor(avg_desc_1, nb_bins=1, nb_angular_bins=(int(360.0/5.0)+1)), "Average good descriptor for left image")
-    #display_descriptor(unflatten_descriptor(avg_desc_2, nb_bins=1, nb_angular_bins=(int(360.0/5.0)+1)), "Average good descriptor for right image")
-
-    avg_bad_desc_1 = np.mean(bad_descs_1, axis=0)
-    avg_bad_desc_2 = np.mean(bad_descs_2, axis=0)
-
-    #display_descriptor(unflatten_descriptor(avg_bad_desc_1, nb_bins=1, nb_angular_bins=(int(360.0/5.0)+1)), "Average bad descriptor for left image")
-    #display_descriptor(unflatten_descriptor(avg_bad_desc_2, nb_bins=1, nb_angular_bins=(int(360.0/5.0)+1)), "Average bad descriptor for right image")
-
-    diff_of_avg = avg_desc_1 - avg_bad_desc_1
-    #display_descriptor(unflatten_descriptor(diff_of_avg, nb_bins=1, nb_angular_bins=(int(360.0/5.0)+1)), "Difference of average descriptors between good and bad matches")
-
-    std_desc_1 = np.std(good_descs_1, axis=0)
-    std_bad_desc_1 = np.std(bad_descs_1, axis=0)
-    display_descriptor(unflatten_descriptor(std_desc_1, nb_bins=1, nb_angular_bins=(int(360.0/5.0)+1)), "Standard deviation in left image good keypoints")
-    display_descriptor(unflatten_descriptor(std_bad_desc_1, nb_bins=1, nb_angular_bins=(int(360.0/5.0)+1)), "Standard deviation in left image bad keypoints")
+    display_descriptor(
+        unflatten_descriptor(
+            avg_desc_1, nb_bins=1, nb_angular_bins=(int(360.0 / 5.0) + 1)
+        )
+    )

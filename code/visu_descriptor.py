@@ -64,7 +64,7 @@ def display_spatial_histograms(histograms, title="Spatial Histograms"):
 def display_descriptor(
     descriptor_histograms,
     descriptor_name="Descriptor",
-    values_names=["positive eigenvalues", "negative eigenvalues", "gradients"],
+    values_names=["1nd eigenvalues", "2nd eigenvalues", "gradients"],
 ):
     """
     Display the descriptor of a keypoint.

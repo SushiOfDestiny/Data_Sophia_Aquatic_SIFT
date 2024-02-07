@@ -469,6 +469,7 @@ def flatten_descriptor(descriptor_histograms):
     return descriptor
 
 
+@njit
 def compute_descriptor_distance(descriptor1, descriptor2):
     """
     Compute the euclidean distance between 2 descriptors.

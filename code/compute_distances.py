@@ -14,10 +14,16 @@ import numba
 
 from tqdm import tqdm
 
+from computation_pipeline_hyper_params import *
+
+from filenames_creation import *
+
+
 # Goal: load descriptors arrays, each for 1 image, flatten them and compute the distances between them
 # first use bruteforce matching
 
 
+@njit
 def compute_distances_matches_pairs(subimage_descriptors, y_lengths, x_lengths):
     """
     Compute distances_matches between all pairs of descriptors from 2 images
@@ -57,6 +63,7 @@ def compute_distances_matches_pairs(subimage_descriptors, y_lengths, x_lengths):
     return distances_matches, idx1_matches, idx2_matches
 
 
+@njit(parallel=True)
 def compute_minimal_distances_matches_pairs(subimage_descriptors, y_lengths, x_lengths):
     """
     Compute matches of minimal distances to pixels of image 1
@@ -75,7 +82,7 @@ def compute_minimal_distances_matches_pairs(subimage_descriptors, y_lengths, x_l
     idx1_matches = np.zeros((nb_matches,), dtype=np.int32)
     idx2_matches = np.zeros((nb_matches,), dtype=np.int32)
 
-    for idx_pixel_im1 in tqdm(range(len(subimage_descriptors[0]))):
+    for idx_pixel_im1 in numba.prange(len(subimage_descriptors[0])):
 
         descrip_pixel_im1 = subimage_descriptors[0][idx_pixel_im1]
 
@@ -92,7 +99,7 @@ def compute_minimal_distances_matches_pairs(subimage_descriptors, y_lengths, x_l
                 descrip_pixel_im1, descrip_pixel_im2
             )
             # update minimum distance and index
-            if pix2_dist < min_dist or not min_idx:
+            if pix2_dist < min_dist or min_idx is None:
                 min_dist = pix2_dist
                 min_idx = idx_pixel_im2
 
@@ -113,7 +120,7 @@ def compute_and_save_distances(
     y_starts,
     x_starts,
     photo_name,
-    distance_type="all",
+    distance_type="min",
 ):
     before = datetime.now()
     print(f"Start computing distances: {before}")
@@ -137,34 +144,20 @@ def compute_and_save_distances(
     print(f"Chosen distance type: {distance_type}")
 
     # save distances and indices of pixels in the matches
-    # define suffix for filename
-    dist_type_suffix = "" if distance_type == "all" else "_min"
-    # define filename prefix with distance type suffix
-    target_filename_prefix = f"{photo_name}_y_{y_starts[0]}_{y_starts[1]}_{y_lengths[0]}_{y_lengths[1]}_x_{x_starts[0]}_{x_starts[1]}_{x_lengths[0]}_{x_lengths[1]}{dist_type_suffix}"
-
     np.save(
-        f"computed_distances/{target_filename_prefix}_dists.npy",
+        f"{dist_path}/{dist_filename}.npy",
         distances_matches,
     )
-    np.save(
-        f"computed_distances/{target_filename_prefix}_matched_idx_im1.npy",
-        idx_im1_matches,
-    )
-    np.save(
-        f"computed_distances/{target_filename_prefix}_matched_idx_im2.npy",
-        idx_im2_matches,
-    )
+
+    idx_ims_matches = [idx_im1_matches, idx_im2_matches]
+    for id_image in range(2):
+        np.save(
+            f"{dist_path}/{matched_idx_filenames[id_image]}.npy",
+            idx_ims_matches[id_image],
+        )
 
 
 if __name__ == "__main__":
-    photo_name = "rock_1"
-    im_names = ["rock_1_left", "rock_1_right"]
-
-    # set the coordinates of the subimages
-    y_starts = [386, 459]
-    y_lengths = [10, 10]
-    x_starts = [803, 806]
-    x_lengths = [20, 20]
 
     # Load descriptors and list of pixel coordinates for both images
 
@@ -178,13 +171,11 @@ if __name__ == "__main__":
 
     for id_image in range(nb_images):
 
-        filename_prefix = f"{im_names[id_image]}_y_{y_starts[id_image]}_{y_lengths[id_image]}_x_{x_starts[id_image]}_{x_lengths[id_image]}"
-
         subimage_descriptors[id_image] = np.load(
-            f"computed_descriptors/{filename_prefix}_descs.npy"
+            f"{descrip_path}/{descrip_filenames[id_image]}"
         )
         subimage_coords[id_image] = np.load(
-            f"computed_descriptors/{filename_prefix}_coords.npy"
+            f"{descrip_path}/{kp_coords_filenames[id_image]}"
         )
 
         # Look at shapes
@@ -196,7 +187,6 @@ if __name__ == "__main__":
         )
 
     # choose between all distances or minimal distances
-    distance_type = ["all", "min"]
 
     compute_and_save_distances(
         subimage_descriptors,
@@ -205,5 +195,5 @@ if __name__ == "__main__":
         y_starts,
         x_starts,
         photo_name,
-        distance_type=distance_type[1],
+        distance_type=distance_type,
     )
