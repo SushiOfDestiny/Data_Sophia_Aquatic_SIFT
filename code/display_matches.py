@@ -96,14 +96,15 @@ if __name__ == "__main__":
         load_keypoints(f"{matches_path}/{kp_filenames[id_image]}")
         for id_image in range(2)
     ]
-
-    # Load matches filtered by blender
-    matches_idxs = np.load(f"{matches_path}/{correct_matches_idxs_filename}.npy")
-
     matches = load_matches(f"{matches_path}/{matches_filename}")
 
+    # Load matches filtered by blender
+    correct_matches_idxs = np.load(
+        f"{matches_path}/{correct_matches_idxs_filename}.npy"
+    )
+
     # filter good matches according to blender
-    good_matches = [matches[i] for i in matches_idxs]
+    good_matches = [matches[i] for i in correct_matches_idxs]
 
     # print general info about proportions of keypoints and matches
 

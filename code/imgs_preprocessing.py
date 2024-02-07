@@ -32,7 +32,8 @@ if __name__ == "__main__":
     float_ims = [vh.convert_uint8_to_float32(ims[i]) for i in range(2)]
 
     # blur images
-    float_ims = [desc.convolve_2D_gaussian(float_ims[i], blur_sigma) for i in range(2)]
+    if blur_sigma > 0.1:
+        float_ims = [desc.convolve_2D_gaussian(float_ims[i], blur_sigma) for i in range(2)] 
 
     # Save blurred images
     np.save(blurred_imgs_path, float_ims)
