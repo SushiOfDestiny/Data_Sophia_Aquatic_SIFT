@@ -65,6 +65,7 @@ def display_descriptor(
     descriptor_histograms,
     descriptor_name="Descriptor",
     values_names=["1nd eigenvalues", "2nd eigenvalues", "gradients"],
+    show_plot=True,
 ):
     """
     Display the descriptor of a keypoint.
@@ -77,7 +78,8 @@ def display_descriptor(
             title=f"{descriptor_name}, {values_names[id_value]}",
         )
 
-    plt.show()
+    if show_plot:
+        plt.show()
 
 
 def display_matched_histograms(

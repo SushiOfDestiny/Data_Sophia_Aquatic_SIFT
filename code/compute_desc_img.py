@@ -93,6 +93,7 @@ if __name__ == "__main__":
 
         before = datetime.now()
         print(f"desc computation beginning for image {id_image}", before)
+        # pass the defined h-parameters
         img_descriptors, coords = compute_desc_pixels(
             overall_features,
             y_starts[id_image],
@@ -100,6 +101,11 @@ if __name__ == "__main__":
             x_starts[id_image],
             x_lengths[id_image],
             border_size,
+            nb_bins=nb_bins,
+            bin_radius=bin_radius,
+            delta_angle=delta_angle,
+            sigma=sigma,
+            normalization_mode=normalization_mode,
         )
         after = datetime.now()
         print(f"desc computation end for image {id_image}", after)

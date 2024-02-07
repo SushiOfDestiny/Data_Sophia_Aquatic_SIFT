@@ -17,6 +17,9 @@ import descriptor as desc
 # return to the root directory
 sys.path.append(os.path.join(".."))
 
+# set pyplot parameters
+plt.rcParams["font.size"] = "6"
+
 
 def convert_uint8_to_float32(img):
     """
@@ -1033,8 +1036,8 @@ def topological_visualization_pipeline(
     uint_ims,
     float_ims,
     zoom_radius=20,
-    figsize=(20, 20),
-    show_kps=True,
+    figsize=None,
+    show_kps=False,
     show_curvatures=True,
     show_directions=True,
     show_gradients=True,
@@ -1047,8 +1050,8 @@ def topological_visualization_pipeline(
     zoom_radius: radius of the zoomed area in pixels
     """
     # compute figsize for side by side display
-    double_figsize = (2 * figsize[0], figsize[1])
-    triple_figsize = (3 * figsize[0], figsize[1])
+    double_figsize = None  # (2 * figsize[0], figsize[1])
+    triple_figsize = None  # (3 * figsize[0], figsize[1])
 
     # display keypoints values on both images
     if show_kps:

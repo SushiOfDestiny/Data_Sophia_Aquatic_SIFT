@@ -10,6 +10,7 @@ im_names = (im_name1, im_name2)
 im_ext = "png"
 
 # set the coordinates of the subimages
+
 # 1st set
 # y_starts = [386, 459]
 # y_lengths = [100, 100]
@@ -25,7 +26,16 @@ x_lengths = [200, 200]
 # define sigma for the gaussian blur
 blur_sigma = 1.0
 
+# define the border size
 border_size = 1
+
+# define descriptor parameters
+nb_bins = 1
+bin_radius = 2
+delta_angle = 5.0
+sigma = 0
+normalization_mode = "global"
+neigh_radius = (2 * bin_radius + 1) * nb_bins // 2 + bin_radius
 
 # set the distance type, between "min" and "all"
 distance_type = "min"

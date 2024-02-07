@@ -65,3 +65,6 @@ correct_matches_idxs_filename = f"{dist_filename_prefix}_correct_idxs"
 
 # Create filename for 1 correct match
 correct_match_filename_prefix = f"{dist_filename_prefix}_correct_match"
+
+# Define path to save the chosen keypoints displayed
+filtered_kp_path = "filtered_keypoints"
