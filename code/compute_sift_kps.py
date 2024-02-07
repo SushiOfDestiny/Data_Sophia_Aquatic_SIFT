@@ -38,6 +38,16 @@ if __name__ == "__main__":
     )
     sift_kps = [sift_kp1, sift_kp2]
 
+    # draw keypoints
+    draw_good_keypoints(
+        cropped_ims[0],
+        cropped_ims[1],
+        sift_kps[0],
+        sift_kps[1],
+        sift_matches,
+        20,
+    )
+
     # save sift matches and keypoints
     # save the matches and keypoints using function from matching/saving.py
     save_kp_pairs_to_arr(

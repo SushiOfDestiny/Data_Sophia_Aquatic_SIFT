@@ -11,7 +11,9 @@ original_imgs_path_prefix = f"{relative_path}/{img_folder}"
 blurred_imgs_path = f"{original_imgs_path_prefix}/blurred_ims_bsig{int(blur_sigma)}"
 
 # Create suffix for descriptor parameters
-descrip_suffix = f"_nbbins_{nb_bins}_bin_radius_{bin_radius}_nb_angular_bins_{nb_angular_bins}_sig{int(sigma)}"
+descrip_suffix = (
+    f"_nbins_{nb_bins}_brad_{bin_radius}_nangbins_{nb_angular_bins}_sig{int(sigma)}"
+)
 
 # Define path to save the descriptors and coordinates
 descrip_path = "computed_descriptors"
