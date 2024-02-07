@@ -67,7 +67,10 @@ def display_match(
 if __name__ == "__main__":
 
     ims = [
-        cv.imread(f"{img_folder}/{im_names[id_image]}.{im_ext}", cv.IMREAD_GRAYSCALE)
+        cv.imread(
+            f"{relative_path}/{img_folder}/{im_names[id_image]}.{im_ext}",
+            cv.IMREAD_GRAYSCALE,
+        )
         for id_image in range(2)
     ]
 
@@ -111,15 +114,15 @@ if __name__ == "__main__":
         # we get here only the Dmatch
         chosen_Dmatch = good_matches[match_idx][0]
 
-    display_match(
-        ims,
-        chosen_Dmatch,
-        kps_coords,
-        show_plot=True,
-        save_path="filtered_keypoints",
-        filename_prefix=correct_match_filename_prefix,
-        dpi=800,
-    )
+        display_match(
+            ims,
+            chosen_Dmatch,
+            kps_coords,
+            show_plot=True,
+            save_path="filtered_keypoints",
+            filename_prefix=correct_match_filename_prefix,
+            dpi=800,
+        )
 
     # pabo
     good_matches_kps_1 = [kps_coords[0][dmatch[0].queryIdx] for dmatch in good_matches]

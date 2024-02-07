@@ -10,15 +10,17 @@ im_names = (im_name1, im_name2)
 im_ext = "png"
 
 # set the coordinates of the subimages
+# 1st set
 # y_starts = [386, 459]
-# y_lengths = [10, 10]
+# y_lengths = [100, 100]
 # x_starts = [803, 806]
-# x_lengths = [20, 20]
+# x_lengths = [200, 200]
 
-y_starts = [10, 10]
-y_lengths = [10, 10]
-x_starts = [20, 20]
-x_lengths = [20, 20]
+# 2nd set
+y_starts = [530, 560]
+y_lengths = [200, 200]
+x_starts = [1200, 1200]
+x_lengths = [200, 200]
 
 # define sigma for the gaussian blur
 blur_sigma = 1.0

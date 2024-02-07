@@ -28,11 +28,14 @@ if __name__ == "__main__":
         matching.check_correct_match(kp_pairs_file, cam_1, cam_2, epsilon)
     )
 
+    print(len(correct_matches), "correct matches found")
+
     # save correct matches idxs
     correct_matches_idxs_arr = np.array(
         correct_matches_idxs, dtype=np.int32
     )  # first convert to numpy array
 
     matching.save_correct_matches(
-        correct_matches_idxs_arr, f"{storage_folder}/{correct_matches_idxs_filename}"
+        correct_matches_idxs_arr,
+        f"{storage_folder}/{correct_matches_idxs_filename}.npy",
     )

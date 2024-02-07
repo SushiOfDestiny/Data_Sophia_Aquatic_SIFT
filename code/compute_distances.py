@@ -23,6 +23,7 @@ from filenames_creation import *
 # first use bruteforce matching
 
 
+@njit
 def compute_distances_matches_pairs(subimage_descriptors, y_lengths, x_lengths):
     """
     Compute distances_matches between all pairs of descriptors from 2 images
@@ -62,6 +63,7 @@ def compute_distances_matches_pairs(subimage_descriptors, y_lengths, x_lengths):
     return distances_matches, idx1_matches, idx2_matches
 
 
+@njit(parallel=True)
 def compute_minimal_distances_matches_pairs(subimage_descriptors, y_lengths, x_lengths):
     """
     Compute matches of minimal distances to pixels of image 1
@@ -80,7 +82,7 @@ def compute_minimal_distances_matches_pairs(subimage_descriptors, y_lengths, x_l
     idx1_matches = np.zeros((nb_matches,), dtype=np.int32)
     idx2_matches = np.zeros((nb_matches,), dtype=np.int32)
 
-    for idx_pixel_im1 in tqdm(range(len(subimage_descriptors[0]))):
+    for idx_pixel_im1 in numba.prange(len(subimage_descriptors[0])):
 
         descrip_pixel_im1 = subimage_descriptors[0][idx_pixel_im1]
 
@@ -97,7 +99,7 @@ def compute_minimal_distances_matches_pairs(subimage_descriptors, y_lengths, x_l
                 descrip_pixel_im1, descrip_pixel_im2
             )
             # update minimum distance and index
-            if pix2_dist < min_dist or not min_idx:
+            if pix2_dist < min_dist or min_idx is None:
                 min_dist = pix2_dist
                 min_idx = idx_pixel_im2
 
