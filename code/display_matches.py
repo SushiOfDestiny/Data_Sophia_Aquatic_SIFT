@@ -5,7 +5,8 @@ import cv2 as cv
 import numpy as np
 import matplotlib.pyplot as plt
 from descriptor import unflatten_descriptor
-from visu_descriptor import display_descriptor
+import visu_hessian as vh
+import visu_descriptor as visu_desc
 
 sys.path.append("../matching")
 from saving import load_matches, load_keypoints
@@ -64,8 +65,36 @@ def display_match(
         plt.show()
 
 
-if __name__ == "__main__":
+def compute_averaged_descriptor(matches):
+    """
+    Compute the average descriptor of a list of Match objects, for each image
+    matches: list of Match objects (each is a list of at most 2 Dmatch objects)
+    return: list of 2 numpy arrays of shape (3 * nb_bins * nb_bins * nb_angular_bins)
+    """
+    good_matches_kps = [
+        [kps_coords[0][match[0].queryIdx] for match in matches],
+        [kps_coords[1][match[0].trainIdx] for match in matches]
+    ]
+    good_matches_kps_idx = [
+        np.array(
+            [
+                (kp[1] - y_starts[id_image]) * x_lengths[id_image]
+                + (kp[0] - x_starts[id_image])
+                for kp in good_matches_kps[id_image]
+            ]
+        )
+        for id_image in range(2)
+    ]
+    good_descs_ims = [
+        descs[id_image][good_matches_kps_idx[id_image]] for id_image in range(2)
+    ]
+    avg_descs = [np.mean(good_descs_ims[id_image], axis=0) for id_image in range(2)]
 
+    return avg_descs
+
+
+if __name__ == "__main__":
+    # load images
     ims = [
         cv.imread(
             f"{relative_path}/{img_folder}/{im_names[id_image]}.{im_ext}",
@@ -73,6 +102,7 @@ if __name__ == "__main__":
         )
         for id_image in range(2)
     ]
+    float_ims = np.load(f"{blurred_imgs_path}.npy")
 
     # load all computed objects
 
@@ -101,52 +131,54 @@ if __name__ == "__main__":
     # filter good matches according to blender
     good_matches = [matches[i] for i in matches_idxs]
 
+    # print general info about proportions of keypoints and matches
+
     for id_image in range(2):
         print(f"number of keypoints in image {id_image}", len(kps[id_image]))
-        # print(f"some keypoints positions in image {id_image}", kps_coords[id_image][10])
     print("number of unfiltered matches", len(matches))
-    print("nb good matches", len(good_matches))
+    print(
+        f"number of good matches at a precision of {epsilon} pixels: ",
+        len(good_matches),
+    )
 
     # look at some matches
-    chosen_matches_idx = [1, 2, 3]
+
+    chosen_matches_idx = [1]
     for match_idx in chosen_matches_idx:
         # display 1 match, object here is not DMatch, but a couple of DMatch, as Sift returns
         # we get here only the Dmatch
         chosen_Dmatch = good_matches[match_idx][0]
 
+        # display the match
         display_match(
             ims,
             chosen_Dmatch,
             kps_coords,
             show_plot=True,
-            save_path="filtered_keypoints",
+            # save_path=filtered_kp_path,  # comment or pass None to not save the image
             filename_prefix=correct_match_filename_prefix,
             dpi=800,
         )
 
-    # pabo
-    good_matches_kps_1 = [kps_coords[0][dmatch[0].queryIdx] for dmatch in good_matches]
-    good_matches_kps_2 = [kps_coords[1][dmatch[0].trainIdx] for dmatch in good_matches]
-    good_matches_kps_1_idxs = np.array(
-        [
-            (kp[1] - y_starts[0]) * x_lengths[0] + (kp[0] - x_starts[0])
-            for kp in good_matches_kps_1
-        ]
-    )
-    good_matches_kps_2_idxs = np.array(
-        [
-            (kp[1] - y_starts[1]) * x_lengths[0] + (kp[0] - x_starts[1])
-            for kp in good_matches_kps_2
-        ]
-    )
-    good_descs_1 = descs[0][good_matches_kps_1_idxs]
-    good_descs_2 = descs[1][good_matches_kps_2_idxs]
-
-    avg_desc_1 = np.mean(good_descs_1, axis=0)
-    avg_desc_2 = np.mean(good_descs_2, axis=0)
-
-    display_descriptor(
-        unflatten_descriptor(
-            avg_desc_1, nb_bins=1, nb_angular_bins=(int(360.0 / 5.0) + 1)
+        # display topological properties
+        chosen_kps = [kps[0][chosen_Dmatch.queryIdx], kps[1][chosen_Dmatch.trainIdx]]
+        vh.topological_visualization_pipeline(
+            kps=chosen_kps, uint_ims=ims, float_ims=float_ims, zoom_radius=20
         )
-    )
+
+    # look at the average descriptors of the good matches
+    avg_descs = compute_averaged_descriptor(good_matches)
+    desc_names = [
+        f"Averaged descriptor of good matches for image {id_image}\n with nb_bins={nb_bins}, bin_radius={bin_radius}, delta_angle={delta_angle} and sigma={sigma}"
+        for id_image in range(2)
+    ]
+    for id_image in range(2):
+        visu_desc.display_descriptor(
+            descriptor_histograms=unflatten_descriptor(
+                avg_descs[id_image], nb_bins=1, nb_angular_bins=(int(360.0 / 5.0) + 1)
+            ),
+            descriptor_name=desc_names[id_image],
+            show_plot=False
+        )
+
+    plt.show()
