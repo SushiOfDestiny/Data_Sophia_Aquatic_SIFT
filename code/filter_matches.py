@@ -1,6 +1,7 @@
 import bpy
 import sys
 import os
+import time
 import numpy as np
 
 sys.path.append("../../../code")
@@ -13,10 +14,10 @@ from filenames_creation import *
 sys.path.append("../../../blender")
 
 import matching as matching
+import differential as differential
 
 if __name__ == "__main__":
     # Goal is to load the saved opencv matches and to filter them with the blender script
-    print("----------------------------")
     cam_1 = bpy.data.objects["Cam_1"]
     cam_2 = bpy.data.objects["Cam_2"]
 
@@ -39,3 +40,13 @@ if __name__ == "__main__":
         correct_matches_idxs_arr,
         f"{storage_folder}/{correct_matches_idxs_filename}.npy",
     )
+
+    print("depth map computing...")
+    t = time.time()
+    dmap = differential.compute_depth_map(cam_1, bpy.context.scene)
+    print(f"depth map computed in {time.time() - t}")
+    np.save(f"{storage_folder}/dmap.npy", dmap)
+
+    print(f"depth map saved to {storage_folder}/dmap.npy")
+
+
