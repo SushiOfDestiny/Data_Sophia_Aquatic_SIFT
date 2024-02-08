@@ -4,6 +4,8 @@ from computation_pipeline_hyper_params import *
 
 # Goal: create the filenames for all objects save during the computation pipeline
 
+# CONVENTION: all paths variables end with "_path"
+
 # Create filename where to load the original images
 original_imgs_path_prefix = f"{relative_path}/{img_folder}"
 
@@ -11,7 +13,9 @@ original_imgs_path_prefix = f"{relative_path}/{img_folder}"
 blurred_imgs_path = f"{original_imgs_path_prefix}/blurred_ims_bsig{int(blur_sigma)}"
 
 # Create suffix for descriptor parameters
-descrip_suffix = f"_nbbins_{nb_bins}_bin_radius_{bin_radius}_nb_angular_bins_{nb_angular_bins}_sig{int(sigma)}"
+descrip_suffix = (
+    f"_nbins_{nb_bins}_brad_{bin_radius}_nangbins_{nb_angular_bins}_sig{int(sigma)}"
+)
 
 # Define path to save the descriptors and coordinates
 descrip_path = "computed_descriptors"
@@ -21,11 +25,11 @@ descrip_filename_prefixes = [
     for id_image in range(2)
 ]
 descrip_filenames = [
-    f"{descrip_filename_prefixes[id_image]}_descs.npy" for id_image in range(2)
+    f"{descrip_filename_prefixes[id_image]}_descs" for id_image in range(2)
 ]
 # Create filename for the keypoints coordinates
 kp_coords_filenames = [
-    f"{descrip_filename_prefixes[id_image]}_coords.npy" for id_image in range(2)
+    f"{descrip_filename_prefixes[id_image]}_coords" for id_image in range(2)
 ]
 
 # Define suffix for filename
@@ -45,11 +49,11 @@ matched_idx_filenames = [
 
 # Define path to save the matches
 matches_path = "computed_matches"
-kp_filenames = [f"{dist_filename_prefix}_kp_{id_image}.txt" for id_image in range(2)]
+kp_filenames = [f"{dist_filename_prefix}_kp_{id_image}" for id_image in range(2)]
 # Create filename for the pairs of keypoints
 kp_pairs_filename = f"{dist_filename_prefix}_kp_pairs_arr"
 # Create filename for the opencv Dmatches
-matches_filename = f"{dist_filename_prefix}_matches.txt"
+matches_filename = f"{dist_filename_prefix}_matches"
 
 # Create filename for the correct matches indexes
 correct_matches_idxs_filename = f"{dist_filename_prefix}_correct_idxs"
@@ -62,8 +66,16 @@ filtered_kp_path = "filtered_keypoints"
 
 # Create filename suffix for sift kps, pairs and matches
 sift_suffix = "_sift"
-# sift_kp_filenames = [f"{kp_filenames[id_image]}{sift_suffix}" for id_image in range(2)]
-# sift_kp_pairs_filename = f"{kp_pairs_filename}{sift_suffix}"
-# sift_matches_filename = f"{matches_filename}{sift_suffix}"
-# sift_correct_matches_idxs_filename = f"{correct_matches_idxs_filename}{sift_suffix}"
-# sift_correct_match_filename_prefix = f"{correct_match_filename_prefix}{sift_suffix}"
+
+
+# Create filename for the log files containing everything that was printed
+log_path = "execution_logs"
+
+# stack all folders paths
+required_folders_paths = [
+    descrip_path,
+    dist_path,
+    matches_path,
+    filtered_kp_path,
+    log_path,
+]

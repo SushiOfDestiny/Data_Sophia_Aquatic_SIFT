@@ -37,5 +37,5 @@ if __name__ == "__main__":
 
     matching.save_correct_matches(
         sift_correct_matches_idxs_arr,
-        f"{storage_folder}/{correct_matches_idxs_filename}{sift_suffix}.npy",
+        f"{storage_folder}/{correct_matches_idxs_filename}{sift_suffix}",
     )

@@ -32,9 +32,25 @@ if __name__ == "__main__":
     float_ims = [vh.convert_uint8_to_float32(ims[i]) for i in range(2)]
 
     # blur images
-    float_ims = [desc.convolve_2D_gaussian(float_ims[i], blur_sigma) for i in range(2)]
+    if blur_sigma > 0.1:
+        float_ims = [desc.convolve_2D_gaussian(float_ims[i], blur_sigma) for i in range(2)] 
 
     # Save blurred images
     np.save(blurred_imgs_path, float_ims)
 
     print(f"Blurred images saved in {blurred_imgs_path}")
+
+    # show cropped images
+    cropped_float_ims = [
+        float_ims[id_image][
+            y_starts[id_image] : y_starts[id_image] + y_lengths[id_image],
+            x_starts[id_image] : x_starts[id_image] + x_lengths[id_image],
+        ]
+        for id_image in range(2)
+    ]
+
+    fig, axs = plt.subplots(1, 2, figsize=(20, 10))
+    for id_image in range(2):
+        axs[id_image].imshow(cropped_float_ims[id_image], cmap="gray")
+
+    plt.show()

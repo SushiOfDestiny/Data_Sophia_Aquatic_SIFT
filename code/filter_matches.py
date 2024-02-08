@@ -38,7 +38,7 @@ if __name__ == "__main__":
 
     matching.save_correct_matches(
         correct_matches_idxs_arr,
-        f"{storage_folder}/{correct_matches_idxs_filename}.npy",
+        f"{storage_folder}/{correct_matches_idxs_filename}",
     )
 
     print("depth map computing...")

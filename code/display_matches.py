@@ -26,6 +26,7 @@ def display_match(
     dpi=800,
     epsilon=1,
     distance_type="min",
+    im_names=None,
 ):
     """
     Plot a match between the 2 images
@@ -52,7 +53,7 @@ def display_match(
 
     # add title
     comment_dist_type = "minimal for pixel1" if distance_type == "min" else ""
-    title = f"Match between image 1 and image 2, with distance {dmatch.distance:.2f} {comment_dist_type}, \n at coordinates {np.round(matched_kps_pos[0])} and {np.round(matched_kps_pos[1])}, \n with precision threshold {epsilon} pixels"
+    title = f"Match between {im_names[0]} and {im_names[1]}, with distance {dmatch.distance:.2f} {comment_dist_type}, \n at coordinates {np.round(matched_kps_pos[0])} and {np.round(matched_kps_pos[1])}, \n with precision threshold {epsilon} pixels"
     plt.suptitle(title)
 
     if save_path is not None and filename_prefix is not None:
@@ -80,28 +81,30 @@ if __name__ == "__main__":
 
     # load unfiltered keypoints coordinates
     kps_coords = [
-        np.load(f"{descrip_path}/{kp_coords_filenames[id_image]}")
+        np.load(f"{descrip_path}/{kp_coords_filenames[id_image]}.npy")
         for id_image in range(2)
     ]
     descs = [
         np.load(
-            f"{descrip_path}/{descrip_filenames[id_image]}",
+            f"{descrip_path}/{descrip_filenames[id_image]}.npy",
         )
         for id_image in range(2)
     ]
 
     # load unfiltered keypoints, matches and index of good matches
     kps = [
-        load_keypoints(f"{matches_path}/{kp_filenames[id_image]}")
+        load_keypoints(f"{matches_path}/{kp_filenames[id_image]}.txt")
         for id_image in range(2)
     ]
+    matches = load_matches(f"{matches_path}/{matches_filename}.txt")
 
-    matches_idxs = np.load(f"{matches_path}/{correct_matches_idxs_filename}.npy")
-
-    matches = load_matches(f"{matches_path}/{matches_filename}")
+    # Load matches filtered by blender
+    correct_matches_idxs = np.load(
+        f"{matches_path}/{correct_matches_idxs_filename}.npy"
+    )
 
     # filter good matches according to blender
-    good_matches = [matches[i] for i in matches_idxs]
+    good_matches = [matches[i] for i in correct_matches_idxs]
 
     # print general info about proportions of keypoints and matches
 
@@ -130,6 +133,7 @@ if __name__ == "__main__":
             # save_path=filtered_kp_path,  # comment or pass None to not save the image
             filename_prefix=correct_match_filename_prefix,
             dpi=800,
+            im_names=im_names,
         )
 
         # display topological properties
@@ -141,6 +145,7 @@ if __name__ == "__main__":
             zoom_radius=20,
             show_directions=False,
             show_gradients=False,
+            show_plot=False,
         )
 
     # look at the average descriptors of the good matches
@@ -167,19 +172,9 @@ if __name__ == "__main__":
     ]
 
     good_descs_names = [
-        f"Averaged descriptor of good matches for image {id_image}\n with nb_bins={nb_bins}, bin_radius={bin_radius}, delta_angle={delta_angle} and sigma={sigma}"
+        f"Averaged descriptor of good matches for {im_names[id_image]}\n with nb_bins={nb_bins}, bin_radius={bin_radius}, delta_angle={delta_angle} and sigma={sigma}"
         for id_image in range(2)
     ]
-    for id_image in range(1):
-        visu_desc.display_descriptor(
-            descriptor_histograms=unflatten_descriptor(
-                avg_good_descs[id_image],
-                nb_bins=nb_bins,
-                nb_angular_bins=nb_angular_bins,
-            ),
-            descriptor_name=good_descs_names[id_image],
-            show_plot=False,
-        )
 
     # look at averaged bad descriptor
     bad_descs = [
@@ -194,19 +189,23 @@ if __name__ == "__main__":
     avg_bad_descs = [np.mean(bad_descs[id_image], axis=0) for id_image in range(2)]
 
     bad_descs_names = [
-        f"Averaged descriptor of bad matches for image {id_image}\n with nb_bins={nb_bins}, bin_radius={bin_radius}, delta_angle={delta_angle} and sigma={sigma}"
+        f"Averaged descriptor of bad matches for {im_names[id_image]}\n with nb_bins={nb_bins}, bin_radius={bin_radius}, delta_angle={delta_angle} and sigma={sigma}"
         for id_image in range(2)
     ]
 
-    for id_image in range(1):
-        visu_desc.display_descriptor(
-            descriptor_histograms=unflatten_descriptor(
-                avg_bad_descs[id_image],
-                nb_bins=nb_bins,
-                nb_angular_bins=nb_angular_bins,
-            ),
-            descriptor_name=bad_descs_names[id_image],
-            show_plot=False,
-        )
+    avg_descs = [avg_good_descs, avg_bad_descs]
+    descs_names = [good_descs_names, bad_descs_names]
+
+    for id_desc in range(2):
+        for id_image in range(2):
+            visu_desc.display_descriptor(
+                descriptor_histograms=unflatten_descriptor(
+                    avg_descs[id_desc][id_image],
+                    nb_bins=nb_bins,
+                    nb_angular_bins=nb_angular_bins,
+                ),
+                descriptor_name=descs_names[id_desc][id_image],
+                show_plot=False,
+            )
 
     plt.show()
