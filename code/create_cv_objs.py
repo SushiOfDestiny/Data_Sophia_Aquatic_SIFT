@@ -62,11 +62,20 @@ def create_matches_list(distances_matches, matched_idx_ims):
     return matches_list
 
 
+def sort_matches_by_distance(matches_list):
+    """
+    Sort a list of matches by distance
+    matches_list: list of cv.DMatch
+    """
+    matches_list.sort(key=lambda x: x.distance)
+    return matches_list
+
+
 if __name__ == "__main__":
 
     # load keypoints coordinates
     kp_coords = [
-        np.load(f"{descrip_path}/{kp_coords_filenames[id_image]}")
+        np.load(f"{descrip_path}/{kp_coords_filenames[id_image]}.npy")
         for id_image in range(2)
     ]
 
@@ -106,13 +115,13 @@ if __name__ == "__main__":
 
     save_Dmatches(
         matches_list,
-        f"{matches_path}/{matches_filename}",
+        f"{matches_path}/{matches_filename}.txt",
     )
     print("finished saving matches")
 
     for id_image in range(2):
         save_keypoints(
             kps_ims_objs[id_image],
-            f"{matches_path}/{kp_filenames[id_image]}",
+            f"{matches_path}/{kp_filenames[id_image]}.txt",
         )
     print("finished saving keypoints")

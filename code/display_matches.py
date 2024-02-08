@@ -81,22 +81,22 @@ if __name__ == "__main__":
 
     # load unfiltered keypoints coordinates
     kps_coords = [
-        np.load(f"{descrip_path}/{kp_coords_filenames[id_image]}")
+        np.load(f"{descrip_path}/{kp_coords_filenames[id_image]}.npy")
         for id_image in range(2)
     ]
     descs = [
         np.load(
-            f"{descrip_path}/{descrip_filenames[id_image]}",
+            f"{descrip_path}/{descrip_filenames[id_image]}.npy",
         )
         for id_image in range(2)
     ]
 
     # load unfiltered keypoints, matches and index of good matches
     kps = [
-        load_keypoints(f"{matches_path}/{kp_filenames[id_image]}")
+        load_keypoints(f"{matches_path}/{kp_filenames[id_image]}.txt")
         for id_image in range(2)
     ]
-    matches = load_matches(f"{matches_path}/{matches_filename}")
+    matches = load_matches(f"{matches_path}/{matches_filename}.txt")
 
     # Load matches filtered by blender
     correct_matches_idxs = np.load(
@@ -145,6 +145,7 @@ if __name__ == "__main__":
             zoom_radius=20,
             show_directions=False,
             show_gradients=False,
+            show_plot=False,
         )
 
     # look at the average descriptors of the good matches

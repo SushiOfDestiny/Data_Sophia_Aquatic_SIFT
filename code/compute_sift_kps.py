@@ -1,4 +1,5 @@
 import sys
+import numpy as np
 import cv2 as cv
 import matplotlib.pyplot as plt
 
@@ -37,18 +38,36 @@ if __name__ == "__main__":
         cropped_ims[0], cropped_ims[1], method_post="lowe"
     )
     sift_kps = [sift_kp1, sift_kp2]
+    # compute keypoints coordinates as list of 2 numpy arrays
+    sift_kps_coords = [
+        np.zeros(shape=(len(sift_kp_pairs), 2), dtype=np.int32) for _ in range(2)
+    ]
+    for id_image in range(2):
+        for id_kp in range(len(sift_kp_pairs)):
+            sift_kps_coords[id_image][id_kp, :] = np.array(
+                [
+                    int(np.round(sift_kps[id_image][id_kp].pt[0])),
+                    int(np.round(sift_kps[id_image][id_kp].pt[1])),
+                ]
+            )
 
     # draw keypoints
-    draw_good_keypoints(
-        cropped_ims[0],
-        cropped_ims[1],
-        sift_kps[0],
-        sift_kps[1],
-        sift_matches,
-        20,
-    )
+    # draw_good_keypoints(
+    #     cropped_ims[0],
+    #     cropped_ims[1],
+    #     sift_kps[0],
+    #     sift_kps[1],
+    #     sift_matches,
+    #     20,
+    # )
 
-    # save sift matches and keypoints
+    # save sift coords of kps
+    for id_image in range(2):
+        np.save(
+            f"{descrip_path}/{kp_coords_filenames[id_image]}{sift_suffix}",
+            sift_kps_coords[id_image],
+        )
+
     # save the matches and keypoints using function from matching/saving.py
     save_kp_pairs_to_arr(
         sift_kp_pairs,
