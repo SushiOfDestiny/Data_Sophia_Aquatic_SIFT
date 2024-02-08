@@ -4,6 +4,8 @@ from computation_pipeline_hyper_params import *
 
 # Goal: create the filenames for all objects save during the computation pipeline
 
+# CONVENTION: all paths variables end with "_path"
+
 # Create filename where to load the original images
 original_imgs_path_prefix = f"{relative_path}/{img_folder}"
 
@@ -64,8 +66,16 @@ filtered_kp_path = "filtered_keypoints"
 
 # Create filename suffix for sift kps, pairs and matches
 sift_suffix = "_sift"
-# sift_kp_filenames = [f"{kp_filenames[id_image]}{sift_suffix}" for id_image in range(2)]
-# sift_kp_pairs_filename = f"{kp_pairs_filename}{sift_suffix}"
-# sift_matches_filename = f"{matches_filename}{sift_suffix}"
-# sift_correct_matches_idxs_filename = f"{correct_matches_idxs_filename}{sift_suffix}"
-# sift_correct_match_filename_prefix = f"{correct_match_filename_prefix}{sift_suffix}"
+
+
+# Create filename for the log files containing everything that was printed
+log_path = "execution_logs"
+
+# stack all folders paths
+required_folders_paths = [
+    descrip_path,
+    dist_path,
+    matches_path,
+    filtered_kp_path,
+    log_path,
+]
