@@ -6,6 +6,9 @@ import matplotlib.pyplot as plt
 from computation_pipeline_hyper_params import *
 from filenames_creation import *
 
+
+from general_pipeline_before_blender import create_logger
+
 sys.path.append("../matching")
 from saving import (
     save_keypoints,
@@ -13,6 +16,10 @@ from saving import (
     save_kp_pairs_to_arr,
 )
 from matching import get_keypoint_pairs, draw_good_keypoints
+
+# create the logger
+logger = create_logger(path_to_log)
+
 
 if __name__ == "__main__":
     # Load images
@@ -40,7 +47,8 @@ if __name__ == "__main__":
     sift_kps = [sift_kp1, sift_kp2]
     # compute keypoints coordinates as list of 2 numpy arrays
     sift_kps_coords = [
-        np.zeros(shape=(len(sift_kps[id_image]), 2), dtype=np.int32) for id_image in range(2)
+        np.zeros(shape=(len(sift_kps[id_image]), 2), dtype=np.int32)
+        for id_image in range(2)
     ]
     for id_image in range(2):
         for id_kp in range(len(sift_kps[id_image])):

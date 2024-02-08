@@ -70,6 +70,8 @@ sift_suffix = "_sift"
 
 # Create filename for the log files containing everything that was printed
 log_path = "execution_logs"
+log_filename = f"{dist_filename_prefix}_log"
+path_to_log = f"{log_path}/{log_filename}.txt"
 
 # stack all folders paths
 required_folders_paths = [

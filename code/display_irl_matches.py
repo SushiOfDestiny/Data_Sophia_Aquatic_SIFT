@@ -1,6 +1,7 @@
 # Goal of this script is to visualise some matches on real images
 import os
 import sys
+
 import cv2 as cv
 import numpy as np
 import matplotlib.pyplot as plt
@@ -17,7 +18,9 @@ from filenames_creation import *
 
 import display_matches as dm
 
+
 if __name__ == "__main__":
+
     # load images
     ims = [
         cv.imread(

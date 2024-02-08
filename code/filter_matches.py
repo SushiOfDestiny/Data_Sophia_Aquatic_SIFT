@@ -1,6 +1,7 @@
 import bpy
 import sys
 import os
+import logging
 import numpy as np
 
 sys.path.append("../../../code")
@@ -8,13 +9,23 @@ from computation_pipeline_hyper_params import *
 
 from filenames_creation import *
 
-
 # add script folder to path, path corresponding to location of the virtual scene blender file
 sys.path.append("../../../blender")
 
 import matching as matching
 
+
+from general_pipeline_before_blender import create_logger
+
+# create the logger
+logger = create_logger(path_to_log)
+
+
 if __name__ == "__main__":
+    # write all prints and errors to the log file in "append" mode
+    sys.stdout = open(f"../../../code/{path_to_log}", "a")
+    sys.stderr = sys.stdout
+
     # Goal is to load the saved opencv matches and to filter them with the blender script
     print("----------------------------")
     cam_1 = bpy.data.objects["Cam_1"]

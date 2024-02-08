@@ -3,6 +3,7 @@ import numpy as np
 import os
 import sys
 
+
 import descriptor as desc
 import visu_hessian as vh
 import visu_descriptor as visu_desc
@@ -24,6 +25,7 @@ import numba
 from computation_pipeline_hyper_params import *
 
 from filenames_creation import *
+
 
 # Goal is to convert into opencv objects such as keypoints and matches, the numpy arrays of distances and coordinates
 

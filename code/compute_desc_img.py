@@ -3,6 +3,7 @@ import numpy as np
 import os
 import sys
 
+
 import matplotlib.pyplot as plt
 
 from datetime import datetime
@@ -17,6 +18,12 @@ import visu_hessian as vh
 from computation_pipeline_hyper_params import *
 
 from filenames_creation import *
+
+from general_pipeline_before_blender import create_logger
+
+
+# create the logger
+logger = create_logger(path_to_log)
 
 
 @njit(parallel=True)
@@ -75,6 +82,7 @@ def compute_desc_pixels(
 
 
 if __name__ == "__main__":
+
     # Load preprocessed images as numpy arrays
     float_ims = np.load(f"{blurred_imgs_path}.npy")
 

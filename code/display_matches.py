@@ -1,6 +1,7 @@
 # Testing pipeline after Blender script execution
 import os
 import sys
+
 import cv2 as cv
 import numpy as np
 import matplotlib.pyplot as plt
@@ -67,6 +68,7 @@ def display_match(
 
 
 if __name__ == "__main__":
+
     # load images
     ims = [
         cv.imread(
