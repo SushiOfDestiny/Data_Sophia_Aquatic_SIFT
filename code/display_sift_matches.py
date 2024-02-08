@@ -65,7 +65,7 @@ if __name__ == "__main__":
     for match_idx in chosen_matches_idx:
         # display 1 match, object here is not DMatch, but a couple of DMatch, as Sift returns
         # we get here only the Dmatch
-        chosen_Dmatch = good_matches[match_idx][0]
+        chosen_Dmatch = matches[match_idx][0]
 
         # display the match
         dm.display_match(

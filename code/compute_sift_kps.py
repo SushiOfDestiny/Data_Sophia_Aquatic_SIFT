@@ -40,10 +40,10 @@ if __name__ == "__main__":
     sift_kps = [sift_kp1, sift_kp2]
     # compute keypoints coordinates as list of 2 numpy arrays
     sift_kps_coords = [
-        np.zeros(shape=(len(sift_kp_pairs), 2), dtype=np.int32) for _ in range(2)
+        np.zeros(shape=(len(sift_kps[id_image]), 2), dtype=np.int32) for id_image in range(2)
     ]
     for id_image in range(2):
-        for id_kp in range(len(sift_kp_pairs)):
+        for id_kp in range(len(sift_kps[id_image])):
             sift_kps_coords[id_image][id_kp, :] = np.array(
                 [
                     int(np.round(sift_kps[id_image][id_kp].pt[0])),
