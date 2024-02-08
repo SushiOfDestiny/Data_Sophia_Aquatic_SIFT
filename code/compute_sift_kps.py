@@ -17,9 +17,6 @@ from saving import (
 )
 from matching import get_keypoint_pairs, draw_good_keypoints
 
-# create the logger
-logger = create_logger(path_to_log)
-
 
 if __name__ == "__main__":
     # Load images
