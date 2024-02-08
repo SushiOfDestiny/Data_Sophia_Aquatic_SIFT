@@ -16,3 +16,38 @@ if epsilon is None:
         d1 = (vec_1 - vec_1_1px_shift).length
         d2 = (vec_2 - vec_2_1px_shift).length
 '''
+
+import bpy
+import bpy_extras
+import numpy as np
+from shift import img_px_to_world_co, get_cam_parameters
+from draw_points import draw_points
+
+def get_depth_at_world_coords(vec_img_pt_world, cam, scene):
+    depsgraph = bpy.context.evaluated_depsgraph_get()
+    res, vec, _, _, _, _ = scene.ray_cast(depsgraph, cam.location, vec_img_pt_world - cam.location)
+    if not res:
+        return 0
+    return bpy_extras.object_utils.world_to_camera_view(scene, cam, vec)[2] - (cam.data.lens / cam.data.sensor_width)
+# Takes into account shift from image plane, but behavior of world_to_camera_view needs to be tested
+
+def get_depth_at_px_coords(x_px_cv, y_px_cv, cam, scene):
+    return get_depth_at_world_coords(img_px_to_world_co(x_px_cv, y_px_cv, cam, scene), cam, scene)
+
+def compute_depth_map(cam, scene):
+    res_x_px = scene.render.resolution_x
+    res_y_px = scene.render.resolution_y
+    
+    dmap = np.empty((res_y_px, res_x_px), dtype=np.float64)
+    for x in range(res_y_px):
+        for y in range(res_x_px):
+            dmap[x, y] = get_depth_at_px_coords(y, x, cam, scene)
+    return dmap
+
+if __name__ == '__main__':
+
+    cam_1 = bpy.data.objects['Cam_1']
+    scene = bpy.context.scene
+
+    np.save("dmap", compute_depth_map(cam_1, scene))
+    print("depth map computed")
