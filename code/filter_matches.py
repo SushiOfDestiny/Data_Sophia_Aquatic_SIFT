@@ -17,16 +17,7 @@ import matching as matching
 import differential as differential
 
 
-from general_pipeline_before_blender import create_logger
-
-# create the logger
-logger = create_logger(path_to_log)
-
-
 if __name__ == "__main__":
-    # write all prints and errors to the log file in "append" mode
-    sys.stdout = open(f"../../../code/{path_to_log}", "a")
-    sys.stderr = sys.stdout
 
     # Goal is to load the saved opencv matches and to filter them with the blender script
     cam_1 = bpy.data.objects["Cam_1"]

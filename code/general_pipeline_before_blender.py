@@ -14,7 +14,7 @@ def create_logger(logpath):
     logger.setLevel(logging.INFO)
 
     # Create a file handler
-    handler = logging.FileHandler(path_to_log, mode="a")
+    handler = logging.FileHandler(logpath, mode="a")
     handler.setLevel(logging.INFO)
 
     # Create a console handler
@@ -33,19 +33,27 @@ def create_logger(logpath):
     return logger
 
 
-# create the logger
-logger = create_logger(path_to_log)
-
-
+# change filenames and scripts if sift is used
 # List of scripts to run
-scripts = [
-    "create_all_folders.py",
-    "print_pipe_hparams.py",
-    "imgs_preprocessing.py",
-    "compute_desc_img.py",
-    "compute_distances.py",
-    "create_cv_objs.py",
-]
+if use_sift:
+
+    scripts = [
+        "create_all_folders.py",
+        "print_pipe_hparams.py",
+        "compute_sift_kps.py",
+    ]
+else:
+    scripts = [
+        "create_all_folders.py",
+        "print_pipe_hparams.py",
+        "imgs_preprocessing.py",
+        "compute_desc_img.py",
+        "compute_distances.py",
+        "create_cv_objs.py",
+    ]
+
+# create the logger
+logger = create_logger(f"{log_path}/{log_filename}.txt")
 
 
 if __name__ == "__main__":
@@ -54,7 +62,7 @@ if __name__ == "__main__":
     subprocess.call(["python", scripts[0]])
 
     logger.info("Start running the pipeline")
-    logger.info(f"All infos are saved in {path_to_log}\n")
+    logger.info(f"All infos are saved in {log_path}/{log_filename} \n")
 
     # run all the rest of the scripts
     for i in range(1, len(scripts)):

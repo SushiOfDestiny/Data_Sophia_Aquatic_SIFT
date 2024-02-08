@@ -67,6 +67,30 @@ def display_match(
         plt.show()
 
 
+def print_distance_infos(matches_list):
+    """
+    Print some information about the distances of the matches.
+    matches_list: list of SIFT matches (pairs of DMatch objects)
+    print the minimal, maximal and mean distances and standard deviation of the distances
+    """
+    distances = np.array([match[0].distance for match in matches_list])
+    print(f"Minimal distance: {np.min(distances)}")
+    print(f"Maximal distance: {np.max(distances)}")
+    print(f"Mean distance: {np.mean(distances)}")
+    print(f"Standard deviation of the distances: {np.std(distances)}")
+
+
+def compute_good_and_bad_matches(matches, good_matches_kps_idx):
+    """
+    Compute the good and bad matches from the list of matches and the index of the good matches
+    return the good and bad matches as sift matches (pairs of DMatch objects)
+    """
+    good_matches = [matches[i] for i in good_matches_kps_idx]
+    bad_matches_idx = np.setdiff1d(np.arange(len(matches)), good_matches_kps_idx)
+    bad_matches = [matches[i] for i in bad_matches_idx]
+    return good_matches, bad_matches
+
+
 if __name__ == "__main__":
 
     # load images
@@ -105,18 +129,23 @@ if __name__ == "__main__":
         f"{matches_path}/{correct_matches_idxs_filename}.npy"
     )
 
-    # filter good matches according to blender
-    good_matches = [matches[i] for i in correct_matches_idxs]
+    # filter good matches and bad matches according to blender
+    good_matches, bad_matches = compute_good_and_bad_matches(
+        matches, correct_matches_idxs
+    )
 
     # print general info about proportions of keypoints and matches
 
     for id_image in range(2):
+        print(f"number of pixels in subimage {id_image}", x_lengths[id_image] * y_lengths[id_image])
         print(f"number of keypoints in image {id_image}", len(kps[id_image]))
-    print("number of unfiltered matches", len(matches))
+
+    print("number of computed matches", len(matches))
     print(
         f"number of good matches at a precision of {epsilon} pixels: ",
         len(good_matches),
     )
+    print("percentage of good matches: ", len(good_matches) / len(matches) * 100.0)
 
     # look at some matches
 
@@ -179,6 +208,7 @@ if __name__ == "__main__":
     ]
 
     # look at averaged bad descriptor
+
     bad_descs = [
         descs[id_image][
             np.setdiff1d(
@@ -211,3 +241,10 @@ if __name__ == "__main__":
             )
 
     plt.show()
+
+    # look at the distances of the good and bad matches
+    print("Statistics about the distances of the good matches")
+    print_distance_infos(good_matches)
+
+    print("Statistics about the distances of the bad matches")
+    print_distance_infos(bad_matches)

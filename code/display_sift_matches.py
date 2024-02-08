@@ -50,17 +50,32 @@ if __name__ == "__main__":
     )
 
     # filter good matches according to blender
-    good_matches = [matches[i] for i in correct_matches_idxs]
+    good_matches, bad_matches = dm.compute_good_and_bad_matches(
+        matches=matches, good_matches_kps_idx=correct_matches_idxs
+    )
 
     # print general info about proportions of keypoints and matches
 
     for id_image in range(2):
+        print(f"number of pixels in image {id_image}", ims[id_image].size)
         print(f"number of sift keypoints in image {id_image}", len(kps[id_image]))
+        print(
+            f"percentage of sift keypoints in image {id_image}",
+            len(kps[id_image]) / ims[id_image].size * 100.0,
+        )
     print("number of unfiltered sift matches", len(matches))
     print(
         f"number of good sift matches at a precision of {epsilon} pixels: ",
         len(good_matches),
     )
+
+    # print stats about good matches and bad matches
+    # look at the distances of the good and bad matches
+    print("Statistics about the distances of the good sift matches")
+    dm.print_distance_infos(good_matches)
+
+    print("Statistics about the distances of the bad sift matches")
+    dm.print_distance_infos(bad_matches)
 
     # look at some matches
 

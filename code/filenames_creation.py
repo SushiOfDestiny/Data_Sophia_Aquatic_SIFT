@@ -67,11 +67,11 @@ filtered_kp_path = "filtered_keypoints"
 # Create filename suffix for sift kps, pairs and matches
 sift_suffix = "_sift"
 
+sift_radical = sift_suffix if use_sift else ""
 
 # Create filename for the log files containing everything that was printed
 log_path = "execution_logs"
-log_filename = f"{dist_filename_prefix}_log"
-path_to_log = f"{log_path}/{log_filename}.txt"
+log_filename = f"{dist_filename_prefix}_log{sift_radical}"
 
 # stack all folders paths
 required_folders_paths = [
@@ -81,3 +81,5 @@ required_folders_paths = [
     filtered_kp_path,
     log_path,
 ]
+
+#
