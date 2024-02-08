@@ -23,11 +23,11 @@ descrip_filename_prefixes = [
     for id_image in range(2)
 ]
 descrip_filenames = [
-    f"{descrip_filename_prefixes[id_image]}_descs.npy" for id_image in range(2)
+    f"{descrip_filename_prefixes[id_image]}_descs" for id_image in range(2)
 ]
 # Create filename for the keypoints coordinates
 kp_coords_filenames = [
-    f"{descrip_filename_prefixes[id_image]}_coords.npy" for id_image in range(2)
+    f"{descrip_filename_prefixes[id_image]}_coords" for id_image in range(2)
 ]
 
 # Define suffix for filename
@@ -47,11 +47,11 @@ matched_idx_filenames = [
 
 # Define path to save the matches
 matches_path = "computed_matches"
-kp_filenames = [f"{dist_filename_prefix}_kp_{id_image}.txt" for id_image in range(2)]
+kp_filenames = [f"{dist_filename_prefix}_kp_{id_image}" for id_image in range(2)]
 # Create filename for the pairs of keypoints
 kp_pairs_filename = f"{dist_filename_prefix}_kp_pairs_arr"
 # Create filename for the opencv Dmatches
-matches_filename = f"{dist_filename_prefix}_matches.txt"
+matches_filename = f"{dist_filename_prefix}_matches"
 
 # Create filename for the correct matches indexes
 correct_matches_idxs_filename = f"{dist_filename_prefix}_correct_idxs"

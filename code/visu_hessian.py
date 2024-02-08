@@ -1041,6 +1041,7 @@ def topological_visualization_pipeline(
     show_curvatures=True,
     show_directions=True,
     show_gradients=True,
+    show_plot=True,
 ):
     """
     Plot curvatures values and directions, and also gradients of the pair of keypoints on the pair of images
@@ -1099,4 +1100,5 @@ def topological_visualization_pipeline(
         )
         plt.figure(grad_fig.number)
 
-    plt.show()
+    if show_plot:
+        plt.show()

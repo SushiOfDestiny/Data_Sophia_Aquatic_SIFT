@@ -49,12 +49,15 @@ if __name__ == "__main__":
     ]
     matches = load_matches(f"{matches_path}/{matches_filename}")
 
+    # sort matches by distance
+    sorted_matches = sorted(matches, key=lambda x: x[0].distance)
+
     # look at some matches
-    chosen_matches_idx = [1]
+    chosen_matches_idx = list(range(10))
     for match_idx in chosen_matches_idx:
         # display 1 match, object here is not DMatch, but a couple of DMatch, as Sift returns
         # we get here only the Dmatch
-        chosen_Dmatch = matches[match_idx][0]
+        chosen_Dmatch = sorted_matches[match_idx][0]
 
         # display the match
         dm.display_match(
@@ -77,6 +80,7 @@ if __name__ == "__main__":
             zoom_radius=20,
             show_directions=False,
             show_gradients=False,
+            show_plot=False,
         )
 
     plt.show()
@@ -98,9 +102,18 @@ if __name__ == "__main__":
     ]
 
     descs_ims = [descs[id_image][matches_kps_idx[id_image]] for id_image in range(2)]
-    avg_good_descs = [np.mean(descs_ims[id_image], axis=0) for id_image in range(2)]
+    avg_descs = [np.mean(descs_ims[id_image], axis=0) for id_image in range(2)]
 
-    good_descs_names = [
+    descs_names = [
         f"Averaged descriptor of matches for {im_names[id_image]}\n with nb_bins={nb_bins}, bin_radius={bin_radius}, delta_angle={delta_angle} and sigma={sigma}"
         for id_image in range(2)
     ]
+
+    for id_image in range(2):
+        visu_desc.display_descriptor(
+            descriptor_histograms=unflatten_descriptor(avg_descs[id_image]),
+            descriptor_name=descs_names[id_image],
+            show_plot=False,
+        )
+
+    plt.show()
