@@ -44,16 +44,6 @@ if __name__ == "__main__":
     ]
     matches = load_matches(f"{matches_path}/{matches_filename}{sift_suffix}")
 
-    # Load matches filtered by blender
-    correct_matches_idxs = np.load(
-        f"{matches_path}/{correct_matches_idxs_filename}{sift_suffix}.npy"
-    )
-
-    # filter good matches according to blender
-    good_matches, bad_matches = dm.compute_good_and_bad_matches(
-        matches=matches, good_matches_kps_idx=correct_matches_idxs
-    )
-
     # print general info about proportions of keypoints and matches
 
     for id_image in range(2):
@@ -64,18 +54,12 @@ if __name__ == "__main__":
             len(kps[id_image]) / ims[id_image].size * 100.0,
         )
     print("number of unfiltered sift matches", len(matches))
-    print(
-        f"number of good sift matches at a precision of {epsilon} pixels: ",
-        len(good_matches),
-    )
 
     # print stats about good matches and bad matches
     # look at the distances of the good and bad matches
-    print("Statistics about the distances of the good sift matches")
-    dm.print_distance_infos(good_matches)
+    print("Statistics about the distances of the sift matches")
+    dm.print_distance_infos(matches)
 
-    print("Statistics about the distances of the bad sift matches")
-    dm.print_distance_infos(bad_matches)
 
     # look at some matches
 
@@ -83,7 +67,7 @@ if __name__ == "__main__":
     for match_idx in chosen_matches_idx:
         # display 1 match, object here is not DMatch, but a couple of DMatch, as Sift returns
         # we get here only the Dmatch
-        chosen_Dmatch = good_matches[match_idx][0]
+        chosen_Dmatch = matches[match_idx][0]
 
         # display the match
         dm.display_match(

@@ -17,11 +17,6 @@ import visu_hessian as vh
 # Load hyperparameters for the computation pipeline
 from computation_pipeline_hyper_params import *
 from filenames_creation import *
-from general_pipeline_before_blender import create_logger
-
-
-# create the logger
-logger = create_logger(path_to_log)
 
 
 @njit(parallel=True)
@@ -56,7 +51,8 @@ def compute_desc_pixels(
     coords = np.zeros((n, 2), dtype=np.int32)
     # use numba.prange for parallelization
     for i in numba.prange(y_start, y_start + y_length):
-        for j in numba.prange(x_start, x_start + x_length): #careful about prange
+        # for j in numba.prange(x_start, x_start + x_length):  # careful about prange
+        for j in range(x_start, x_start + x_length):  # careful about prange
             # ensure kp_position is (horizontal=rows, vertical=cols)
             pixel_position = (j, i)
 

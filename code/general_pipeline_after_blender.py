@@ -9,14 +9,10 @@ from general_pipeline_before_blender import create_logger
 # create the logger
 logger = create_logger(f"{log_path}/{log_filename}.txt")
 
-if img_folder[:3] == "irl":
-    scripts = [
-        "display_irl_matches.py",
-    ]
-else:
-    scripts = [
-        f"display{sift_radical}_matches.py",
-    ]
+
+scripts = [
+    f"display{irl_suffix}{sift_radical}_matches.py",
+]
 
 if __name__ == "__main__":
 

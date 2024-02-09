@@ -137,7 +137,10 @@ if __name__ == "__main__":
     # print general info about proportions of keypoints and matches
 
     for id_image in range(2):
-        print(f"number of pixels in subimage {id_image}", x_lengths[id_image] * y_lengths[id_image])
+        print(
+            f"number of pixels in subimage {id_image}",
+            x_lengths[id_image] * y_lengths[id_image],
+        )
         print(f"number of keypoints in image {id_image}", len(kps[id_image]))
 
     print("number of computed matches", len(matches))
@@ -149,7 +152,7 @@ if __name__ == "__main__":
 
     # look at some matches
 
-    chosen_matches_idx = [1]
+    chosen_matches_idx = [0, 1, 2]
     for match_idx in chosen_matches_idx:
         # display 1 match, object here is not DMatch, but a couple of DMatch, as Sift returns
         # we get here only the Dmatch
@@ -169,15 +172,27 @@ if __name__ == "__main__":
 
         # display topological properties
         chosen_kps = [kps[0][chosen_Dmatch.queryIdx], kps[1][chosen_Dmatch.trainIdx]]
-        vh.topological_visualization_pipeline(
-            kps=chosen_kps,
-            uint_ims=ims,
-            float_ims=float_ims,
-            zoom_radius=20,
-            show_directions=False,
-            show_gradients=False,
-            show_plot=False,
-        )
+        # vh.topological_visualization_pipeline(
+        #     kps=chosen_kps,
+        #     uint_ims=ims,
+        #     float_ims=float_ims,
+        #     zoom_radius=20,
+        #     show_directions=False,
+        #     show_gradients=False,
+        #     show_plot=False,
+        # )
+
+        # display the descriptor of the point in the 2 images
+        # for id_image in range(2):
+        #     visu_desc.display_descriptor(
+        #         descriptor_histograms=unflatten_descriptor(
+        #             descs[id_image][chosen_Dmatch.queryIdx],
+        #             nb_bins=nb_bins,
+        #             nb_angular_bins=nb_angular_bins,
+        #         ),
+        #         descriptor_name=f"Descriptor of the match {match_idx} in {im_names[id_image]}",
+        #         show_plot=False,
+        #     )
 
     # look at the average descriptors of the good matches
     good_matches_kps = [
@@ -228,17 +243,17 @@ if __name__ == "__main__":
     avg_descs = [avg_good_descs, avg_bad_descs]
     descs_names = [good_descs_names, bad_descs_names]
 
-    for id_desc in range(2):
-        for id_image in range(2):
-            visu_desc.display_descriptor(
-                descriptor_histograms=unflatten_descriptor(
-                    avg_descs[id_desc][id_image],
-                    nb_bins=nb_bins,
-                    nb_angular_bins=nb_angular_bins,
-                ),
-                descriptor_name=descs_names[id_desc][id_image],
-                show_plot=False,
-            )
+    # for id_desc in range(2):
+    #     for id_image in range(2):
+    #         visu_desc.display_descriptor(
+    #             descriptor_histograms=unflatten_descriptor(
+    #                 avg_descs[id_desc][id_image],
+    #                 nb_bins=nb_bins,
+    #                 nb_angular_bins=nb_angular_bins,
+    #             ),
+    #             descriptor_name=descs_names[id_desc][id_image],
+    #             show_plot=False,
+    #         )
 
     plt.show()
 
