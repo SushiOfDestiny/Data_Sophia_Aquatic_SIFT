@@ -240,6 +240,10 @@ if __name__ == "__main__":
                 show_plot=False,
             )
 
+    visu_desc.display_descriptor(
+            descriptor_histograms=unflatten_descriptor(kps_coords[match_idx])
+    )
+
     plt.show()
 
     # look at the distances of the good and bad matches

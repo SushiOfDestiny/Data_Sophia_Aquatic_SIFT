@@ -71,18 +71,3 @@ def save_correct_matches(correct_matches_idxs, idx_filename):
     - idx_filename (str)
     """
     np.save(idx_filename, np.array(correct_matches_idxs))
-
-
-if __name__ == "__main__":
-    print("----------------------------")
-    cam_1 = bpy.data.objects["Cam_1"]
-    cam_2 = bpy.data.objects["Cam_2"]
-
-    filepath = "kp_pairs_arr.npy"
-    epsilon = None
-    # epsilon = 0.001 # can be modified later
-    correct_matches, correct_matches_idxs, matched_3d_pts = check_correct_match(
-        filepath, cam_1, cam_2, epsilon
-    )
-
-    save_correct_matches(correct_matches_idxs, "idxs")
