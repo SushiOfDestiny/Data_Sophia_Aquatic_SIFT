@@ -4,7 +4,7 @@ from scipy.signal import fftconvolve
 import visu_hessian as vh
 
 from datetime import datetime
-from numba import njit
+from numba import njit, prange
 import numba.np.extensions as nb_ext
 
 ################
@@ -47,7 +47,7 @@ def convert_angles_to_pos_degrees(angles):
     return posdeg_angles
 
 
-@njit
+@njit(parallel=True)
 def compute_orientations(g_img, border_size=1):
     """
     Compute the orientation of all pixels of a grayscale image within a border
@@ -56,7 +56,7 @@ def compute_orientations(g_img, border_size=1):
     return orientations: float32 array of shape (height, width) of the orientations in radians
     """
     orientations = np.zeros_like(g_img, dtype=np.float32)
-    for y in range(border_size, g_img.shape[0] - border_size):
+    for y in prange(border_size, g_img.shape[0] - border_size):
         for x in range(border_size, g_img.shape[1] - border_size):
             orientations[y, x] = compute_orientation(g_img, (x, y))
     return orientations
@@ -141,6 +141,7 @@ def compute_features_overall_abs(g_img, border_size=1):
     All angular features are in degrees in [0, 360[.
     g_img: float32 grayscale image
     border_size: int size of the border to ignore (default is 1)
+
     Return a list of 4 features numpy arrays :
     signed principal directions,
     absolute value of the eigenvalues,
@@ -163,7 +164,7 @@ def compute_features_overall_abs(g_img, border_size=1):
     # compute gradients norms
     # gradients_norms = np.linalg.norm(gradients, axis=2)
     gradients_norms = np.zeros(shape=gradients.shape[:2], dtype=np.float32)
-    for i in range(gradients.shape[0]):
+    for i in prange(gradients.shape[0]):
         for j in range(gradients.shape[1]):
             gradients_norms[i, j] = np.linalg.norm(gradients[i, j])
 
@@ -378,6 +379,7 @@ def compute_descriptor_histograms_1_2_rotated(
     overall_features_posneg: list of features arrays of all pixels of the image
     kp_position: (x, y) int pixel position of keypoint in the image frame
     normalization_mode: str mode of normalization (default is "global"), dictates how to normalize the histogram
+
     return descriptor_histograms: list of 3 histograms, each of shape (nb_bins, nb_bins, nb_angular_bins)
     1st histogram: first eigenvalues (highest signed value)
     2nd histogram: second eigenvalues

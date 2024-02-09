@@ -1,6 +1,7 @@
 import bpy
 import sys
 import os
+import logging
 import numpy as np
 
 sys.path.append("../../../code")
@@ -14,7 +15,9 @@ sys.path.append("../../../blender")
 
 import matching as matching
 
+
 if __name__ == "__main__":
+
     # Goal is to load the saved opencv matches and to filter them with the blender script
     print("----------------------------")
     cam_1 = bpy.data.objects["Cam_1"]

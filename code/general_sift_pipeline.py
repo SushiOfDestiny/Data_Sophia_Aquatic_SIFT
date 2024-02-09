@@ -4,7 +4,9 @@ import subprocess
 
 # List of scripts to run
 scripts = [
-    "compute_sift_kps.py" "display_sift_matches.py",
+    "create_all_folders.py",
+    "compute_sift_kps.py",
+    "display_sift_matches.py",
 ]
 
 for script in scripts:

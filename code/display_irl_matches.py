@@ -1,6 +1,7 @@
 # Goal of this script is to visualise some matches on real images
 import os
 import sys
+
 import cv2 as cv
 import numpy as np
 import matplotlib.pyplot as plt
@@ -17,7 +18,9 @@ from filenames_creation import *
 
 import display_matches as dm
 
+
 if __name__ == "__main__":
+
     # load images
     ims = [
         cv.imread(
@@ -32,28 +35,28 @@ if __name__ == "__main__":
 
     # load unfiltered keypoints coordinates
     kps_coords = [
-        np.load(f"{descrip_path}/{kp_coords_filenames[id_image]}")
+        np.load(f"{descrip_path}/{kp_coords_filenames[id_image]}.npy")
         for id_image in range(2)
     ]
     descs = [
         np.load(
-            f"{descrip_path}/{descrip_filenames[id_image]}",
+            f"{descrip_path}/{descrip_filenames[id_image]}.npy",
         )
         for id_image in range(2)
     ]
 
     # load unfiltered keypoints, matches and index of good matches
     kps = [
-        load_keypoints(f"{matches_path}/{kp_filenames[id_image]}")
+        load_keypoints(f"{matches_path}/{kp_filenames[id_image]}.txt")
         for id_image in range(2)
     ]
-    matches = load_matches(f"{matches_path}/{matches_filename}")
+    matches = load_matches(f"{matches_path}/{matches_filename}.txt")
 
     # sort matches by distance
     sorted_matches = sorted(matches, key=lambda x: x[0].distance)
 
     # look at some matches
-    chosen_matches_idx = list(range(10))
+    chosen_matches_idx = [0, 1]
     for match_idx in chosen_matches_idx:
         # display 1 match, object here is not DMatch, but a couple of DMatch, as Sift returns
         # we get here only the Dmatch
@@ -71,19 +74,17 @@ if __name__ == "__main__":
             im_names=im_names,
         )
 
-        # display topological properties
-        chosen_kps = [kps[0][chosen_Dmatch.queryIdx], kps[1][chosen_Dmatch.trainIdx]]
-        vh.topological_visualization_pipeline(
-            kps=chosen_kps,
-            uint_ims=ims,
-            float_ims=float_ims,
-            zoom_radius=20,
-            show_directions=False,
-            show_gradients=False,
-            show_plot=False,
-        )
-
-    plt.show()
+        # # display topological properties
+        # chosen_kps = [kps[0][chosen_Dmatch.queryIdx], kps[1][chosen_Dmatch.trainIdx]]
+        # vh.topological_visualization_pipeline(
+        #     kps=chosen_kps,
+        #     uint_ims=ims,
+        #     float_ims=float_ims,
+        #     zoom_radius=20,
+        #     show_directions=False,
+        #     show_gradients=False,
+        #     show_plot=False,
+        # )
 
     # Look at the averaged descriptor
     matches_kps = [
@@ -109,11 +110,15 @@ if __name__ == "__main__":
         for id_image in range(2)
     ]
 
-    for id_image in range(2):
-        visu_desc.display_descriptor(
-            descriptor_histograms=unflatten_descriptor(avg_descs[id_image]),
-            descriptor_name=descs_names[id_image],
-            show_plot=False,
-        )
+    # for id_image in range(2):
+    #     visu_desc.display_descriptor(
+    #         descriptor_histograms=unflatten_descriptor(avg_descs[id_image]),
+    #         descriptor_name=descs_names[id_image],
+    #         show_plot=False,
+    #     )
 
     plt.show()
+
+    # look at statistics about the distances of the matches
+    print("Statistics about the distances of the matches")
+    dm.print_distance_infos(matches)

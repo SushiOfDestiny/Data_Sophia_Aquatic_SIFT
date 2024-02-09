@@ -8,7 +8,7 @@ import numpy as np
 # add the path to the filtering script
 sys.path.append("../../../blender")
 from line import check_correct_match_pt
-from shift import img_px_to_img_m
+from shift import img_px_to_img_m, get_cam_parameters
 from mathutils import Vector
 
 
@@ -65,33 +65,6 @@ def check_correct_match(kp_arr_file, cam_1, cam_2, epsilon=None):
     return correct_matches, correct_matches_idxs, matched_3d_pts
 
 
-def get_cam_parameters(cam):
-    camd = cam.data
-    scene = bpy.context.scene
-    resolution_x_in_px = scene.render.resolution_x
-    resolution_y_in_px = scene.render.resolution_y
-    scale = scene.render.resolution_percentage / 100
-    sensor_width_mm = camd.sensor_width
-    sensor_height_mm = camd.sensor_height
-    aspect_ratio = scene.render.pixel_aspect_y / scene.render.pixel_aspect_x
-
-    pixels_in_u_per_mm = resolution_x_in_px * scale / sensor_width_mm
-    pixels_in_v_per_mm = resolution_y_in_px * scale * aspect_ratio / sensor_height_mm
-    pixel_size_in_u_direction = 1 / pixels_in_u_per_mm
-    pixel_size_in_v_direction = 1 / pixels_in_v_per_mm
-
-    return {
-        "res_x_px": resolution_x_in_px,
-        "res_y_px": resolution_y_in_px,
-        "px_size_u_sensor": pixel_size_in_u_direction,
-        "px_size_v_sensor": pixel_size_in_v_direction,
-        "sensor_width_mm": sensor_width_mm,
-        "sensor_height_mm": sensor_height_mm,
-        "px_size_u_img_plane": None,
-        "px_size_v_img_plane": None,
-    }
-
-
 def save_correct_matches(correct_matches_idxs, idx_filename):
     """
     - correct_matches_idxs (list of int)
@@ -106,7 +79,7 @@ if __name__ == "__main__":
     cam_2 = bpy.data.objects["Cam_2"]
 
     filepath = "kp_pairs_arr.npy"
-
+    epsilon = None
     # epsilon = 0.001 # can be modified later
     correct_matches, correct_matches_idxs, matched_3d_pts = check_correct_match(
         filepath, cam_1, cam_2, epsilon

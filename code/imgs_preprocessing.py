@@ -3,6 +3,7 @@ import numpy as np
 import os
 import sys
 
+
 import matplotlib.pyplot as plt
 
 from datetime import datetime
@@ -18,7 +19,9 @@ from computation_pipeline_hyper_params import *
 
 from filenames_creation import *
 
+
 if __name__ == "__main__":
+
     # Load images
     ims = [
         cv.imread(
@@ -33,7 +36,9 @@ if __name__ == "__main__":
 
     # blur images
     if blur_sigma > 0.1:
-        float_ims = [desc.convolve_2D_gaussian(float_ims[i], blur_sigma) for i in range(2)] 
+        float_ims = [
+            desc.convolve_2D_gaussian(float_ims[i], blur_sigma) for i in range(2)
+        ]
 
     # Save blurred images
     np.save(blurred_imgs_path, float_ims)

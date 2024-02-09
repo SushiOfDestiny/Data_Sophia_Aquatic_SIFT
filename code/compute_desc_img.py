@@ -3,6 +3,7 @@ import numpy as np
 import os
 import sys
 
+
 import matplotlib.pyplot as plt
 
 from datetime import datetime
@@ -15,7 +16,6 @@ import visu_hessian as vh
 
 # Load hyperparameters for the computation pipeline
 from computation_pipeline_hyper_params import *
-
 from filenames_creation import *
 
 
@@ -51,7 +51,8 @@ def compute_desc_pixels(
     coords = np.zeros((n, 2), dtype=np.int32)
     # use numba.prange for parallelization
     for i in numba.prange(y_start, y_start + y_length):
-        for j in range(x_start, x_start + x_length):
+        # for j in numba.prange(x_start, x_start + x_length):  # careful about prange
+        for j in range(x_start, x_start + x_length):  # careful about prange
             # ensure kp_position is (horizontal=rows, vertical=cols)
             pixel_position = (j, i)
 
@@ -75,6 +76,7 @@ def compute_desc_pixels(
 
 
 if __name__ == "__main__":
+
     # Load preprocessed images as numpy arrays
     float_ims = np.load(f"{blurred_imgs_path}.npy")
 

@@ -1,17 +1,5 @@
 import bpy, bpy_extras
-from mathutils import Vector
-from draw_points import draw_points
-from shift import img_px_to_img_m, img_m_to_img_px
-
-def get_world_from_img_co(x, y, cam):
-    '''Returns world coordinates from image meter coordinates'''
-    D = cam.data.lens / cam.data.sensor_width
-    return cam.matrix_world @ Vector((x, y, -D))
-
-def get_img_from_world_co(vec, cam):
-    '''Returns img meter coordinates from world meter coordinates'''
-    D = cam.data.lens / cam.data.sensor_width
-    return cam.matrix_world.inverted() @ vec
+from shift import img_px_to_img_m, get_world_from_img_co
 
 def check_correct_match_pt(scene, x1_cv_px, y1_cv_px, x2_cv_px, y2_cv_px, cam_1, cam_1_params, cam_2, cam_2_params, epsilon=None):
     '''Tests if two image points given by their x and y coordinates are correct stereo matches
@@ -25,8 +13,8 @@ def check_correct_match_pt(scene, x1_cv_px, y1_cv_px, x2_cv_px, y2_cv_px, cam_1,
     Returns : (is_correct, 3d_loc)'''
 
     # Get image frame coordinates from pixel coordinates
-    x1_img_m, y1_img_m = img_px_to_img_m(x1_cv_px, y1_cv_px, cam_1_params, cam_1, scene)
-    x2_img_m, y2_img_m = img_px_to_img_m(x2_cv_px, y2_cv_px, cam_2_params, cam_2, scene)
+    x1_img_m, y1_img_m = img_px_to_img_m(x1_cv_px, y1_cv_px, cam_1, scene)
+    x2_img_m, y2_img_m = img_px_to_img_m(x2_cv_px, y2_cv_px, cam_2, scene)
 
     # Compute world coordinates from image frame coordinates
     pt_world_1 = get_world_from_img_co(x1_img_m, y1_img_m, cam_1)
@@ -61,8 +49,8 @@ def check_correct_match_pt(scene, x1_cv_px, y1_cv_px, x2_cv_px, y2_cv_px, cam_1,
 
     # if epsilon is None:
     #     # Compute projected 3D 1px shifted image points
-    #     x1_img_m_1px_shift, y1_img_m_1px_shift = img_px_to_img_m((x1_cv_px + 1)%scene.render.resolution_x, y1_cv_px, cam_1_params, cam_1, scene)
-    #     x2_img_m_1px_shift, y2_img_m_1px_shift = img_px_to_img_m((x2_cv_px + 1)%scene.render.resolution_x, y2_cv_px, cam_2_params, cam_2, scene)
+    #     x1_img_m_1px_shift, y1_img_m_1px_shift = img_px_to_img_m((x1_cv_px + 1)%scene.render.resolution_x, y1_cv_px, cam_1, scene)
+    #     x2_img_m_1px_shift, y2_img_m_1px_shift = img_px_to_img_m((x2_cv_px + 1)%scene.render.resolution_x, y2_cv_px, cam_2, scene)
 
     #     pt_world_1_1px_shift = get_world_from_img_co(x1_img_m_1px_shift, y1_img_m_1px_shift, cam_1)
     #     pt_world_2_1px_shift = get_world_from_img_co(x2_img_m_1px_shift, y2_img_m_1px_shift, cam_2)
