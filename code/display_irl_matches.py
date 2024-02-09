@@ -74,17 +74,17 @@ if __name__ == "__main__":
             im_names=im_names,
         )
 
-        # display topological properties
-        chosen_kps = [kps[0][chosen_Dmatch.queryIdx], kps[1][chosen_Dmatch.trainIdx]]
-        vh.topological_visualization_pipeline(
-            kps=chosen_kps,
-            uint_ims=ims,
-            float_ims=float_ims,
-            zoom_radius=20,
-            show_directions=False,
-            show_gradients=False,
-            show_plot=False,
-        )
+        # # display topological properties
+        # chosen_kps = [kps[0][chosen_Dmatch.queryIdx], kps[1][chosen_Dmatch.trainIdx]]
+        # vh.topological_visualization_pipeline(
+        #     kps=chosen_kps,
+        #     uint_ims=ims,
+        #     float_ims=float_ims,
+        #     zoom_radius=20,
+        #     show_directions=False,
+        #     show_gradients=False,
+        #     show_plot=False,
+        # )
 
     # Look at the averaged descriptor
     matches_kps = [
@@ -110,12 +110,12 @@ if __name__ == "__main__":
         for id_image in range(2)
     ]
 
-    for id_image in range(2):
-        visu_desc.display_descriptor(
-            descriptor_histograms=unflatten_descriptor(avg_descs[id_image]),
-            descriptor_name=descs_names[id_image],
-            show_plot=False,
-        )
+    # for id_image in range(2):
+    #     visu_desc.display_descriptor(
+    #         descriptor_histograms=unflatten_descriptor(avg_descs[id_image]),
+    #         descriptor_name=descs_names[id_image],
+    #         show_plot=False,
+    #     )
 
     plt.show()
 

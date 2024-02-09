@@ -12,6 +12,7 @@ original_imgs_path_prefix = f"{relative_path}/{img_folder}"
 # Create the filename for the blurred images
 blurred_imgs_path = f"{original_imgs_path_prefix}/blurred_ims_bsig{int(blur_sigma)}"
 
+
 # Create suffix for descriptor parameters
 descrip_suffix = (
     f"_nbins_{nb_bins}_brad_{bin_radius}_nangbins_{nb_angular_bins}_sig{int(sigma)}"
@@ -40,6 +41,7 @@ dist_path = "computed_distances"
 # Create filename for the distances and matches
 dist_filename_prefix = f"{photo_name}_y_{y_starts[0]}_{y_starts[1]}_{y_lengths[0]}_{y_lengths[1]}_x_{x_starts[0]}_{x_starts[1]}_{x_lengths[0]}_{x_lengths[1]}{descrip_suffix}{dist_type_suffix}"
 dist_filename = f"{dist_filename_prefix}_dists"
+
 
 # Create filename for the matches indexes
 matched_idx_filenames = [
@@ -82,4 +84,5 @@ required_folders_paths = [
     log_path,
 ]
 
-#
+# create irl suffix for pipeline
+irl_suffix = "_irl" if img_folder[:3] == "irl" else ""

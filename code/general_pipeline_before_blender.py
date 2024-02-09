@@ -36,7 +36,6 @@ def create_logger(logpath):
 # change filenames and scripts if sift is used
 # List of scripts to run
 if use_sift:
-
     scripts = [
         "create_all_folders.py",
         "print_pipe_hparams.py",

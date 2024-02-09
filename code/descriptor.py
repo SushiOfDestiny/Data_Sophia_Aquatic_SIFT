@@ -47,7 +47,7 @@ def convert_angles_to_pos_degrees(angles):
     return posdeg_angles
 
 
-@njit(parallel = True)
+@njit(parallel=True)
 def compute_orientations(g_img, border_size=1):
     """
     Compute the orientation of all pixels of a grayscale image within a border
@@ -103,7 +103,7 @@ def compute_angle(v1, v2, eps=1e-6):
 #     return horiz_angles
 
 
-@njit(parallel = True)
+@njit
 def compute_horiz_angles(arrvects):
     """
     compute angle between each vector of the given array and the horizontal vector (x=1,y=0) (in the image's frame)
@@ -116,13 +116,13 @@ def compute_horiz_angles(arrvects):
 
     horiz_angles = np.zeros(shape=(h, w), dtype=np.float32)
 
-    for i in prange(h):
+    for i in range(h):
         for j in range(w):
             horiz_angles[i, j] = compute_angle(arrvects[i, j], horiz_vect)
 
     return horiz_angles
 
-@njit
+
 def make_eigvals_positive(eigvals, eigvects):
     """
     Make eigenvalues positive by multiplying their corresponding eigenvectors by their signs.
@@ -379,7 +379,7 @@ def compute_descriptor_histograms_1_2_rotated(
     overall_features_posneg: list of features arrays of all pixels of the image
     kp_position: (x, y) int pixel position of keypoint in the image frame
     normalization_mode: str mode of normalization (default is "global"), dictates how to normalize the histogram
-    
+
     return descriptor_histograms: list of 3 histograms, each of shape (nb_bins, nb_bins, nb_angular_bins)
     1st histogram: first eigenvalues (highest signed value)
     2nd histogram: second eigenvalues
