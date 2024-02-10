@@ -164,7 +164,7 @@ def compute_features_overall_abs(g_img, border_size=1):
     # compute gradients norms
     # gradients_norms = np.linalg.norm(gradients, axis=2)
     gradients_norms = np.zeros(shape=gradients.shape[:2], dtype=np.float32)
-    for i in prange(gradients.shape[0]):
+    for i in range(gradients.shape[0]):
         for j in range(gradients.shape[1]):
             gradients_norms[i, j] = np.linalg.norm(gradients[i, j])
 

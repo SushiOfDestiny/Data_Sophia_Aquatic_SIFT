@@ -211,7 +211,17 @@
 
 # # define the border size
 # border_size = 1
+# # define the border size
+# border_size = 1
 
+# # define descriptor parameters
+# nb_bins = 3
+# bin_radius = 2
+# delta_angle = 5.0
+# sigma = 0
+# normalization_mode = "global"
+# neigh_radius = (2 * bin_radius + 1) * nb_bins // 2 + bin_radius
+# nb_angular_bins = int(360.0 / delta_angle) + 1
 # # define descriptor parameters
 # nb_bins = 3
 # bin_radius = 2
@@ -223,7 +233,11 @@
 
 # # set the distance type, between "min" and "all"
 # distance_type = "min"
+# # set the distance type, between "min" and "all"
+# distance_type = "min"
 
+# # define the blender filtering precision threshold
+# epsilon = None
 # # define the blender filtering precision threshold
 # epsilon = None
 

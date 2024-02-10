@@ -1,5 +1,6 @@
 import os
 import sys
+from datetime import datetime
 
 import cv2 as cv
 import numpy as np
@@ -16,6 +17,8 @@ from computation_pipeline_hyper_params import *
 from filenames_creation import *
 
 import display_matches as dm
+
+from descriptor import compute_descriptor_histograms_1_2_rotated, flatten_descriptor, compute_features_overall_abs
 
 
 if __name__ == "__main__":
@@ -76,6 +79,57 @@ if __name__ == "__main__":
 
     print("Statistics about the distances of the bad sift matches")
     dm.print_distance_infos(bad_matches)
+
+
+    # # Compute descriptor on good and bad SIFT keypoints on image 0
+    # # Requires computing preprocessed images and features first
+
+    # before = datetime.now()
+    # print(f"feat computation beginning for image {0}:", before)
+    # overall_features = compute_features_overall_abs(
+    #     float_ims[0], border_size=border_size
+    # )
+    # after = datetime.now()
+    # print(f"feat computation end for image {0}", after)
+    # print(f"feat compute time for image {0}", after - before)
+    # print(
+    #     f"shape of overall_features[0] of image {0}",
+    #     overall_features[0].shape,
+    # )
+
+    # # Compute good and bad descriptors
+
+    # descs_good_matches = np.zeros(shape=(len(good_matches), 3*nb_bins*nb_bins*nb_angular_bins))
+    # for i, match in enumerate(good_matches):    
+    #     descs_good_matches[i] = flatten_descriptor(
+    #         compute_descriptor_histograms_1_2_rotated(
+    #             overall_features_1_2 = overall_features,
+    #             kp_position = kps_coords[0][match[0].queryIdx],
+    #             nb_bins=nb_bins,
+    #             bin_radius=bin_radius,
+    #             delta_angle=delta_angle,
+    #             sigma=0,
+    #             normalization_mode="global",
+    #         )
+    #     )
+    # avg_good_desc = np.mean(descs_good_matches, axis=0)
+    # visu_desc.display_descriptor(unflatten_descriptor(avg_good_desc, nb_bins, nb_angular_bins), show_plot=False)
+
+    # descs_bad_matches = np.zeros(shape=(len(bad_matches), 3*nb_bins*nb_bins*nb_angular_bins))
+    # for i, match in enumerate(bad_matches):
+    #     descs_bad_matches[i] = flatten_descriptor(
+    #         compute_descriptor_histograms_1_2_rotated(
+    #             overall_features_1_2 = overall_features,
+    #             kp_position = kps_coords[0][match[0].queryIdx],
+    #             nb_bins=nb_bins,
+    #             bin_radius=bin_radius,
+    #             delta_angle=delta_angle,
+    #             sigma=0,
+    #             normalization_mode="global",
+    #         )
+    #     )
+    # avg_bad_desc = np.mean(descs_bad_matches, axis=0)
+    # visu_desc.display_descriptor(unflatten_descriptor(avg_bad_desc, nb_bins, nb_angular_bins), show_plot=True)
 
     # look at some matches
 
