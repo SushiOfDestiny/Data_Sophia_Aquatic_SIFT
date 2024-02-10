@@ -1,0 +1,124 @@
+2024-02-08 11:03:09,292 - Start running the pipeline
+2024-02-08 11:03:09,340 - All infos are saved in execution_logs/rock_1_y_530_560_10_10_x_1200_1200_10_10_nbins_3_brad_2_nangbins_73_sig0_min_log.txt
+
+2024-02-08 11:03:09,340 - Run the script imgs_preprocessing.py
+2024-02-08 11:03:13,904 - shapes of images (1080, 1920) (1080, 1920)
+Blurred images saved in ../data/blender/rocks/blurred_ims_bsig1
+
+2024-02-08 11:03:13,907 - Script imgs_preprocessing.py is done.
+
+2024-02-08 11:03:13,908 - Run the script compute_desc_img.py
+2024-02-08 11:04:12,219 - feat computation beginning for image 0: 2024-02-08 11:03:15.801415
+feat computation end for image 0 2024-02-08 11:03:34.591009
+feat compute time for image 0 0:00:18.789594
+shape of overall_features[0] of image 0 (1080, 1920, 2)
+desc computation beginning for image 0 2024-02-08 11:03:34.591009
+desc computation end for image 0 2024-02-08 11:03:50.311597
+desc compute time for image 0 0:00:15.720588
+feat computation beginning for image 1: 2024-02-08 11:03:50.311597
+feat computation end for image 1 2024-02-08 11:04:07.574973
+feat compute time for image 1 0:00:17.263376
+shape of overall_features[0] of image 1 (1080, 1920, 2)
+desc computation beginning for image 1 2024-02-08 11:04:07.574973
+desc computation end for image 1 2024-02-08 11:04:11.799679
+desc compute time for image 1 0:00:04.224706
+
+2024-02-08 11:04:12,222 - Script compute_desc_img.py is done.
+
+2024-02-08 11:04:12,222 - Run the script compute_distances.py
+2024-02-08 11:04:17,431 - same number of descriptors and coordinates for image 0: True
+also equal to the number of pixels: True
+same number of descriptors and coordinates for image 1: True
+also equal to the number of pixels: True
+Start computing distances: 2024-02-08 11:04:14.173870
+End computing distances: 2024-02-08 11:04:17.148467
+Compute time: 0:00:02.974597
+Chosen distance type: min
+
+2024-02-08 11:04:17,431 - Script compute_distances.py is done.
+
+2024-02-08 11:04:17,439 - Run the script create_cv_objs.py
+2024-02-08 11:04:19,498 - finished creating opencv objects
+beginning saving opencv objects to file
+finished saving kp_pairs
+finished saving matches
+finished saving keypoints
+
+2024-02-08 11:04:19,498 - Script create_cv_objs.py is done.
+
+2024-02-08 11:04:19,498 - All scripts are done. Launch Blender or a display script.
+2024-02-08 11:20:13,077 - Start running the pipeline
+2024-02-08 11:20:13,077 - All infos are saved in execution_logs/rock_1_y_530_560_10_10_x_1200_1200_10_10_nbins_3_brad_2_nangbins_73_sig0_min_log.txt
+
+2024-02-08 11:20:13,077 - Run the script print_pipe_hparams.py
+2024-02-08 11:20:13,147 - bin_radius = 2
+blur_sigma = 1.0
+border_size = 1
+delta_angle = 5.0
+distance_type = min
+epsilon = None
+im_ext = png
+im_name1 = left
+im_name2 = right
+im_names = ('left', 'right')
+img_folder = blender/rocks
+nb_angular_bins = 73
+nb_bins = 3
+neigh_radius = 9
+normalization_mode = global
+photo_name = rock_1
+relative_path = ../data
+sigma = 0
+x_lengths = [10, 10]
+x_starts = [1200, 1200]
+y_lengths = [10, 10]
+y_starts = [530, 560]
+
+2024-02-08 11:20:13,147 - Script print_pipe_hparams.py is done.
+
+2024-02-08 11:20:13,147 - Run the script imgs_preprocessing.py
+2024-02-08 11:20:17,523 - shapes of images (1080, 1920) (1080, 1920)
+Blurred images saved in ../data/blender/rocks/blurred_ims_bsig1
+
+2024-02-08 11:20:17,523 - Script imgs_preprocessing.py is done.
+
+2024-02-08 11:20:17,523 - Run the script compute_desc_img.py
+2024-02-08 11:21:04,840 - feat computation beginning for image 0: 2024-02-08 11:20:19.295433
+feat computation end for image 0 2024-02-08 11:20:36.754628
+feat compute time for image 0 0:00:17.459195
+shape of overall_features[0] of image 0 (1080, 1920, 2)
+desc computation beginning for image 0 2024-02-08 11:20:36.754628
+desc computation end for image 0 2024-02-08 11:20:51.643685
+desc compute time for image 0 0:00:14.889057
+feat computation beginning for image 1: 2024-02-08 11:20:51.643685
+feat computation end for image 1 2024-02-08 11:21:01.343799
+feat compute time for image 1 0:00:09.700114
+shape of overall_features[0] of image 1 (1080, 1920, 2)
+desc computation beginning for image 1 2024-02-08 11:21:01.343799
+desc computation end for image 1 2024-02-08 11:21:04.495853
+desc compute time for image 1 0:00:03.152054
+
+2024-02-08 11:21:04,840 - Script compute_desc_img.py is done.
+
+2024-02-08 11:21:04,840 - Run the script compute_distances.py
+2024-02-08 11:21:09,238 - same number of descriptors and coordinates for image 0: True
+also equal to the number of pixels: True
+same number of descriptors and coordinates for image 1: True
+also equal to the number of pixels: True
+Start computing distances: 2024-02-08 11:21:06.539779
+End computing distances: 2024-02-08 11:21:09.003128
+Compute time: 0:00:02.463349
+Chosen distance type: min
+
+2024-02-08 11:21:09,238 - Script compute_distances.py is done.
+
+2024-02-08 11:21:09,238 - Run the script create_cv_objs.py
+2024-02-08 11:21:11,249 - finished creating opencv objects
+beginning saving opencv objects to file
+finished saving kp_pairs
+finished saving matches
+finished saving keypoints
+
+2024-02-08 11:21:11,250 - Script create_cv_objs.py is done.
+
+2024-02-08 11:21:11,250 - All scripts are done. Launch Blender or a display script.

@@ -9,5 +9,6 @@ visualize_hessian/zoomed_kp
 images
 plotted_results
 code/*/
+!code/execution_logs/
 data/**/**/*_cropped*
 rapport/images

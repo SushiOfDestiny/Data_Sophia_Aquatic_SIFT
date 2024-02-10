@@ -1,0 +1,60 @@
+2024-02-08 15:26:25,577 - Start running the post blender pipeline
+2024-02-08 15:26:25,577 - Start running the post blender pipeline
+2024-02-08 15:26:25,577 - Run the script display_irl_matches.py
+2024-02-08 15:26:25,577 - Run the script display_irl_matches.py
+2024-02-08 15:27:19,118 - 
+2024-02-08 15:27:19,118 - 
+2024-02-08 15:27:19,122 - Script display_irl_matches.py is done.
+
+2024-02-08 15:27:19,122 - Script display_irl_matches.py is done.
+
+2024-02-08 15:27:19,123 - All scripts are done. The pipeline is finished.
+2024-02-08 15:27:19,123 - All scripts are done. The pipeline is finished.
+2024-02-08 15:28:05,815 - Start running the post blender pipeline
+2024-02-08 15:28:05,815 - Start running the post blender pipeline
+2024-02-08 15:28:05,816 - Run the script display_irl_matches.py
+2024-02-08 15:28:05,816 - Run the script display_irl_matches.py
+2024-02-08 15:28:53,139 - Statistics about the distances of the matches
+Minimal distance: 17.863239288330078
+Maximal distance: 28.0540771484375
+Mean distance: 21.61436582183838
+Standard deviation of the distances: 1.0018688388509658
+
+2024-02-08 15:28:53,139 - Statistics about the distances of the matches
+Minimal distance: 17.863239288330078
+Maximal distance: 28.0540771484375
+Mean distance: 21.61436582183838
+Standard deviation of the distances: 1.0018688388509658
+
+2024-02-08 15:28:53,140 - Script display_irl_matches.py is done.
+
+2024-02-08 15:28:53,140 - Script display_irl_matches.py is done.
+
+2024-02-08 15:28:53,141 - All scripts are done. The pipeline is finished.
+2024-02-08 15:28:53,141 - All scripts are done. The pipeline is finished.
+2024-02-09 11:11:41,897 - Start running the post blender pipeline
+2024-02-09 11:11:41,897 - Start running the post blender pipeline
+2024-02-09 11:11:41,897 - Run the script display_irl_matches.py
+2024-02-09 11:11:41,897 - Run the script display_irl_matches.py
+2024-02-09 11:12:12,683 - Start running the post blender pipeline
+2024-02-09 11:12:12,683 - Start running the post blender pipeline
+2024-02-09 11:12:12,683 - Run the script display_irl_matches.py
+2024-02-09 11:12:12,683 - Run the script display_irl_matches.py
+2024-02-09 11:51:00,885 - Statistics about the distances of the matches
+Minimal distance: 17.863239288330078
+Maximal distance: 28.0540771484375
+Mean distance: 21.61436582183838
+Standard deviation of the distances: 1.0018688388509658
+
+2024-02-09 11:51:00,885 - Statistics about the distances of the matches
+Minimal distance: 17.863239288330078
+Maximal distance: 28.0540771484375
+Mean distance: 21.61436582183838
+Standard deviation of the distances: 1.0018688388509658
+
+2024-02-09 11:51:00,885 - Script display_irl_matches.py is done.
+
+2024-02-09 11:51:00,885 - Script display_irl_matches.py is done.
+
+2024-02-09 11:51:00,885 - All scripts are done. The pipeline is finished.
+2024-02-09 11:51:00,885 - All scripts are done. The pipeline is finished.

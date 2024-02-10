@@ -1,0 +1,103 @@
+2024-02-08 18:16:10,769 - Start running the pipeline
+2024-02-08 18:16:10,769 - All infos are saved in execution_logs/rock_1_y_386_459_60_60_x_803_806_60_60_nbins_3_brad_2_nangbins_73_sig0_min_log 
+
+2024-02-08 18:16:10,769 - Run the script print_pipe_hparams.py
+2024-02-08 18:16:10,835 - bin_radius = 2
+blur_sigma = 1.0
+border_size = 1
+delta_angle = 5.0
+distance_type = min
+epsilon = None
+im_ext = png
+im_name1 = left
+im_name2 = right
+im_names = ('left', 'right')
+img_folder = blender/rocks
+nb_angular_bins = 73
+nb_bins = 3
+neigh_radius = 9
+normalization_mode = global
+photo_name = rock_1
+relative_path = ../data
+sigma = 0
+use_sift = False
+x_lengths = [60, 60]
+x_starts = [803, 806]
+y_lengths = [60, 60]
+y_starts = [386, 459]
+
+2024-02-08 18:16:10,835 - Script print_pipe_hparams.py is done.
+
+2024-02-08 18:16:10,835 - Run the script imgs_preprocessing.py
+2024-02-08 18:16:18,385 - shapes of images (1080, 1920) (1080, 1920)
+Blurred images saved in ../data/blender/rocks/blurred_ims_bsig1
+
+2024-02-08 18:16:18,386 - Script imgs_preprocessing.py is done.
+
+2024-02-08 18:16:18,386 - Run the script compute_desc_img.py
+2024-02-08 18:16:20,323 - 
+2024-02-08 18:16:20,323 - Script compute_desc_img.py is done.
+
+2024-02-08 18:16:20,339 - Run the script compute_distances.py
+2024-02-08 18:16:22,174 - 
+2024-02-08 18:16:22,174 - Script compute_distances.py is done.
+
+2024-02-08 18:16:22,175 - Run the script create_cv_objs.py
+2024-02-08 18:16:24,145 - 
+2024-02-08 18:16:24,145 - Script create_cv_objs.py is done.
+
+2024-02-08 18:16:24,146 - All scripts are done. Launch Blender or a display script.
+
+
+2024-02-08 18:18:05,698 - Start running the pipeline
+2024-02-08 18:18:05,698 - All infos are saved in execution_logs/rock_1_y_386_459_60_60_x_803_806_60_60_nbins_3_brad_2_nangbins_73_sig0_min_log 
+
+2024-02-08 18:18:05,699 - Run the script print_pipe_hparams.py
+2024-02-08 18:18:05,754 - bin_radius = 2
+blur_sigma = 1.0
+border_size = 1
+delta_angle = 5.0
+distance_type = min
+epsilon = None
+im_ext = png
+im_name1 = left
+im_name2 = right
+im_names = ('left', 'right')
+img_folder = blender/rocks
+nb_angular_bins = 73
+nb_bins = 3
+neigh_radius = 9
+normalization_mode = global
+photo_name = rock_1
+relative_path = ../data
+sigma = 0
+use_sift = False
+x_lengths = [60, 60]
+x_starts = [803, 806]
+y_lengths = [60, 60]
+y_starts = [386, 459]
+
+2024-02-08 18:18:05,754 - Script print_pipe_hparams.py is done.
+
+2024-02-08 18:18:05,754 - Run the script imgs_preprocessing.py
+2024-02-08 18:18:10,093 - shapes of images (1080, 1920) (1080, 1920)
+Blurred images saved in ../data/blender/rocks/blurred_ims_bsig1
+
+2024-02-08 18:18:10,093 - Script imgs_preprocessing.py is done.
+
+2024-02-08 18:18:10,094 - Run the script compute_desc_img.py
+2024-02-08 18:18:31,807 - feat computation beginning for image 0: 2024-02-08 18:18:11.850191
+
+2024-02-08 18:18:31,807 - Script compute_desc_img.py is done.
+
+2024-02-08 18:18:31,807 - Run the script compute_distances.py
+2024-02-08 18:18:33,674 - 
+2024-02-08 18:18:33,674 - Script compute_distances.py is done.
+
+2024-02-08 18:18:33,674 - Run the script create_cv_objs.py
+2024-02-08 18:18:35,513 - 
+2024-02-08 18:18:35,513 - Script create_cv_objs.py is done.
+
+2024-02-08 18:18:35,513 - All scripts are done. Launch Blender or a display script.
+
+

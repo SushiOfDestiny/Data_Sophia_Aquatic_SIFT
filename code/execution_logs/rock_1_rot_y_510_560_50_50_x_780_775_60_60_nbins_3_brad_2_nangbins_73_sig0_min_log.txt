@@ -1,0 +1,100 @@
+2024-02-08 15:03:33,241 - Start running the post blender pipeline
+2024-02-08 15:03:33,241 - Start running the post blender pipeline
+2024-02-08 15:03:33,241 - Run the script display_matches.py
+2024-02-08 15:03:33,241 - Run the script display_matches.py
+2024-02-08 15:07:38,671 - number of keypoints in image 0 3000
+number of keypoints in image 1 3000
+number of computed matches 3000
+number of good matches at a precision of None pixels:  37
+percentage of good matches:  1.2333333333333334
+Statistics about the distances of the good matches
+Minimal distance: 22.01645851135254
+Maximal distance: 26.73307991027832
+Mean distance: 23.636736225437474
+Standard deviation of the distances: 0.9899044369178973
+Statistics about the distances of the bad matches
+Minimal distance: 20.11306381225586
+Maximal distance: 30.045394897460938
+Mean distance: 24.444576459119258
+Standard deviation of the distances: 1.3200960234092929
+
+2024-02-08 15:07:38,671 - number of keypoints in image 0 3000
+number of keypoints in image 1 3000
+number of computed matches 3000
+number of good matches at a precision of None pixels:  37
+percentage of good matches:  1.2333333333333334
+Statistics about the distances of the good matches
+Minimal distance: 22.01645851135254
+Maximal distance: 26.73307991027832
+Mean distance: 23.636736225437474
+Standard deviation of the distances: 0.9899044369178973
+Statistics about the distances of the bad matches
+Minimal distance: 20.11306381225586
+Maximal distance: 30.045394897460938
+Mean distance: 24.444576459119258
+Standard deviation of the distances: 1.3200960234092929
+
+2024-02-08 15:07:38,676 - Script display_matches.py is done.
+
+2024-02-08 15:07:38,676 - Script display_matches.py is done.
+
+2024-02-08 15:07:38,677 - All scripts are done. The pipeline is finished.
+2024-02-08 15:07:38,677 - All scripts are done. The pipeline is finished.
+2024-02-09 11:01:22,706 - Start running the post blender pipeline
+2024-02-09 11:01:22,706 - Start running the post blender pipeline
+2024-02-09 11:01:22,821 - Run the script display_matches.py
+2024-02-09 11:01:22,821 - Run the script display_matches.py
+2024-02-09 11:04:22,556 - 
+2024-02-09 11:04:22,556 - 
+2024-02-09 11:04:22,556 - Script display_matches.py is done.
+
+2024-02-09 11:04:22,556 - Script display_matches.py is done.
+
+2024-02-09 11:04:22,556 - All scripts are done. The pipeline is finished.
+2024-02-09 11:04:22,556 - All scripts are done. The pipeline is finished.
+2024-02-09 11:04:29,032 - Start running the post blender pipeline
+2024-02-09 11:04:29,032 - Start running the post blender pipeline
+2024-02-09 11:04:29,032 - Run the script display_matches.py
+2024-02-09 11:04:29,032 - Run the script display_matches.py
+2024-02-09 11:11:13,677 - number of pixels in subimage 0 3000
+number of keypoints in image 0 3000
+number of pixels in subimage 1 3000
+number of keypoints in image 1 3000
+number of computed matches 3000
+number of good matches at a precision of None pixels:  37
+percentage of good matches:  1.2333333333333334
+Statistics about the distances of the good matches
+Minimal distance: 22.01645851135254
+Maximal distance: 26.73307991027832
+Mean distance: 23.636736225437474
+Standard deviation of the distances: 0.9899044369178973
+Statistics about the distances of the bad matches
+Minimal distance: 20.11306381225586
+Maximal distance: 30.045394897460938
+Mean distance: 24.444576459119258
+Standard deviation of the distances: 1.3200960234092929
+
+2024-02-09 11:11:13,677 - number of pixels in subimage 0 3000
+number of keypoints in image 0 3000
+number of pixels in subimage 1 3000
+number of keypoints in image 1 3000
+number of computed matches 3000
+number of good matches at a precision of None pixels:  37
+percentage of good matches:  1.2333333333333334
+Statistics about the distances of the good matches
+Minimal distance: 22.01645851135254
+Maximal distance: 26.73307991027832
+Mean distance: 23.636736225437474
+Standard deviation of the distances: 0.9899044369178973
+Statistics about the distances of the bad matches
+Minimal distance: 20.11306381225586
+Maximal distance: 30.045394897460938
+Mean distance: 24.444576459119258
+Standard deviation of the distances: 1.3200960234092929
+
+2024-02-09 11:11:13,677 - Script display_matches.py is done.
+
+2024-02-09 11:11:13,677 - Script display_matches.py is done.
+
+2024-02-09 11:11:13,692 - All scripts are done. The pipeline is finished.
+2024-02-09 11:11:13,692 - All scripts are done. The pipeline is finished.

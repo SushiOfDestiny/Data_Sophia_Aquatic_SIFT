@@ -1,0 +1,152 @@
+2024-02-08 13:46:26,480 - Start running the post blender pipeline
+2024-02-08 13:46:26,480 - Start running the post blender pipeline
+2024-02-08 13:46:26,480 - Run the script display_matches.py
+2024-02-08 13:46:26,480 - Run the script display_matches.py
+2024-02-08 13:46:48,733 - number of keypoints in image 0 40000
+number of keypoints in image 1 40000
+number of computed matches 40000
+number of good matches at a precision of None pixels:  1984
+percentage of good matches:  4.96
+Statistics about the distances of the good matches
+Minimal distance: 19.085041046142578
+Maximal distance: 57.16472244262695
+Mean distance: 41.466939111871106
+Standard deviation of the distances: 5.308317573043402
+Statistics about the distances of the bad matches
+Minimal distance: 11.986298561096191
+Maximal distance: 83.5351333618164
+Mean distance: 45.82926511947655
+Standard deviation of the distances: 4.259710129180236
+
+2024-02-08 13:46:48,733 - number of keypoints in image 0 40000
+number of keypoints in image 1 40000
+number of computed matches 40000
+number of good matches at a precision of None pixels:  1984
+percentage of good matches:  4.96
+Statistics about the distances of the good matches
+Minimal distance: 19.085041046142578
+Maximal distance: 57.16472244262695
+Mean distance: 41.466939111871106
+Standard deviation of the distances: 5.308317573043402
+Statistics about the distances of the bad matches
+Minimal distance: 11.986298561096191
+Maximal distance: 83.5351333618164
+Mean distance: 45.82926511947655
+Standard deviation of the distances: 4.259710129180236
+
+2024-02-08 13:46:48,737 - Script display_matches.py is done.
+
+2024-02-08 13:46:48,737 - Script display_matches.py is done.
+
+2024-02-08 13:46:48,737 - All scripts are done. The pipeline is finished.
+2024-02-08 13:46:48,737 - All scripts are done. The pipeline is finished.
+2024-02-08 13:47:49,806 - Start running the post blender pipeline
+2024-02-08 13:47:49,806 - Start running the post blender pipeline
+2024-02-08 13:47:49,806 - Run the script display_matches.py
+2024-02-08 13:47:49,806 - Run the script display_matches.py
+2024-02-08 13:48:18,360 - number of keypoints in image 0 40000
+number of keypoints in image 1 40000
+number of computed matches 40000
+number of good matches at a precision of None pixels:  1984
+percentage of good matches:  4.96
+Statistics about the distances of the good matches
+Minimal distance: 19.085041046142578
+Maximal distance: 57.16472244262695
+Mean distance: 41.466939111871106
+Standard deviation of the distances: 5.308317573043402
+Statistics about the distances of the bad matches
+Minimal distance: 11.986298561096191
+Maximal distance: 83.5351333618164
+Mean distance: 45.82926511947655
+Standard deviation of the distances: 4.259710129180236
+
+2024-02-08 13:48:18,360 - number of keypoints in image 0 40000
+number of keypoints in image 1 40000
+number of computed matches 40000
+number of good matches at a precision of None pixels:  1984
+percentage of good matches:  4.96
+Statistics about the distances of the good matches
+Minimal distance: 19.085041046142578
+Maximal distance: 57.16472244262695
+Mean distance: 41.466939111871106
+Standard deviation of the distances: 5.308317573043402
+Statistics about the distances of the bad matches
+Minimal distance: 11.986298561096191
+Maximal distance: 83.5351333618164
+Mean distance: 45.82926511947655
+Standard deviation of the distances: 4.259710129180236
+
+2024-02-08 13:48:18,365 - Script display_matches.py is done.
+
+2024-02-08 13:48:18,365 - Script display_matches.py is done.
+
+2024-02-08 13:48:18,366 - All scripts are done. The pipeline is finished.
+2024-02-08 13:48:18,366 - All scripts are done. The pipeline is finished.
+2024-02-08 13:53:45,623 - Start running the post blender pipeline
+2024-02-08 13:53:45,623 - Start running the post blender pipeline
+2024-02-08 13:53:45,623 - Run the script display_matches.py
+2024-02-08 13:53:45,623 - Run the script display_matches.py
+2024-02-08 13:54:06,882 - number of keypoints in image 0 40000
+number of keypoints in image 1 40000
+number of computed matches 40000
+number of good matches at a precision of None pixels:  1984
+percentage of good matches:  4.96
+Statistics about the distances of the good matches
+Minimal distance: 19.085041046142578
+Maximal distance: 57.16472244262695
+Mean distance: 41.466939111871106
+Standard deviation of the distances: 5.308317573043402
+Statistics about the distances of the bad matches
+Minimal distance: 11.986298561096191
+Maximal distance: 83.5351333618164
+Mean distance: 45.82926511947655
+Standard deviation of the distances: 4.259710129180236
+
+2024-02-08 13:54:06,882 - number of keypoints in image 0 40000
+number of keypoints in image 1 40000
+number of computed matches 40000
+number of good matches at a precision of None pixels:  1984
+percentage of good matches:  4.96
+Statistics about the distances of the good matches
+Minimal distance: 19.085041046142578
+Maximal distance: 57.16472244262695
+Mean distance: 41.466939111871106
+Standard deviation of the distances: 5.308317573043402
+Statistics about the distances of the bad matches
+Minimal distance: 11.986298561096191
+Maximal distance: 83.5351333618164
+Mean distance: 45.82926511947655
+Standard deviation of the distances: 4.259710129180236
+
+2024-02-08 13:54:06,882 - Script display_matches.py is done.
+
+2024-02-08 13:54:06,882 - Script display_matches.py is done.
+
+2024-02-08 13:54:06,882 - All scripts are done. The pipeline is finished.
+2024-02-08 13:54:06,882 - All scripts are done. The pipeline is finished.
+2024-02-08 16:30:36,996 - Start running the post blender pipeline
+2024-02-08 16:30:36,996 - Start running the post blender pipeline
+2024-02-08 16:30:36,996 - Run the script display_matches.py
+2024-02-08 16:30:36,996 - Run the script display_matches.py
+2024-02-08 16:30:56,898 - number of pixels in subimage 0 40000
+number of keypoints in image 0 40000
+number of pixels in subimage 1 40000
+number of keypoints in image 1 40000
+number of computed matches 40000
+number of good matches at a precision of None pixels:  1984
+percentage of good matches:  4.96
+
+2024-02-08 16:30:56,898 - number of pixels in subimage 0 40000
+number of keypoints in image 0 40000
+number of pixels in subimage 1 40000
+number of keypoints in image 1 40000
+number of computed matches 40000
+number of good matches at a precision of None pixels:  1984
+percentage of good matches:  4.96
+
+2024-02-08 16:30:56,898 - Script display_matches.py is done.
+
+2024-02-08 16:30:56,898 - Script display_matches.py is done.
+
+2024-02-08 16:30:56,898 - All scripts are done. The pipeline is finished.
+2024-02-08 16:30:56,898 - All scripts are done. The pipeline is finished.

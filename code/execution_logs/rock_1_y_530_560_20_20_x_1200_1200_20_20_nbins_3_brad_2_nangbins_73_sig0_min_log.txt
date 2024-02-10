@@ -1,0 +1,223 @@
+2024-02-08 14:09:09,286 - Start running the post blender pipeline
+2024-02-08 14:09:09,286 - Start running the post blender pipeline
+2024-02-08 14:09:09,286 - Run the script display_sift_matches.py
+2024-02-08 14:09:09,286 - Run the script display_sift_matches.py
+2024-02-08 14:09:11,438 - 
+2024-02-08 14:09:11,438 - 
+2024-02-08 14:09:11,438 - Script display_sift_matches.py is done.
+
+2024-02-08 14:09:11,438 - Script display_sift_matches.py is done.
+
+2024-02-08 14:09:11,439 - All scripts are done. The pipeline is finished.
+2024-02-08 14:09:11,439 - All scripts are done. The pipeline is finished.
+2024-02-08 14:11:12,574 - Start running the post blender pipeline
+2024-02-08 14:11:12,574 - Start running the post blender pipeline
+2024-02-08 14:11:12,574 - Run the script display_sift_matches.py
+2024-02-08 14:11:12,574 - Run the script display_sift_matches.py
+2024-02-08 14:11:14,568 - 
+2024-02-08 14:11:14,568 - 
+2024-02-08 14:11:14,568 - Script display_sift_matches.py is done.
+
+2024-02-08 14:11:14,568 - Script display_sift_matches.py is done.
+
+2024-02-08 14:11:14,569 - All scripts are done. The pipeline is finished.
+2024-02-08 14:11:14,569 - All scripts are done. The pipeline is finished.
+2024-02-08 14:13:41,006 - Start running the post blender pipeline
+2024-02-08 14:13:41,006 - Start running the post blender pipeline
+2024-02-08 14:13:41,006 - Run the script display_sift_matches.py
+2024-02-08 14:13:41,006 - Run the script display_sift_matches.py
+2024-02-08 14:13:42,903 - 
+2024-02-08 14:13:42,903 - 
+2024-02-08 14:13:42,903 - Script display_sift_matches.py is done.
+
+2024-02-08 14:13:42,903 - Script display_sift_matches.py is done.
+
+2024-02-08 14:13:42,903 - All scripts are done. The pipeline is finished.
+2024-02-08 14:13:42,903 - All scripts are done. The pipeline is finished.
+2024-02-08 14:21:05,316 - Start running the pipeline
+2024-02-08 14:21:05,316 - All infos are saved in execution_logs/rock_1_y_530_560_20_20_x_1200_1200_20_20_nbins_3_brad_2_nangbins_73_sig0_min_log.txt_sift
+
+2024-02-08 14:21:05,316 - Run the script print_pipe_hparams.py
+2024-02-08 14:21:05,420 - bin_radius = 2
+blur_sigma = 1.0
+border_size = 1
+delta_angle = 5.0
+distance_type = min
+epsilon = None
+im_ext = png
+im_name1 = left
+im_name2 = right
+im_names = ('left', 'right')
+img_folder = blender/rocks
+nb_angular_bins = 73
+nb_bins = 3
+neigh_radius = 9
+normalization_mode = global
+photo_name = rock_1
+relative_path = ../data
+sigma = 0
+use_sift = True
+x_lengths = [20, 20]
+x_starts = [1200, 1200]
+y_lengths = [20, 20]
+y_starts = [530, 560]
+
+2024-02-08 14:21:05,420 - Script print_pipe_hparams.py is done.
+
+2024-02-08 14:21:05,420 - Run the script imgs_preprocessing.py
+2024-02-08 14:21:09,780 - shapes of images (1080, 1920) (1080, 1920)
+Blurred images saved in ../data/blender/rocks/blurred_ims_bsig1
+
+2024-02-08 14:21:09,781 - Script imgs_preprocessing.py is done.
+
+2024-02-08 14:21:09,781 - Run the script compute_desc_img.py
+2024-02-08 14:22:32,312 - Start running the pipeline
+2024-02-08 14:22:32,312 - All infos are saved in execution_logs/rock_1_y_530_560_20_20_x_1200_1200_20_20_nbins_3_brad_2_nangbins_73_sig0_min_log.txt_sift
+
+2024-02-08 14:22:32,313 - Run the script print_pipe_hparams.py
+2024-02-08 14:22:32,384 - bin_radius = 2
+blur_sigma = 1.0
+border_size = 1
+delta_angle = 5.0
+distance_type = min
+epsilon = None
+im_ext = png
+im_name1 = left
+im_name2 = right
+im_names = ('left', 'right')
+img_folder = blender/rocks
+nb_angular_bins = 73
+nb_bins = 3
+neigh_radius = 9
+normalization_mode = global
+photo_name = rock_1
+relative_path = ../data
+sigma = 0
+use_sift = True
+x_lengths = [20, 20]
+x_starts = [1200, 1200]
+y_lengths = [20, 20]
+y_starts = [530, 560]
+
+2024-02-08 14:22:32,385 - Script print_pipe_hparams.py is done.
+
+2024-02-08 14:22:32,385 - Run the script compute_sift_kps.py
+2024-02-08 14:22:36,169 - finished saving sift kp_pairs
+finished saving sift matches
+finished saving sift keypoints
+
+2024-02-08 14:22:36,169 - Script compute_sift_kps.py is done.
+
+2024-02-08 14:22:36,169 - All scripts are done. Launch Blender or a display script.
+
+
+2024-02-08 17:45:18,899 - Start running the pipeline
+2024-02-08 17:45:18,899 - All infos are saved in execution_logs/rock_1_y_530_560_20_20_x_1200_1200_20_20_nbins_3_brad_2_nangbins_73_sig0_min_log 
+
+2024-02-08 17:45:18,899 - Run the script print_pipe_hparams.py
+2024-02-08 17:45:18,954 - bin_radius = 2
+blur_sigma = 1.0
+border_size = 1
+delta_angle = 5.0
+distance_type = min
+epsilon = None
+im_ext = png
+im_name1 = left
+im_name2 = right
+im_names = ('left', 'right')
+img_folder = blender/rocks
+nb_angular_bins = 73
+nb_bins = 3
+neigh_radius = 9
+normalization_mode = global
+photo_name = rock_1
+relative_path = ../data
+sigma = 0
+use_sift = False
+x_lengths = [20, 20]
+x_starts = [1200, 1200]
+y_lengths = [20, 20]
+y_starts = [530, 560]
+
+2024-02-08 17:45:18,954 - Script print_pipe_hparams.py is done.
+
+2024-02-08 17:45:18,954 - Run the script imgs_preprocessing.py
+2024-02-08 17:45:24,036 - shapes of images (1080, 1920) (1080, 1920)
+Blurred images saved in ../data/blender/rocks/blurred_ims_bsig1
+
+2024-02-08 17:45:24,036 - Script imgs_preprocessing.py is done.
+
+2024-02-08 17:45:24,036 - Run the script compute_desc_img.py
+2024-02-08 17:45:26,045 - 
+2024-02-08 17:45:26,045 - Script compute_desc_img.py is done.
+
+2024-02-08 17:45:26,045 - Run the script compute_distances.py
+2024-02-08 17:45:31,134 - same number of descriptors and coordinates for image 0: True
+also equal to the number of pixels: True
+same number of descriptors and coordinates for image 1: True
+also equal to the number of pixels: True
+Start computing distances: 2024-02-08 17:45:27.970497
+End computing distances: 2024-02-08 17:45:30.848176
+Compute time: 0:00:02.877679
+Chosen distance type: min
+
+2024-02-08 17:45:31,134 - Script compute_distances.py is done.
+
+2024-02-08 17:45:31,134 - Run the script create_cv_objs.py
+2024-02-08 17:45:33,285 - finished creating opencv objects
+beginning saving opencv objects to file
+finished saving kp_pairs
+finished saving matches
+finished saving keypoints
+
+2024-02-08 17:45:33,285 - Script create_cv_objs.py is done.
+
+2024-02-08 17:45:33,285 - All scripts are done. Launch Blender or a display script.
+
+
+2024-02-08 17:45:58,668 - Start running the post blender pipeline
+2024-02-08 17:45:58,668 - Start running the post blender pipeline
+2024-02-08 17:45:58,668 - Run the script display_matches.py
+2024-02-08 17:45:58,668 - Run the script display_matches.py
+2024-02-08 17:49:44,726 - number of pixels in subimage 0 400
+number of keypoints in image 0 400
+number of pixels in subimage 1 400
+number of keypoints in image 1 400
+number of computed matches 400
+number of good matches at a precision of None pixels:  158
+percentage of good matches:  39.5
+Statistics about the distances of the good matches
+Minimal distance: 16.489944458007812
+Maximal distance: 27.108356475830078
+Mean distance: 21.98872729192806
+Standard deviation of the distances: 2.0318408158708148
+Statistics about the distances of the bad matches
+Minimal distance: 19.514371871948242
+Maximal distance: 28.8874568939209
+Mean distance: 24.736720991528724
+Standard deviation of the distances: 1.6713597427618314
+
+2024-02-08 17:49:44,726 - number of pixels in subimage 0 400
+number of keypoints in image 0 400
+number of pixels in subimage 1 400
+number of keypoints in image 1 400
+number of computed matches 400
+number of good matches at a precision of None pixels:  158
+percentage of good matches:  39.5
+Statistics about the distances of the good matches
+Minimal distance: 16.489944458007812
+Maximal distance: 27.108356475830078
+Mean distance: 21.98872729192806
+Standard deviation of the distances: 2.0318408158708148
+Statistics about the distances of the bad matches
+Minimal distance: 19.514371871948242
+Maximal distance: 28.8874568939209
+Mean distance: 24.736720991528724
+Standard deviation of the distances: 1.6713597427618314
+
+2024-02-08 17:49:44,734 - Script display_matches.py is done.
+
+2024-02-08 17:49:44,734 - Script display_matches.py is done.
+
+2024-02-08 17:49:44,734 - All scripts are done. The pipeline is finished.
+2024-02-08 17:49:44,734 - All scripts are done. The pipeline is finished.
