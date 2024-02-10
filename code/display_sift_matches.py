@@ -79,7 +79,7 @@ if __name__ == "__main__":
 
     # look at some matches
 
-    chosen_matches_idx = [1]
+    chosen_matches_idx = [0, 1]
     for match_idx in chosen_matches_idx:
         # display 1 match, object here is not DMatch, but a couple of DMatch, as Sift returns
         # we get here only the Dmatch
@@ -97,16 +97,16 @@ if __name__ == "__main__":
             im_names=im_names,
         )
 
-        # display topological properties
-        chosen_kps = [kps[0][chosen_Dmatch.queryIdx], kps[1][chosen_Dmatch.trainIdx]]
-        vh.topological_visualization_pipeline(
-            kps=chosen_kps,
-            uint_ims=ims,
-            float_ims=float_ims,
-            zoom_radius=20,
-            show_directions=False,
-            show_gradients=False,
-            show_plot=False,
-        )
+        # # display topological properties
+        # chosen_kps = [kps[0][chosen_Dmatch.queryIdx], kps[1][chosen_Dmatch.trainIdx]]
+        # vh.topological_visualization_pipeline(
+        #     kps=chosen_kps,
+        #     uint_ims=ims,
+        #     float_ims=float_ims,
+        #     zoom_radius=20,
+        #     show_directions=False,
+        #     show_gradients=False,
+        #     show_plot=False,
+        # )
 
     plt.show()

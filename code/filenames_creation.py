@@ -86,3 +86,10 @@ required_folders_paths = [
 
 # create irl suffix for pipeline
 irl_suffix = "_irl" if img_folder[:3] == "irl" else ""
+
+
+# Create filename for cropped uint images (for SIFT)
+cropped_ims_filenames = [
+    f"{descrip_filename_prefixes[id_image]}_cropped_im"
+    for id_image in range(2)
+]
