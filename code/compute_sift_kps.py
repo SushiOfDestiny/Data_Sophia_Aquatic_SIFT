@@ -96,7 +96,7 @@ if __name__ == "__main__":
 
     # draw the translated matches
     draw_good_keypoints(
-        ims[0], ims[1], trans_sift_kps[0], trans_sift_kps[1], sift_matches, 5
+        ims[0], ims[1], trans_sift_kps[0], trans_sift_kps[1], sift_matches, len(sift_matches)
     )
 
     # compute keypoints int pixels coordinates as list of 2 numpy arrays
