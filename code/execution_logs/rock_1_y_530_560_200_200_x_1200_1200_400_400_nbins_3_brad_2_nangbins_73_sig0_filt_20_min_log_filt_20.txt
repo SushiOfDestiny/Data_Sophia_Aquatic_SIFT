@@ -1,0 +1,58 @@
+2024-02-12 16:37:10,066 - Start running the post blender pipeline
+2024-02-12 16:37:10,066 - Run the script display_matches.py
+2024-02-12 16:37:11,201 - 
+2024-02-12 16:37:11,201 - Script display_matches.py is done.
+
+2024-02-12 16:37:11,202 - All scripts are done. The pipeline is finished.
+2024-02-12 16:45:37,076 - Start running the pipeline
+2024-02-12 16:45:37,076 - All infos are saved in execution_logs/rock_1_y_530_560_200_200_x_1200_1200_400_400_nbins_3_brad_2_nangbins_73_sig0_filt_20_min_log_filt_20 
+
+2024-02-12 16:45:37,076 - Run the script print_pipe_hparams.py
+2024-02-12 16:45:37,093 - SIFTsigma = 1.6
+bin_radius = 2
+blender_filename = rocks
+blur_sigma = 1.0
+border_size = 1
+contrastThreshold = 0.0
+delta_angle = 5.0
+distanceThreshold = 1000000000.0
+distance_type = min
+edgeThreshold = 0.0
+epsilon = None
+im_ext = png
+im_name1 = left
+im_name2 = right
+im_names = ('left', 'right')
+img_folder = blender/rocks
+method_post = lowe
+nb_angular_bins = 73
+nb_bins = 3
+neigh_radius = 9
+normalization_mode = global
+percentile = 20
+photo_name = rock_1
+relative_path = ../data
+sigma = 0
+use_filt = True
+use_sift = False
+x_lengths = [400, 400]
+x_starts = [1200, 1200]
+y_lengths = [200, 200]
+y_starts = [530, 560]
+
+2024-02-12 16:45:37,093 - Script print_pipe_hparams.py is done.
+
+2024-02-12 16:45:37,093 - Run the script imgs_preprocessing.py
+2024-02-12 16:45:47,527 - shapes of images (1080, 1920) (1080, 1920)
+Blurred images saved in ../data/blender/rocks
+Cropped images saved in ../data/blender/rocks
+
+2024-02-12 16:45:47,527 - Script imgs_preprocessing.py is done.
+
+2024-02-12 16:45:47,527 - Run the script compute_desc_img.py
+2024-02-12 16:48:51,040 - Start running the post blender pipeline
+2024-02-12 16:48:51,040 - Run the script display_matches.py
+2024-02-12 16:48:55,821 - 
+2024-02-12 16:48:55,821 - Script display_matches.py is done.
+
+2024-02-12 16:48:55,821 - All scripts are done. The pipeline is finished.
