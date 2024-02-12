@@ -30,9 +30,9 @@ if __name__ == "__main__":
     ]
     print("shapes of images", ims[0].shape, ims[1].shape)
 
-    fig, axs = plt.subplots(1, 2, figsize=(20, 10))
-    for id_image in range(2):
-        axs[id_image].imshow(ims[id_image], cmap="gray")
+    # fig, axs = plt.subplots(1, 2, figsize=(20, 10))
+    # for id_image in range(2):
+    #     axs[id_image].imshow(ims[id_image], cmap="gray")
 
     # plt.show()
 
@@ -67,10 +67,23 @@ if __name__ == "__main__":
         for id_image in range(2)
     ]
 
+    # display cropped float images
+    fig, axs = plt.subplots(1, 2, figsize=(20, 10))
+    for id_image in range(2):
+        axs[id_image].imshow(cropped_float_ims[id_image], cmap="gray")
+
+    plt.show()
+
     # save cropped  int images for sift
     for id_image in range(2):
         cv.imwrite(
             f"{original_imgs_path_prefix}/{cropped_ims_filenames[id_image]}.{im_ext}",
             cropped_ims[id_image],
+        )
+    # save cropped  int images for sift
+    for id_image in range(2):
+        np.save(
+            f"{original_imgs_path_prefix}/{cropped_float_ims_filenames[id_image]}",
+            cropped_float_ims[id_image],
         )
     print(f"Cropped images saved in {original_imgs_path_prefix}")

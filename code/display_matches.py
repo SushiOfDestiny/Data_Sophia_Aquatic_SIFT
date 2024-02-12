@@ -103,6 +103,21 @@ if __name__ == "__main__":
     ]
     float_ims = np.load(f"{blurred_imgs_filename}.npy")
 
+    # load cropped float images
+    cropped_float_ims = [
+        np.load(
+            f"{original_imgs_path_prefix}/{cropped_float_ims_filenames[id_image]}.npy"
+        )
+        for id_image in range(2)
+    ]
+
+    # show cropped float images
+    fig, axs = plt.subplots(1, 2, figsize=(20, 10))
+    for id_image in range(2):
+        axs[id_image].imshow(cropped_float_ims[id_image], cmap="gray")
+
+    plt.show()
+
     # load all computed objects
 
     # load unfiltered keypoints coordinates
