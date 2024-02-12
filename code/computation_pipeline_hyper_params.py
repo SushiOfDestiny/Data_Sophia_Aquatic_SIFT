@@ -448,6 +448,13 @@ im_name2 = "right"
 im_names = (im_name1, im_name2)
 im_ext = "png"
 
+# choose if sift must be used instead of our home made descriptor
+use_sift = False
+
+# choose if filter
+use_filt = False
+
+
 # set the coordinates of the subimages
 y_starts = [386, 459]
 y_lengths = [100, 100]
@@ -476,15 +483,15 @@ distance_type = "min"
 epsilon = None
 blender_filename = "rocks"
 
-use_sift=True
-use_filt=False
+use_sift = True
+use_filt = False
 
 # SIFT parameters
 method_post = "lowe"
 contrastThreshold = 0.0
 edgeThreshold = 0.0
 SIFTsigma = 1.6
-distanceThreshold = 1e9 
+distanceThreshold = 1e9
 
 # ##############
 # # Pipeline ? #

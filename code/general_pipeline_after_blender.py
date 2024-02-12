@@ -13,7 +13,7 @@ if __name__ == "__main__":
 
 
     scripts = [
-        f"display{irl_suffix}{sift_radical}_matches.py",
+        f"display{irl_radical}{sift_radical}_matches.py",
     ]   
 
     logger.info("Start running the post blender pipeline")

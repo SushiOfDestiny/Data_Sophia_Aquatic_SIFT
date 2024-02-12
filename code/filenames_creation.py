@@ -2,6 +2,7 @@ import numpy as np
 import os
 
 from computation_pipeline_hyper_params import *
+
 # Goal: create the filenames for all objects save during the computation pipeline
 
 # CONVENTION: all paths variables end with "_path"
@@ -87,9 +88,6 @@ required_folders_paths = [
     filtered_kp_path,
     log_path,
 ]
-
-# create irl suffix for pipeline
-irl_suffix = "_irl" if img_folder[:3] == "irl" else ""
 
 
 # Create filename for cropped uint images (for SIFT)
