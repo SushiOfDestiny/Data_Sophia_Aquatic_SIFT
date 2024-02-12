@@ -1,0 +1,241 @@
+2024-02-12 11:03:56,433 - Start running the pipeline
+2024-02-12 11:03:56,434 - All infos are saved in execution_logs/rocks_2_7_deg_cam_to_scale_y_491_471_200_200_x_880_660_200_200_nbins_3_brad_2_nangbins_73_sig0_min_log 
+
+2024-02-12 11:03:56,434 - Run the script print_pipe_hparams.py
+2024-02-12 11:03:56,448 - bin_radius = 2
+blender_filename = rocks_2_7_deg_cam_to_scale
+blur_sigma = 1.0
+border_size = 1
+delta_angle = 5.0
+distance_type = min
+epsilon = None
+im_ext = png
+im_name1 = rocks_2_7_deg_cam_to_scale_left
+im_name2 = rocks_2_7_deg_cam_to_scale_right
+im_names = ('rocks_2_7_deg_cam_to_scale_left', 'rocks_2_7_deg_cam_to_scale_right')
+img_folder = blender/rocks_2
+nb_angular_bins = 73
+nb_bins = 3
+neigh_radius = 9
+normalization_mode = global
+photo_name = rocks_2_7_deg_cam_to_scale
+relative_path = ../data
+sigma = 0
+use_sift = False
+x_lengths = [200, 200]
+x_starts = [880, 660]
+y_lengths = [200, 200]
+y_starts = [491, 471]
+
+2024-02-12 11:03:56,448 - Script print_pipe_hparams.py is done.
+
+2024-02-12 11:03:56,448 - Run the script imgs_preprocessing.py
+2024-02-12 11:04:00,757 - shapes of images (1080, 1920) (1080, 1920)
+Blurred images saved in ../data/blender/rocks_2
+Cropped images saved in ../data/blender/rocks_2
+
+2024-02-12 11:04:00,757 - Script imgs_preprocessing.py is done.
+
+2024-02-12 11:04:00,757 - Run the script compute_desc_img.py
+2024-02-12 11:21:52,470 - feat computation beginning for image 0: 2024-02-12 11:04:01.673098
+feat computation end for image 0 2024-02-12 11:04:15.001104
+feat compute time for image 0 0:00:13.328006
+shape of overall_features[0] of image 0 (1080, 1920, 2)
+desc computation beginning for image 0 2024-02-12 11:04:15.001139
+desc computation end for image 0 2024-02-12 11:13:09.308265
+desc compute time for image 0 0:08:54.307126
+feat computation beginning for image 1: 2024-02-12 11:13:09.477176
+feat computation end for image 1 2024-02-12 11:13:16.026370
+feat compute time for image 1 0:00:06.549194
+shape of overall_features[0] of image 1 (1080, 1920, 2)
+desc computation beginning for image 1 2024-02-12 11:13:16.026413
+desc computation end for image 1 2024-02-12 11:21:51.856262
+desc compute time for image 1 0:08:35.829849
+
+2024-02-12 11:21:52,471 - Script compute_desc_img.py is done.
+
+2024-02-12 11:21:52,471 - Run the script compute_distances.py
+2024-02-12 11:25:24,620 - same number of descriptors and coordinates for image 0: True
+also equal to the number of pixels: True
+same number of descriptors and coordinates for image 1: True
+also equal to the number of pixels: True
+Start computing distances: 2024-02-12 11:21:53.515553
+End computing distances: 2024-02-12 11:25:24.363031
+Compute time: 0:03:30.847478
+Chosen distance type: min
+
+2024-02-12 11:25:24,620 - Script compute_distances.py is done.
+
+2024-02-12 11:25:24,621 - Run the script create_cv_objs.py
+2024-02-12 11:25:26,100 - finished creating opencv objects
+beginning saving opencv objects to file
+finished saving kp_pairs
+finished saving matches
+finished saving keypoints
+
+2024-02-12 11:25:26,100 - Script create_cv_objs.py is done.
+
+2024-02-12 11:25:26,100 - All scripts are done. Launch Blender or a display script.
+
+
+2024-02-12 11:46:20,242 - Start running the post blender pipeline
+2024-02-12 11:46:20,242 - Start running the post blender pipeline
+2024-02-12 11:46:20,243 - Run the script display_matches.py
+2024-02-12 11:46:20,243 - Run the script display_matches.py
+2024-02-12 11:46:47,046 - number of pixels in subimage 0 40000
+number of keypoints in image 0 40000
+number of pixels in subimage 1 40000
+number of keypoints in image 1 40000
+number of computed matches 40000
+number of good matches at a precision of None pixels:  6225
+percentage of good matches:  15.562500000000002
+Statistics about the distances of the good matches
+Minimal distance: 15.334680557250977
+Maximal distance: 35.764427185058594
+Mean distance: 21.79445188101037
+Standard deviation of the distances: 2.198584920810849
+Statistics about the distances of the bad matches
+Minimal distance: 14.420555114746094
+Maximal distance: 46.85890197753906
+Mean distance: 23.83693256753714
+Standard deviation of the distances: 2.6429332875654112
+
+2024-02-12 11:46:47,046 - number of pixels in subimage 0 40000
+number of keypoints in image 0 40000
+number of pixels in subimage 1 40000
+number of keypoints in image 1 40000
+number of computed matches 40000
+number of good matches at a precision of None pixels:  6225
+percentage of good matches:  15.562500000000002
+Statistics about the distances of the good matches
+Minimal distance: 15.334680557250977
+Maximal distance: 35.764427185058594
+Mean distance: 21.79445188101037
+Standard deviation of the distances: 2.198584920810849
+Statistics about the distances of the bad matches
+Minimal distance: 14.420555114746094
+Maximal distance: 46.85890197753906
+Mean distance: 23.83693256753714
+Standard deviation of the distances: 2.6429332875654112
+
+2024-02-12 11:46:47,046 - Script display_matches.py is done.
+
+2024-02-12 11:46:47,046 - Script display_matches.py is done.
+
+2024-02-12 11:46:47,046 - All scripts are done. The pipeline is finished.
+2024-02-12 11:46:47,046 - All scripts are done. The pipeline is finished.
+2024-02-12 11:51:01,862 - Start running the post blender pipeline
+2024-02-12 11:51:01,862 - Start running the post blender pipeline
+2024-02-12 11:51:01,862 - Run the script display_matches.py
+2024-02-12 11:51:01,862 - Run the script display_matches.py
+2024-02-12 11:51:28,766 - number of pixels in subimage 0 40000
+number of keypoints in image 0 40000
+number of pixels in subimage 1 40000
+number of keypoints in image 1 40000
+number of computed matches 40000
+number of good matches at a precision of None pixels:  6225
+percentage of good matches:  15.562500000000002
+Statistics about the distances of the good matches
+Minimal distance: 15.334680557250977
+Maximal distance: 35.764427185058594
+Mean distance: 21.79445188101037
+Standard deviation of the distances: 2.198584920810849
+Statistics about the distances of the bad matches
+Minimal distance: 14.420555114746094
+Maximal distance: 46.85890197753906
+Mean distance: 23.83693256753714
+Standard deviation of the distances: 2.6429332875654112
+
+2024-02-12 11:51:28,766 - number of pixels in subimage 0 40000
+number of keypoints in image 0 40000
+number of pixels in subimage 1 40000
+number of keypoints in image 1 40000
+number of computed matches 40000
+number of good matches at a precision of None pixels:  6225
+percentage of good matches:  15.562500000000002
+Statistics about the distances of the good matches
+Minimal distance: 15.334680557250977
+Maximal distance: 35.764427185058594
+Mean distance: 21.79445188101037
+Standard deviation of the distances: 2.198584920810849
+Statistics about the distances of the bad matches
+Minimal distance: 14.420555114746094
+Maximal distance: 46.85890197753906
+Mean distance: 23.83693256753714
+Standard deviation of the distances: 2.6429332875654112
+
+2024-02-12 11:51:28,767 - Script display_matches.py is done.
+
+2024-02-12 11:51:28,767 - Script display_matches.py is done.
+
+2024-02-12 11:51:28,767 - All scripts are done. The pipeline is finished.
+2024-02-12 11:51:28,767 - All scripts are done. The pipeline is finished.
+2024-02-12 11:52:44,883 - Start running the post blender pipeline
+2024-02-12 11:52:44,883 - Start running the post blender pipeline
+2024-02-12 11:52:44,883 - Run the script display_matches.py
+2024-02-12 11:52:44,883 - Run the script display_matches.py
+2024-02-12 11:53:12,711 - number of pixels in subimage 0 40000
+number of keypoints in image 0 40000
+number of pixels in subimage 1 40000
+number of keypoints in image 1 40000
+number of computed matches 40000
+number of good matches at a precision of None pixels:  6225
+percentage of good matches:  15.562500000000002
+Statistics about the distances of the good matches
+Minimal distance: 15.334680557250977
+Maximal distance: 35.764427185058594
+Mean distance: 21.79445188101037
+Standard deviation of the distances: 2.198584920810849
+Statistics about the distances of the bad matches
+Minimal distance: 14.420555114746094
+Maximal distance: 46.85890197753906
+Mean distance: 23.83693256753714
+Standard deviation of the distances: 2.6429332875654112
+
+2024-02-12 11:53:12,711 - number of pixels in subimage 0 40000
+number of keypoints in image 0 40000
+number of pixels in subimage 1 40000
+number of keypoints in image 1 40000
+number of computed matches 40000
+number of good matches at a precision of None pixels:  6225
+percentage of good matches:  15.562500000000002
+Statistics about the distances of the good matches
+Minimal distance: 15.334680557250977
+Maximal distance: 35.764427185058594
+Mean distance: 21.79445188101037
+Standard deviation of the distances: 2.198584920810849
+Statistics about the distances of the bad matches
+Minimal distance: 14.420555114746094
+Maximal distance: 46.85890197753906
+Mean distance: 23.83693256753714
+Standard deviation of the distances: 2.6429332875654112
+
+2024-02-12 11:53:12,711 - Script display_matches.py is done.
+
+2024-02-12 11:53:12,711 - Script display_matches.py is done.
+
+2024-02-12 11:53:12,711 - All scripts are done. The pipeline is finished.
+2024-02-12 11:53:12,711 - All scripts are done. The pipeline is finished.
+2024-02-12 11:54:05,862 - Start running the post blender pipeline
+2024-02-12 11:54:05,862 - Run the script display_matches.py
+2024-02-12 11:54:32,847 - number of pixels in subimage 0 40000
+number of keypoints in image 0 40000
+number of pixels in subimage 1 40000
+number of keypoints in image 1 40000
+number of computed matches 40000
+number of good matches at a precision of None pixels:  6225
+percentage of good matches:  15.562500000000002
+Statistics about the distances of the good matches
+Minimal distance: 15.334680557250977
+Maximal distance: 35.764427185058594
+Mean distance: 21.79445188101037
+Standard deviation of the distances: 2.198584920810849
+Statistics about the distances of the bad matches
+Minimal distance: 14.420555114746094
+Maximal distance: 46.85890197753906
+Mean distance: 23.83693256753714
+Standard deviation of the distances: 2.6429332875654112
+
+2024-02-12 11:54:32,847 - Script display_matches.py is done.
+
+2024-02-12 11:54:32,847 - All scripts are done. The pipeline is finished.

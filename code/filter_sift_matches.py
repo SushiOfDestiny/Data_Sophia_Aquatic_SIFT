@@ -4,14 +4,14 @@ import os
 import logging
 import numpy as np
 
-sys.path.append("../../../code")
+sys.path.append(".")
 from computation_pipeline_hyper_params import *
 
 from filenames_creation import *
 
 
 # add script folder to path, path corresponding to location of the virtual scene blender file
-sys.path.append("../../../blender")
+sys.path.append("../blender")
 
 import matching as matching
 
@@ -23,7 +23,7 @@ if __name__ == "__main__":
     cam_1 = bpy.data.objects["Cam_1"]
     cam_2 = bpy.data.objects["Cam_2"]
 
-    storage_folder = f"../../../code/{matches_path}"
+    storage_folder = f"{matches_path}"
     sift_kp_pairs_file = f"{storage_folder}/{kp_pairs_filename}{sift_suffix}.npy"
 
     # filter matches

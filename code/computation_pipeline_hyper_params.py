@@ -474,10 +474,51 @@ distance_type = "min"
 
 # define the blender filtering precision threshold
 epsilon = None
+blender_filename = "rocks_2_7_deg_cam_to_scale"
 
-# choose if sift must be used instead of our home made descriptor
-use_sift = True
+# ##############
+# # Pipeline ? #
+# ##############
 
-# choose if filter the keypoints
-use_filt = False
-percentile = 50
+# # define images to load
+# relative_path = "../data"
+# # define images to load
+# relative_path = "../data"
+# # img_folder = "blender/rocks"
+# img_folder = "blender/rocks_2"
+# photo_name = "rocks_2_13_deg_cam_to_scale"
+# im_name1 = "rocks_2_13_deg_cam_to_scale_left"
+# im_name2 = "rocks_2_13_deg_cam_to_scale_right"
+# blender_filename = photo_name
+# im_names = (im_name1, im_name2)
+# im_ext = "png"
+
+# # # choose if sift must be used
+# # use_sift = False
+
+# # set the coordinates of the subimages
+
+# y_starts = [500, 500]
+# y_lengths = [200, 200]
+# x_starts = [840, 750]
+# x_lengths = [200, 200]
+
+# # define sigma for the gaussian blur
+# blur_sigma = 1.0
+
+# # define the border size
+# border_size = 1
+
+# # define descriptor parameters
+# nb_bins = 3
+# bin_radius = 2
+# delta_angle = 5.0
+# sigma = 0
+# normalization_mode = "global"
+# neigh_radius = (2 * bin_radius + 1) * nb_bins // 2 + bin_radius
+# nb_angular_bins = int(360.0 / delta_angle) + 1
+
+# # set the distance type, between "min" and "all"
+# distance_type = "min"
+# # define the blender filtering precision threshold
+# epsilon = None

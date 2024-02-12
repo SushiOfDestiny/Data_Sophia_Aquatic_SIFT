@@ -3,6 +3,7 @@ import logging
 import subprocess
 from computation_pipeline_hyper_params import *
 from filenames_creation import *
+import argparse
 
 
 def create_logger(logpath):
@@ -30,33 +31,42 @@ def create_logger(logpath):
     logger.addHandler(handler)
     logger.addHandler(console_handler)
 
+    logger.propagate = False
+
     return logger
 
 
-# change filenames and scripts if sift is used
-# List of scripts to run
-if use_sift:
-    scripts = [
-        "create_all_folders.py",
-        "print_pipe_hparams.py",
-        "imgs_preprocessing.py",
-        "compute_sift_kps.py",
-    ]
-else:
-    scripts = [
-        "create_all_folders.py",
-        "print_pipe_hparams.py",
-        "imgs_preprocessing.py",
-        "compute_desc_img.py",
-        "compute_distances.py",
-        "create_cv_objs.py",
-    ]
-
-# create the logger
-logger = create_logger(f"{log_path}/{log_filename}.txt")
-
-
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--sift", help="use SIFT instead of homemade descriptor", action="store_true")
+    args = parser.parse_args()
+    use_sift = args.sift
+
+    # change filenames and scripts if sift is used
+    # List of scripts to run
+    if use_sift:
+        sift_radical = "_sift"
+        log_filename = f"{dist_filename_prefix}_log{sift_radical}"
+        scripts = [
+            "create_all_folders.py",
+            "print_pipe_hparams.py",
+            "imgs_preprocessing.py",
+            "compute_sift_kps.py",
+        ]
+    else:
+        sift_radical = ""
+        log_filename = f"{dist_filename_prefix}_log"
+        scripts = [
+            "create_all_folders.py",
+            "print_pipe_hparams.py",
+            "imgs_preprocessing.py",
+            "compute_desc_img.py",
+            "compute_distances.py",
+            "create_cv_objs.py",
+        ]
+
+    # create the logger
+    logger = create_logger(f"{log_path}/{log_filename}.txt")
 
     # first create all the folders
     subprocess.call(["python", scripts[0]])

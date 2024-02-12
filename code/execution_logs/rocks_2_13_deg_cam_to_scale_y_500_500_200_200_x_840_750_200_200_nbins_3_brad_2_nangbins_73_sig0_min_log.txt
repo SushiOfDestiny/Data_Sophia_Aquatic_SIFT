@@ -1,0 +1,127 @@
+2024-02-12 12:00:06,226 - Start running the pipeline
+2024-02-12 12:00:06,227 - All infos are saved in execution_logs/rocks_2_13_deg_cam_to_scale_y_500_500_200_200_x_840_750_200_200_nbins_3_brad_2_nangbins_73_sig0_min_log 
+
+2024-02-12 12:00:06,227 - Run the script print_pipe_hparams.py
+2024-02-12 12:00:06,242 - bin_radius = 2
+blender_filename = rocks_2_13_deg_cam_to_scale
+blur_sigma = 1.0
+border_size = 1
+delta_angle = 5.0
+distance_type = min
+epsilon = None
+im_ext = png
+im_name1 = rocks_2_13_deg_cam_to_scale_left
+im_name2 = rocks_2_13_deg_cam_to_scale_right
+im_names = ('rocks_2_13_deg_cam_to_scale_left', 'rocks_2_13_deg_cam_to_scale_right')
+img_folder = blender/rocks_2
+nb_angular_bins = 73
+nb_bins = 3
+neigh_radius = 9
+normalization_mode = global
+photo_name = rocks_2_13_deg_cam_to_scale
+relative_path = ../data
+sigma = 0
+use_sift = False
+x_lengths = [200, 200]
+x_starts = [840, 750]
+y_lengths = [200, 200]
+y_starts = [500, 500]
+
+2024-02-12 12:00:06,242 - Script print_pipe_hparams.py is done.
+
+2024-02-12 12:00:06,242 - Run the script imgs_preprocessing.py
+2024-02-12 12:00:11,457 - shapes of images (1080, 1920) (1080, 1920)
+Blurred images saved in ../data/blender/rocks_2
+Cropped images saved in ../data/blender/rocks_2
+
+2024-02-12 12:00:11,457 - Script imgs_preprocessing.py is done.
+
+2024-02-12 12:00:11,457 - Run the script compute_desc_img.py
+2024-02-12 12:18:06,897 - feat computation beginning for image 0: 2024-02-12 12:00:12.372326
+feat computation end for image 0 2024-02-12 12:00:25.737588
+feat compute time for image 0 0:00:13.365262
+shape of overall_features[0] of image 0 (1080, 1920, 2)
+desc computation beginning for image 0 2024-02-12 12:00:25.737622
+desc computation end for image 0 2024-02-12 12:09:18.426564
+desc compute time for image 0 0:08:52.688942
+feat computation beginning for image 1: 2024-02-12 12:09:18.609922
+feat computation end for image 1 2024-02-12 12:09:25.101273
+feat compute time for image 1 0:00:06.491351
+shape of overall_features[0] of image 1 (1080, 1920, 2)
+desc computation beginning for image 1 2024-02-12 12:09:25.101313
+desc computation end for image 1 2024-02-12 12:18:06.283015
+desc compute time for image 1 0:08:41.181702
+
+2024-02-12 12:18:06,897 - Script compute_desc_img.py is done.
+
+2024-02-12 12:18:06,897 - Run the script compute_distances.py
+2024-02-12 12:21:47,369 - same number of descriptors and coordinates for image 0: True
+also equal to the number of pixels: True
+same number of descriptors and coordinates for image 1: True
+also equal to the number of pixels: True
+Start computing distances: 2024-02-12 12:18:07.939280
+End computing distances: 2024-02-12 12:21:47.110021
+Compute time: 0:03:39.170741
+Chosen distance type: min
+
+2024-02-12 12:21:47,369 - Script compute_distances.py is done.
+
+2024-02-12 12:21:47,370 - Run the script create_cv_objs.py
+2024-02-12 12:21:48,822 - finished creating opencv objects
+beginning saving opencv objects to file
+finished saving kp_pairs
+finished saving matches
+finished saving keypoints
+
+2024-02-12 12:21:48,822 - Script create_cv_objs.py is done.
+
+2024-02-12 12:21:48,822 - All scripts are done. Launch Blender or a display script.
+
+
+2024-02-12 13:36:14,185 - Start running the pipeline
+2024-02-12 13:36:14,185 - All infos are saved in execution_logs/rocks_2_13_deg_cam_to_scale_y_500_500_200_200_x_840_750_200_200_nbins_3_brad_2_nangbins_73_sig0_min_log 
+
+2024-02-12 13:36:14,185 - Run the script print_pipe_hparams.py
+2024-02-12 13:36:14,198 - bin_radius = 2
+blender_filename = rocks_2_13_deg_cam_to_scale
+blur_sigma = 1.0
+border_size = 1
+delta_angle = 5.0
+distance_type = min
+epsilon = None
+im_ext = png
+im_name1 = rocks_2_13_deg_cam_to_scale_left
+im_name2 = rocks_2_13_deg_cam_to_scale_right
+im_names = ('rocks_2_13_deg_cam_to_scale_left', 'rocks_2_13_deg_cam_to_scale_right')
+img_folder = blender/rocks_2
+nb_angular_bins = 73
+nb_bins = 3
+neigh_radius = 9
+normalization_mode = global
+photo_name = rocks_2_13_deg_cam_to_scale
+relative_path = ../data
+sigma = 0
+use_sift = False
+x_lengths = [200, 200]
+x_starts = [840, 750]
+y_lengths = [200, 200]
+y_starts = [500, 500]
+
+2024-02-12 13:36:14,198 - Script print_pipe_hparams.py is done.
+
+2024-02-12 13:36:14,199 - Run the script imgs_preprocessing.py
+2024-02-12 13:36:41,291 - shapes of images (1080, 1920) (1080, 1920)
+Blurred images saved in ../data/blender/rocks_2
+Cropped images saved in ../data/blender/rocks_2
+
+2024-02-12 13:36:41,291 - Script imgs_preprocessing.py is done.
+
+2024-02-12 13:36:41,292 - Run the script compute_desc_img.py
+2024-02-12 13:36:42,367 - 
+2024-02-12 13:36:42,368 - Script compute_desc_img.py is done.
+
+2024-02-12 13:36:42,368 - Run the script compute_distances.py
+2024-02-12 13:36:43,402 - 
+2024-02-12 13:36:43,402 - Script compute_distances.py is done.
+
+2024-02-12 13:36:43,402 - Run the script create_cv_objs.py
