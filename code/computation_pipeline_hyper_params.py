@@ -448,6 +448,13 @@ im_name2 = "right"
 im_names = (im_name1, im_name2)
 im_ext = "png"
 
+# choose if sift must be used instead of our home made descriptor
+use_sift = False
+
+# choose if filter
+use_filt = False
+
+
 # set the coordinates of the subimages
 y_starts = [386, 459]
 y_lengths = [100, 100]
@@ -474,7 +481,7 @@ distance_type = "min"
 
 # define the blender filtering precision threshold
 epsilon = None
-blender_filename = "rocks_2_7_deg_cam_to_scale"
+blender_filename = 'rocks_2_7_deg_cam_to_scale'
 
 # ##############
 # # Pipeline ? #

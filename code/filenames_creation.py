@@ -1,6 +1,7 @@
 import numpy as np
 
 from computation_pipeline_hyper_params import *
+
 # Goal: create the filenames for all objects save during the computation pipeline
 
 # CONVENTION: all paths variables end with "_path"
@@ -8,8 +9,13 @@ from computation_pipeline_hyper_params import *
 # Create multiple suffix to distinguish between pipelines
 # Create filename suffix for sift kps, pairs and matches
 sift_suffix = "_sift"
-# create suffix for filtered points computation
+# create suffix for prefiltered points computation
 filt_suffix = "_filt"
+
+# create adapted radicals
+filt_radical = filt_suffix if use_filt else ""
+irl_radical = "_irl" if img_folder[:3] == "irl" else ""
+
 # Define suffix for filename
 dist_type_suffix = "" if distance_type == "all" else "_min"
 
@@ -25,8 +31,8 @@ blurred_imgs_filename = (
 )
 
 
-# Create suffix for descriptor parameters
-descrip_suffix = f"_nbins_{nb_bins}_brad_{bin_radius}_nangbins_{nb_angular_bins}_sig{int(sigma)}{filt_suffix}"
+# Create suffix for descriptor parameters with sift or prefiltering
+descrip_suffix = f"_nbins_{nb_bins}_brad_{bin_radius}_nangbins_{nb_angular_bins}_sig{int(sigma)}{filt_radical}"
 
 # Define path to save the descriptors and coordinates
 descrip_path = "computed_descriptors"
@@ -85,9 +91,6 @@ required_folders_paths = [
     filtered_kp_path,
     log_path,
 ]
-
-# create irl suffix for pipeline
-irl_suffix = "_irl" if img_folder[:3] == "irl" else ""
 
 
 # Create filename for cropped uint images (for SIFT)
