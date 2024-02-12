@@ -150,3 +150,108 @@ percentage of good matches:  4.96
 
 2024-02-08 16:30:56,898 - All scripts are done. The pipeline is finished.
 2024-02-08 16:30:56,898 - All scripts are done. The pipeline is finished.
+2024-02-12 09:25:16,435 - Start running the pipeline
+2024-02-12 09:25:16,435 - All infos are saved in execution_logs/rock_1_y_530_560_200_200_x_1200_1200_200_200_nbins_3_brad_2_nangbins_73_sig0_min_log 
+
+2024-02-12 09:25:16,435 - Run the script print_pipe_hparams.py
+2024-02-12 09:25:16,447 - bin_radius = 2
+blur_sigma = 1.0
+border_size = 1
+delta_angle = 5.0
+distance_type = min
+epsilon = None
+im_ext = png
+im_name1 = left
+im_name2 = right
+im_names = ('left', 'right')
+img_folder = blender/rocks
+nb_angular_bins = 73
+nb_bins = 3
+neigh_radius = 9
+normalization_mode = global
+photo_name = rock_1
+relative_path = ../data
+sigma = 0
+use_sift = False
+x_lengths = [200, 200]
+x_starts = [1200, 1200]
+y_lengths = [200, 200]
+y_starts = [530, 560]
+
+2024-02-12 09:25:16,447 - Script print_pipe_hparams.py is done.
+
+2024-02-12 09:25:16,447 - Run the script imgs_preprocessing.py
+2024-02-12 09:25:23,576 - shapes of images (1080, 1920) (1080, 1920)
+Blurred images saved in ../data/blender/rocks
+Cropped images saved in ../data/blender/rocks
+
+2024-02-12 09:25:23,577 - Script imgs_preprocessing.py is done.
+
+2024-02-12 09:25:23,577 - Run the script compute_desc_img.py
+2024-02-12 09:43:37,770 - feat computation beginning for image 0: 2024-02-12 09:25:24.499853
+feat computation end for image 0 2024-02-12 09:25:38.072732
+feat compute time for image 0 0:00:13.572879
+shape of overall_features[0] of image 0 (1080, 1920, 2)
+desc computation beginning for image 0 2024-02-12 09:25:38.072764
+desc computation end for image 0 2024-02-12 09:34:43.391001
+desc compute time for image 0 0:09:05.318237
+feat computation beginning for image 1: 2024-02-12 09:34:43.575602
+feat computation end for image 1 2024-02-12 09:34:50.094787
+feat compute time for image 1 0:00:06.519185
+shape of overall_features[0] of image 1 (1080, 1920, 2)
+desc computation beginning for image 1 2024-02-12 09:34:50.094828
+desc computation end for image 1 2024-02-12 09:43:37.150215
+desc compute time for image 1 0:08:47.055387
+
+2024-02-12 09:43:37,770 - Script compute_desc_img.py is done.
+
+2024-02-12 09:43:37,770 - Run the script compute_distances.py
+2024-02-12 09:47:15,406 - same number of descriptors and coordinates for image 0: True
+also equal to the number of pixels: True
+same number of descriptors and coordinates for image 1: True
+also equal to the number of pixels: True
+Start computing distances: 2024-02-12 09:43:38.844469
+End computing distances: 2024-02-12 09:47:15.145723
+Compute time: 0:03:36.301254
+Chosen distance type: min
+
+2024-02-12 09:47:15,406 - Script compute_distances.py is done.
+
+2024-02-12 09:47:15,406 - Run the script create_cv_objs.py
+2024-02-12 09:47:16,930 - finished creating opencv objects
+beginning saving opencv objects to file
+finished saving kp_pairs
+finished saving matches
+finished saving keypoints
+
+2024-02-12 09:47:16,930 - Script create_cv_objs.py is done.
+
+2024-02-12 09:47:16,930 - All scripts are done. Launch Blender or a display script.
+
+
+2024-02-12 09:48:31,890 - Start running the post blender pipeline
+2024-02-12 09:48:31,890 - Start running the post blender pipeline
+2024-02-12 09:48:31,890 - Run the script display_matches.py
+2024-02-12 09:48:31,890 - Run the script display_matches.py
+2024-02-12 09:49:01,857 - number of pixels in subimage 0 40000
+number of keypoints in image 0 40000
+number of pixels in subimage 1 40000
+number of keypoints in image 1 40000
+number of computed matches 40000
+number of good matches at a precision of None pixels:  11727
+percentage of good matches:  29.317500000000003
+
+2024-02-12 09:49:01,857 - number of pixels in subimage 0 40000
+number of keypoints in image 0 40000
+number of pixels in subimage 1 40000
+number of keypoints in image 1 40000
+number of computed matches 40000
+number of good matches at a precision of None pixels:  11727
+percentage of good matches:  29.317500000000003
+
+2024-02-12 09:49:01,858 - Script display_matches.py is done.
+
+2024-02-12 09:49:01,858 - Script display_matches.py is done.
+
+2024-02-12 09:49:01,858 - All scripts are done. The pipeline is finished.
+2024-02-12 09:49:01,858 - All scripts are done. The pipeline is finished.
