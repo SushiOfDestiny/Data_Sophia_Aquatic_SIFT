@@ -67,14 +67,19 @@ def display_match(
         plt.show()
 
 
-def print_general_kp_matches_infos(ims, kps, matches, good_matches, epsilon):
+def print_general_kp_matches_infos(
+    y_lengths, x_lengths, kps, matches, good_matches, epsilon
+):
     """print general infos and percentage of keypoints and good matches among the pixels and matches."""
     for id_image in range(2):
-        print(f"number of pixels in image {id_image}", ims[id_image].size)
+        print(
+            f"number of pixels in image {id_image}",
+            y_lengths[id_image] * x_lengths[id_image],
+        )
         print(f"number of sift keypoints in image {id_image}", len(kps[id_image]))
         print(
             f"percentage of sift keypoints in image {id_image}",
-            len(kps[id_image]) / ims[id_image].size * 100.0,
+            len(kps[id_image]) / (y_lengths[id_image] * x_lengths[id_image]) * 100.0,
         )
     print("number of unfiltered sift matches", len(matches))
     print(
@@ -85,7 +90,7 @@ def print_general_kp_matches_infos(ims, kps, matches, good_matches, epsilon):
         f"Percentage of good matches within matches: {len(good_matches) / len(matches) * 100.0}"
     )
     print(
-        f"Percentage of good matches within pixels in subimage 1: {len(good_matches) / ims[0].size * 100.0}"
+        f"Percentage of good matches within pixels in subimage 1: {len(good_matches) / (y_lengths[0] * x_lengths[0]) * 100.0}"
     )
 
 
@@ -172,8 +177,9 @@ if __name__ == "__main__":
     )
 
     # print general info about proportions of keypoints and matches
-    print_general_kp_matches_infos(float_ims, kps, matches, good_matches, epsilon)
-    
+    print_general_kp_matches_infos(
+        y_lengths, x_lengths, kps, matches, good_matches, epsilon
+    )
 
     # look at some matches
 

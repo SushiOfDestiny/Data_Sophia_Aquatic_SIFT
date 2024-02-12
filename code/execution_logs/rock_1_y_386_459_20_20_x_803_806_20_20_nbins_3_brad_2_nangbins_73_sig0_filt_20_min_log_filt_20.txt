@@ -1,0 +1,39 @@
+2024-02-12 17:09:29,634 - Start running the pipeline
+2024-02-12 17:09:29,634 - All infos are saved in execution_logs/rock_1_y_386_459_20_20_x_803_806_20_20_nbins_3_brad_2_nangbins_73_sig0_filt_20_min_log_filt_20 
+
+2024-02-12 17:09:29,635 - Run the script print_pipe_hparams.py
+2024-02-12 17:09:29,693 - SIFTsigma = 1.6
+bin_radius = 2
+blender_filename = rocks
+blur_sigma = 1
+border_size = 1
+contrastThreshold = 0.0
+delta_angle = 5.0
+distanceThreshold = 1000000000.0
+distance_type = min
+edgeThreshold = 0.0
+epsilon = None
+im_ext = png
+im_name1 = left
+im_name2 = right
+im_names = ('left', 'right')
+img_folder = blender/rocks
+method_post = lowe
+nb_angular_bins = 73
+nb_bins = 3
+neigh_radius = 9
+normalization_mode = global
+percentile = 20
+photo_name = rock_1
+relative_path = ../data
+sigma = 0
+use_filt = True
+use_sift = False
+x_lengths = [20, 20]
+x_starts = [803, 806]
+y_lengths = [20, 20]
+y_starts = [386, 459]
+
+2024-02-12 17:09:29,693 - Script print_pipe_hparams.py is done.
+
+2024-02-12 17:09:29,693 - Run the script imgs_preprocessing.py

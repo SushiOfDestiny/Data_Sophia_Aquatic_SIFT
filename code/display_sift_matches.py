@@ -63,7 +63,9 @@ if __name__ == "__main__":
 
     # print general info about proportions of keypoints and matches
 
-    dm.print_general_kp_matches_infos(float_ims, kps, matches, good_matches, epsilon)
+    dm.print_general_kp_matches_infos(
+        y_lengths, x_lengths, kps, matches, good_matches, epsilon
+    )
 
     # print stats about good matches and bad matches
     # look at the distances of the good and bad matches
