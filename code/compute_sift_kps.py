@@ -52,8 +52,8 @@ if __name__ == "__main__":
     method_post = "lowe"
     contrastThreshold = 0.00
     edgeThreshold = 0
-    SIFTsigma = 0.1
-    distanceThreshold = 1e9
+    SIFTsigma = 1.6
+    distanceThreshold = 1
 
     print("SIFT parameters: ")
     print(f"contrastThreshold: {contrastThreshold}")
@@ -100,10 +100,10 @@ if __name__ == "__main__":
                 for id_image in range(2)
             ]
 
-    # # draw the translated matches
-    # draw_good_keypoints(
-    #     ims[0], ims[1], trans_sift_kps[0], trans_sift_kps[1], sift_matches, 5
-    # )
+    # draw the translated matches
+    draw_good_keypoints(
+        ims[0], ims[1], trans_sift_kps[0], trans_sift_kps[1], sift_matches, 5
+    )
 
     # compute keypoints int pixels coordinates as list of 2 numpy arrays
     trans_sift_kps_coords = [

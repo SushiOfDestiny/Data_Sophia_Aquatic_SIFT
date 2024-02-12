@@ -1,80 +1,48 @@
 # present file stores all hyperparameters required to run the whole descriptor computation and blender matching pipeline
 
-##############
-# Pipeline 1 #
-##############
-##############
-# Pipeline 1 #
-##############
-
-# define images to load
-relative_path = "../data"
-# define images to load
-relative_path = "../data"
+# ##############
+# # Pipeline 1 #
+# ##############
+# # define images to load
+# relative_path = "../data"
+# # img_folder = "blender/rocks"
 # img_folder = "blender/rocks"
-img_folder = "blender/rocks"
-photo_name = "rock_1"
-im_name1 = "left"
-im_name2 = "right"
-im_names = (im_name1, im_name2)
-im_ext = "png"
-img_folder = "blender/rocks"
-photo_name = "rock_1"
-im_name1 = "left"
-im_name2 = "right"
-im_names = (im_name1, im_name2)
-im_ext = "png"
+# photo_name = "rock_1"
+# im_name1 = "left"
+# im_name2 = "right"
+# im_names = (im_name1, im_name2)
+# im_ext = "png"
 
-# choose if sift must be used
-use_sift = True
+# # choose if sift must be used
+# use_sift = True
 
-# set the coordinates of the subimages
+# # set the coordinates of the subimages
 
-y_starts = [386, 459]
-y_lengths = [200, 200]
-x_starts = [803, 806]
-x_lengths = [200, 200]
-y_starts = [386, 459]
-y_lengths = [200, 200]
-x_starts = [803, 806]
-x_lengths = [200, 200]
+# y_starts = [386, 459]
+# y_lengths = [200, 200]
+# x_starts = [803, 806]
+# x_lengths = [200, 200]
 
-# define sigma for the gaussian blur
-blur_sigma = 1.0
-# define sigma for the gaussian blur
-blur_sigma = 1.0
+# # define sigma for the gaussian blur
+# blur_sigma = 1.0
 
-# define the border size
-border_size = 1
-# define the border size
-border_size = 1
+# # define the border size
+# border_size = 1
 
-# define descriptor parameters
-nb_bins = 3
-bin_radius = 2
-delta_angle = 5.0
-sigma = 0
-normalization_mode = "global"
-neigh_radius = (2 * bin_radius + 1) * nb_bins // 2 + bin_radius
-nb_angular_bins = int(360.0 / delta_angle) + 1
-# define descriptor parameters
-nb_bins = 3
-bin_radius = 2
-delta_angle = 5.0
-sigma = 0
-normalization_mode = "global"
-neigh_radius = (2 * bin_radius + 1) * nb_bins // 2 + bin_radius
-nb_angular_bins = int(360.0 / delta_angle) + 1
+# # define descriptor parameters
+# nb_bins = 3
+# bin_radius = 2
+# delta_angle = 5.0
+# sigma = 0
+# normalization_mode = "global"
+# neigh_radius = (2 * bin_radius + 1) * nb_bins // 2 + bin_radius
+# nb_angular_bins = int(360.0 / delta_angle) + 1
 
-# set the distance type, between "min" and "all"
-distance_type = "min"
-# set the distance type, between "min" and "all"
-distance_type = "min"
+# # set the distance type, between "min" and "all"
+# distance_type = "min"
 
-# define the blender filtering precision threshold
-epsilon = None
-# define the blender filtering precision threshold
-epsilon = None
+# # define the blender filtering precision threshold
+# epsilon = None
 
 
 # ##############
@@ -458,69 +426,50 @@ epsilon = None
 # epsilon = None
 
 
-# ##############
-# # Pipeline 10 # Test curve filter
-# ##############
+##############
+# Pipeline 10 # Test curve filter
+##############
 
-# # define images to load
-# relative_path = "../data"
-# # img_folder = "blender/rocks"
+# define images to load
+relative_path = "../data"
 # img_folder = "blender/rocks"
-# photo_name = "rock_1"
-# im_name1 = "left"
-# im_name2 = "right"
-# im_names = (im_name1, im_name2)
-# im_ext = "png"
-# photo_name = "rock_1"
-# im_name1 = "left"
-# im_name2 = "right"
-# im_names = (im_name1, im_name2)
-# im_ext = "png"
+img_folder = "blender/rocks"
+photo_name = "rock_1"
+im_name1 = "left"
+im_name2 = "right"
+im_names = (im_name1, im_name2)
+im_ext = "png"
 
-# # choose if sift must be used instead of our home made descriptor
-# use_sift = False
-# # choose if sift must be used instead of our home made descriptor
-# use_sift = False
+# choose if sift must be used instead of our home made descriptor
+use_sift = False
 
-# # set the coordinates of the subimages
-# y_starts = [386, 459]
-# y_lengths = [100, 100]
-# x_starts = [803, 806]
-# x_lengths = [100, 100]
+# choose if filter
+use_filt = False
 
-# # define sigma for the gaussian blur
-# blur_sigma = 1.0
-# # define sigma for the gaussian blur
-# blur_sigma = 1.0
 
-# # define the border size
-# border_size = 1
-# # define the border size
-# border_size = 1
+# set the coordinates of the subimages
+y_starts = [386, 459]
+y_lengths = [10, 10]
+x_starts = [803, 806]
+x_lengths = [10, 10]
 
-# # define descriptor parameters
-# nb_bins = 3
-# bin_radius = 2
-# delta_angle = 5.0
-# sigma = 0
-# normalization_mode = "global"
-# neigh_radius = (2 * bin_radius + 1) * nb_bins // 2 + bin_radius
-# nb_angular_bins = int(360.0 / delta_angle) + 1
-# # define descriptor parameters
-# nb_bins = 3
-# bin_radius = 2
-# delta_angle = 5.0
-# sigma = 0
-# normalization_mode = "global"
-# neigh_radius = (2 * bin_radius + 1) * nb_bins // 2 + bin_radius
-# nb_angular_bins = int(360.0 / delta_angle) + 1
+# define sigma for the gaussian blur
+blur_sigma = 1.0
 
-# # set the distance type, between "min" and "all"
-# distance_type = "min"
-# # set the distance type, between "min" and "all"
-# distance_type = "min"
+# define the border size
+border_size = 1
 
-# # define the blender filtering precision threshold
-# epsilon = None
-# # define the blender filtering precision threshold
-# epsilon = None
+# define descriptor parameters
+nb_bins = 3
+bin_radius = 2
+delta_angle = 5.0
+sigma = 0
+normalization_mode = "global"
+neigh_radius = (2 * bin_radius + 1) * nb_bins // 2 + bin_radius
+nb_angular_bins = int(360.0 / delta_angle) + 1
+
+# set the distance type, between "min" and "all"
+distance_type = "min"
+
+# define the blender filtering precision threshold
+epsilon = None

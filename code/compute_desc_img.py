@@ -78,7 +78,7 @@ def compute_desc_pixels(
 if __name__ == "__main__":
 
     # Load preprocessed images as numpy arrays
-    float_ims = np.load(f"{blurred_imgs_path}.npy")
+    float_ims = np.load(f"{blurred_imgs_filename}.npy")
 
     # compute descriptors for 2 images
     for id_image in range(2):

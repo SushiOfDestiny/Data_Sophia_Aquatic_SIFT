@@ -39,6 +39,7 @@ if use_sift:
     scripts = [
         "create_all_folders.py",
         "print_pipe_hparams.py",
+        "imgs_preprocessing.py",
         "compute_sift_kps.py",
     ]
 else:
