@@ -43,10 +43,10 @@ if __name__ == "__main__":
         f"{storage_folder}/{correct_matches_idxs_filename}",
     )
 
-    print("depth map computing...")
-    t = time.time()
-    dmap = differential.compute_depth_map(cam_1, bpy.context.scene)
-    print(f"depth map computed in {time.time() - t}")
-    np.save(f"{storage_folder}/dmap.npy", dmap)
+    # print("depth map computing...")
+    # t = time.time()
+    # dmap = differential.compute_depth_map(cam_1, bpy.context.scene)
+    # print(f"depth map computed in {time.time() - t}")
+    # np.save(f"{storage_folder}/dmap.npy", dmap)
 
-    print(f"depth map saved to {storage_folder}/dmap.npy")
+    # print(f"depth map saved to {storage_folder}/dmap.npy")
