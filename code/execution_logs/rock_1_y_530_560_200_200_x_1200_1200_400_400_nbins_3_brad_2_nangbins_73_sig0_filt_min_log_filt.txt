@@ -163,3 +163,49 @@ Cropped images saved in ../data/blender/rocks
 2024-02-12 16:07:59,046 - Script imgs_preprocessing.py is done.
 
 2024-02-12 16:07:59,046 - Run the script compute_desc_img.py
+2024-02-12 16:37:06,596 - feat computation beginning for image 0: 2024-02-12 16:07:59.996650
+feat computation end for image 0 2024-02-12 16:08:14.253010
+feat compute time for image 0 0:00:14.256360
+shape of overall_features[0] of image 0 (1080, 1920, 2)
+filter pixel by mean absolute curvature percentile in subimage
+Min mean curvature: 0.0
+Max mean curvature: 0.08548758924007416
+Mean mean curvature: 0.017017770558595657
+Standard deviation of the mean curvatures: 0.012888694182038307
+Percentile 20%: 0.0058162905275901036
+number of pixels in subimage: 80000
+number of filtered accepted pixels: 64000
+percentage of filtered accepted pixels: 80.0
+desc computation beginning for image 0 2024-02-12 16:08:20.137765
+desc computation end for image 0 2024-02-12 16:22:44.667061
+desc compute time for image 0 0:14:24.529296
+feat computation beginning for image 1: 2024-02-12 16:22:44.707152
+feat computation end for image 1 2024-02-12 16:22:51.499478
+feat compute time for image 1 0:00:06.792326
+shape of overall_features[0] of image 1 (1080, 1920, 2)
+filter pixel by mean absolute curvature percentile in subimage
+Min mean curvature: 0.0
+Max mean curvature: 0.08438748121261597
+Mean mean curvature: 0.01705499179661274
+Standard deviation of the mean curvatures: 0.012885347940027714
+Percentile 20%: 0.005857061594732645
+number of pixels in subimage: 80000
+number of filtered accepted pixels: 64000
+percentage of filtered accepted pixels: 80.0
+desc computation beginning for image 1 2024-02-12 16:22:57.468965
+desc computation end for image 1 2024-02-12 16:37:06.091154
+desc compute time for image 1 0:14:08.622189
+
+2024-02-12 16:37:06,596 - Script compute_desc_img.py is done.
+
+2024-02-12 16:37:06,596 - Run the script compute_distances.py
+2024-02-12 16:37:07,647 - 
+2024-02-12 16:37:07,647 - Script compute_distances.py is done.
+
+2024-02-12 16:37:07,647 - Run the script create_cv_objs.py
+2024-02-12 16:37:08,728 - 
+2024-02-12 16:37:08,729 - Script create_cv_objs.py is done.
+
+2024-02-12 16:37:08,729 - All scripts are done. Launch Blender or a display script.
+
+
