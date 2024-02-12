@@ -1,5 +1,6 @@
 import bpy, bpy_extras
 from shift import img_px_to_img_m, get_world_from_img_co
+from math import sqrt
 
 def check_correct_match_pt(scene, x1_cv_px, y1_cv_px, x2_cv_px, y2_cv_px, cam_1, cam_1_params, cam_2, cam_2_params, epsilon=None):
     '''Tests if two image points given by their x and y coordinates are correct stereo matches
@@ -35,13 +36,13 @@ def check_correct_match_pt(scene, x1_cv_px, y1_cv_px, x2_cv_px, y2_cv_px, cam_1,
 
     if epsilon is None:
         if abs(x2_img1_px - x1_cv_px) >= 1 or abs(y2_img1_px - y1_cv_px) >= 1:
-            return False, None
+            return False, None, None
         else:
             print("Match")
-            return True, vec_1, ((x2_img1_px - x1_cv_px)**2 + (y2_img1_px - y1_cv_px)**2)
+            return True, vec_1, sqrt(((x2_img1_px - x1_cv_px)**2 + (y2_img1_px - y1_cv_px)**2))
     else:
         if (vec_1 - vec_2).length > epsilon:
-            return False, None
+            return False, None, None
         else:
             print("Match")
             return True, vec_1, None

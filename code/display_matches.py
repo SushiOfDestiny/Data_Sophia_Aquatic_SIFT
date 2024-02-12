@@ -119,9 +119,12 @@ def compute_good_and_bad_matches(matches, good_matches_kps_idx):
 
 def display_distance_scatter(matches, good_matches_kps_idx, image_distances_filename_npy):
     image_distances = np.load(image_distances_filename_npy)
-    mask = np.array([0 for i in range(len(matches))], dtype=np.uint8)
-    mask[good_matches_kps_idx] = 1
-    plt.scatter([match.distance for match in matches], image_distances, mask)
+    mask = np.array(["b" for i in range(len(matches))], dtype=object)
+    print(mask)
+    mask[good_matches_kps_idx] = "r"
+    print(mask)
+    plt.scatter([match[0].distance for match in matches], image_distances, c=mask, marker='+', s=0.01)
+    plt.show()
     
 
 
