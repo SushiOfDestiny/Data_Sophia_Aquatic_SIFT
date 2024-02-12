@@ -48,12 +48,6 @@ if __name__ == "__main__":
         for id_image in range(2)
     ]
 
-    # compute sift keypoints and matches
-    method_post = "lowe"
-    contrastThreshold = 0.00
-    edgeThreshold = 0
-    SIFTsigma = 1.6
-    distanceThreshold = 1
 
     print("SIFT parameters: ")
     print(f"contrastThreshold: {contrastThreshold}")

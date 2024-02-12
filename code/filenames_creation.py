@@ -14,7 +14,6 @@ filt_suffix = "_filt"
 dist_type_suffix = "" if distance_type == "all" else "_min"
 
 # define radical depending on different scenarii
-sift_radical = sift_suffix if use_sift else ""
 filt_radical = filt_suffix if use_filt else ""
 
 # Create filename where to load the original images

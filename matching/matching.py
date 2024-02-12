@@ -46,6 +46,9 @@ def get_keypoint_pairs(
     bf = cv.BFMatcher()
     matches = bf.knnMatch(des1, des2, k=2)
     good_matches = []
+    if matches == []:
+        print("No matches found")
+        return []
 
     if method_post == "crossCheck":
         # Alternative: crossCheck=True
@@ -56,7 +59,6 @@ def get_keypoint_pairs(
 
     elif method_post == "lowe":
         # Apply Lowe's ratio test
-
         for m, n in matches:
             if m.distance < distanceThreshold * n.distance:
                 good_matches.append([m])
