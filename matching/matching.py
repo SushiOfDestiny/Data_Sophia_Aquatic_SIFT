@@ -1,19 +1,41 @@
 import cv2 as cv
 import matplotlib.pyplot as plt
 
-def get_keypoint_pairs(im1, im2, method_post='lowe'):
-    '''Default post matching method = Lowe's ratio test
+
+def get_keypoint_pairs(
+    im1,
+    im2,
+    method_post="lowe",
+    contrastThreshold=0.04,
+    edgeThreshold=10,
+    SIFTsigma=1.6,
+    distanceThreshold=0.75,
+):
+    """
+
+    Call SIFT to detect & compute keypoints and match them between two images.
+    im1, im2 : OpenCV int images
+    method_post : string, either "lowe" or "crossCheck"
+    contrastThreshold : float, threshold to filter out weak keypoints
+    edgeThreshold : float, threshold to filter out edge keypoints
+    SIFTsigma : float, sigma of the Gaussian applied to the input image at the octave #0
+    distanceThreshold : float, threshold for the Lowe's ratio test
+
 
     Matching is done through a knn match
 
     WARNING : CrossCheck is experimental, do not use
-    
+
     Returns :
     - List of OpenCV keypoints
-    - List of OpenCV matches'''
+    - List of OpenCV matches"""
 
     # Initiate SIFT detector
-    sift = cv.SIFT_create()
+    sift = cv.SIFT_create(
+        contrastThreshold=contrastThreshold,
+        edgeThreshold=edgeThreshold,
+        sigma=SIFTsigma,
+    )
 
     # find the keypoints and descriptors with SIFT
     kp1, des1 = sift.detectAndCompute(im1, None)
@@ -25,29 +47,36 @@ def get_keypoint_pairs(im1, im2, method_post='lowe'):
     matches = bf.knnMatch(des1, des2, k=2)
     good_matches = []
 
-    if method_post == 'crossCheck':
+    if method_post == "crossCheck":
         # Alternative: crossCheck=True
         bf_CC = cv.BFMatcher(crossCheck=True)
         matches_CC = bf_CC.match(des1, des2)
         good_sorted = sorted(matches_CC, key=lambda x: x.distance)
         return good_sorted
-    
-    elif method_post == 'lowe':
+
+    elif method_post == "lowe":
         # Apply Lowe's ratio test
-        threshold = 0.75
 
         for m, n in matches:
-            if m.distance < threshold * n.distance:
+            if m.distance < distanceThreshold * n.distance:
                 good_matches.append([m])
-        
+
         good_matches_sorted = sorted(good_matches, key=lambda x: x[0].distance)
-        good_kp_pairs = [(kp1[match[0].queryIdx], kp2[match[0].trainIdx]) for match in good_matches_sorted]
+        good_kp_pairs = [
+            (kp1[match[0].queryIdx], kp2[match[0].trainIdx])
+            for match in good_matches_sorted
+        ]
         return good_kp_pairs, good_matches_sorted, kp1, kp2
 
     else:
-        return [(kp1[match[0].queryIdx], kp2[match[0].trainIdx]) for match in matches], matches
-    
-def draw_good_keypoints(im1, im2, good_keypoints_1, good_keypoints_2, good_matches, nb_matches_to_draw):
+        return [
+            (kp1[match[0].queryIdx], kp2[match[0].trainIdx]) for match in matches
+        ], matches
+
+
+def draw_good_keypoints(
+    im1, im2, good_keypoints_1, good_keypoints_2, good_matches, nb_matches_to_draw
+):
     # cv.drawMatchesKnn expects list of lists as matches.
 
     img3 = cv.drawMatchesKnn(

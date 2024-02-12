@@ -1,0 +1,98 @@
+2024-02-08 16:30:16,923 - Start running the post blender pipeline
+2024-02-08 16:30:16,923 - Start running the post blender pipeline
+2024-02-08 16:30:16,923 - Run the script display_sift_matches.py
+2024-02-08 16:30:16,923 - Run the script display_sift_matches.py
+2024-02-08 16:30:19,425 - 
+2024-02-08 16:30:19,425 - 
+2024-02-08 16:30:19,441 - Script display_sift_matches.py is done.
+
+2024-02-08 16:30:19,441 - Script display_sift_matches.py is done.
+
+2024-02-08 16:30:19,442 - All scripts are done. The pipeline is finished.
+2024-02-08 16:30:19,442 - All scripts are done. The pipeline is finished.
+2024-02-09 16:17:41,784 - Start running the pipeline
+2024-02-09 16:17:42,133 - All infos are saved in execution_logs/rock_1_y_530_560_200_200_x_1200_1200_200_200_nbins_3_brad_2_nangbins_73_sig0_min_log_sift 
+
+2024-02-09 16:17:42,133 - Run the script print_pipe_hparams.py
+2024-02-09 16:17:42,324 - bin_radius = 2
+blur_sigma = 1.0
+border_size = 1
+delta_angle = 5.0
+distance_type = min
+epsilon = None
+im_ext = png
+im_name1 = left
+im_name2 = right
+im_names = ('left', 'right')
+img_folder = blender/rocks
+nb_angular_bins = 73
+nb_bins = 3
+neigh_radius = 9
+normalization_mode = global
+photo_name = rock_1
+relative_path = ../data
+sigma = 0
+use_sift = True
+x_lengths = [200, 200]
+x_starts = [1200, 1200]
+y_lengths = [200, 200]
+y_starts = [530, 560]
+
+2024-02-09 16:17:42,324 - Script print_pipe_hparams.py is done.
+
+2024-02-09 16:17:42,324 - Run the script compute_sift_kps.py
+2024-02-09 16:17:44,861 - 
+2024-02-09 16:17:44,861 - Script compute_sift_kps.py is done.
+
+2024-02-09 16:17:44,861 - All scripts are done. Launch Blender or a display script.
+
+
+2024-02-09 16:18:40,915 - Start running the pipeline
+2024-02-09 16:18:40,915 - All infos are saved in execution_logs/rock_1_y_530_560_200_200_x_1200_1200_200_200_nbins_3_brad_2_nangbins_73_sig0_min_log_sift 
+
+2024-02-09 16:18:40,931 - Run the script print_pipe_hparams.py
+2024-02-09 16:18:41,114 - bin_radius = 2
+blur_sigma = 1.0
+border_size = 1
+delta_angle = 5.0
+distance_type = min
+epsilon = None
+im_ext = png
+im_name1 = left
+im_name2 = right
+im_names = ('left', 'right')
+img_folder = blender/rocks
+nb_angular_bins = 73
+nb_bins = 3
+neigh_radius = 9
+normalization_mode = global
+photo_name = rock_1
+relative_path = ../data
+sigma = 0
+use_sift = True
+x_lengths = [200, 200]
+x_starts = [1200, 1200]
+y_lengths = [200, 200]
+y_starts = [530, 560]
+
+2024-02-09 16:18:41,114 - Script print_pipe_hparams.py is done.
+
+2024-02-09 16:18:41,114 - Run the script compute_sift_kps.py
+2024-02-09 16:18:43,421 - 
+2024-02-09 16:18:43,421 - Script compute_sift_kps.py is done.
+
+2024-02-09 16:18:43,421 - All scripts are done. Launch Blender or a display script.
+
+
+2024-02-09 16:43:23,470 - Start running the post blender pipeline
+2024-02-09 16:43:23,470 - Start running the post blender pipeline
+2024-02-09 16:43:23,470 - Run the script display_sift_matches.py
+2024-02-09 16:43:23,470 - Run the script display_sift_matches.py
+2024-02-09 16:43:28,879 - 
+2024-02-09 16:43:28,879 - 
+2024-02-09 16:43:28,879 - Script display_sift_matches.py is done.
+
+2024-02-09 16:43:28,879 - Script display_sift_matches.py is done.
+
+2024-02-09 16:43:28,879 - All scripts are done. The pipeline is finished.
+2024-02-09 16:43:28,879 - All scripts are done. The pipeline is finished.

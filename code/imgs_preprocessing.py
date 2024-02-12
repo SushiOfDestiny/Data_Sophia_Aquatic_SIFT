@@ -19,7 +19,6 @@ from computation_pipeline_hyper_params import *
 
 from filenames_creation import *
 
-
 if __name__ == "__main__":
 
     # Load images
@@ -31,10 +30,16 @@ if __name__ == "__main__":
     ]
     print("shapes of images", ims[0].shape, ims[1].shape)
 
+    fig, axs = plt.subplots(1, 2, figsize=(20, 10))
+    for id_image in range(2):
+        axs[id_image].imshow(ims[id_image], cmap="gray")
+
+    plt.show()
+
     # compute float32 versions for calculations
     float_ims = [vh.convert_uint8_to_float32(ims[i]) for i in range(2)]
 
-    # blur images
+    # blur images, unless blur_sigma is 0.
     if blur_sigma > 0.1:
         float_ims = [
             desc.convolve_2D_gaussian(float_ims[i], blur_sigma) for i in range(2)
@@ -43,9 +48,17 @@ if __name__ == "__main__":
     # Save blurred images
     np.save(blurred_imgs_path, float_ims)
 
-    print(f"Blurred images saved in {blurred_imgs_path}")
+    print(f"Blurred images saved in {original_imgs_path_prefix}")
 
     # show cropped images
+    cropped_ims = [
+        ims[id_image][
+            y_starts[id_image] : y_starts[id_image] + y_lengths[id_image],
+            x_starts[id_image] : x_starts[id_image] + x_lengths[id_image],
+        ]
+        for id_image in range(2)
+    ]
+
     cropped_float_ims = [
         float_ims[id_image][
             y_starts[id_image] : y_starts[id_image] + y_lengths[id_image],
@@ -54,8 +67,10 @@ if __name__ == "__main__":
         for id_image in range(2)
     ]
 
-    fig, axs = plt.subplots(1, 2, figsize=(20, 10))
+    # save cropped  int images for sift
     for id_image in range(2):
-        axs[id_image].imshow(cropped_float_ims[id_image], cmap="gray")
-
-    plt.show()
+        cv.imwrite(
+            f"{original_imgs_path_prefix}/{cropped_ims_filenames[id_image]}.{im_ext}",
+            cropped_ims[id_image],
+        )
+    print(f"Cropped images saved in {original_imgs_path_prefix}")

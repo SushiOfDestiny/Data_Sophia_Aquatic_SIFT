@@ -1,0 +1,74 @@
+2024-02-08 17:50:23,654 - Start running the pipeline
+2024-02-08 17:50:23,661 - All infos are saved in execution_logs/irl_rock_1_y_910_1140_100_100_x_1670_1750_100_100_nbins_3_brad_2_nangbins_73_sig0_min_log_sift 
+
+2024-02-08 17:50:23,661 - Run the script print_pipe_hparams.py
+2024-02-08 17:50:23,711 - bin_radius = 2
+blur_sigma = 0.0
+border_size = 1
+delta_angle = 5.0
+distance_type = min
+epsilon = None
+im_ext = jpeg
+im_name1 = scene_l_1_u
+im_name2 = scene_r_1_u
+im_names = ('scene_l_1_u', 'scene_r_1_u')
+img_folder = irl/scene_zipped
+nb_angular_bins = 73
+nb_bins = 3
+neigh_radius = 9
+normalization_mode = global
+photo_name = irl_rock_1
+relative_path = ../data
+sigma = 0
+use_sift = True
+x_lengths = [100, 100]
+x_starts = [1670, 1750]
+y_lengths = [100, 100]
+y_starts = [910, 1140]
+
+2024-02-08 17:50:23,727 - Script print_pipe_hparams.py is done.
+
+2024-02-08 17:50:23,727 - Run the script compute_sift_kps.py
+2024-02-08 17:50:27,455 - finished saving sift kp_pairs
+finished saving sift matches
+finished saving sift keypoints
+
+2024-02-08 17:50:27,455 - Script compute_sift_kps.py is done.
+
+2024-02-08 17:50:27,455 - All scripts are done. Launch Blender or a display script.
+
+
+2024-02-08 17:50:37,785 - Start running the post blender pipeline
+2024-02-08 17:50:37,785 - Start running the post blender pipeline
+2024-02-08 17:50:37,785 - Run the script display_irl_matches.py
+2024-02-08 17:50:37,785 - Run the script display_irl_matches.py
+2024-02-08 17:51:32,614 - Statistics about the distances of the matches
+Minimal distance: 17.863239288330078
+Maximal distance: 28.0540771484375
+Mean distance: 21.61436582183838
+Standard deviation of the distances: 1.0018688388509658
+
+2024-02-08 17:51:32,614 - Statistics about the distances of the matches
+Minimal distance: 17.863239288330078
+Maximal distance: 28.0540771484375
+Mean distance: 21.61436582183838
+Standard deviation of the distances: 1.0018688388509658
+
+2024-02-08 17:51:32,616 - Script display_irl_matches.py is done.
+
+2024-02-08 17:51:32,616 - Script display_irl_matches.py is done.
+
+2024-02-08 17:51:32,617 - All scripts are done. The pipeline is finished.
+2024-02-08 17:51:32,617 - All scripts are done. The pipeline is finished.
+2024-02-08 18:01:10,375 - Start running the post blender pipeline
+2024-02-08 18:01:10,375 - Start running the post blender pipeline
+2024-02-08 18:01:10,375 - Run the script display_irl_sift_matches.py
+2024-02-08 18:01:10,375 - Run the script display_irl_sift_matches.py
+2024-02-08 18:01:12,482 - 
+2024-02-08 18:01:12,482 - 
+2024-02-08 18:01:12,482 - Script display_irl_sift_matches.py is done.
+
+2024-02-08 18:01:12,482 - Script display_irl_sift_matches.py is done.
+
+2024-02-08 18:01:12,482 - All scripts are done. The pipeline is finished.
+2024-02-08 18:01:12,482 - All scripts are done. The pipeline is finished.
