@@ -50,10 +50,10 @@ if __name__ == "__main__":
 
     # compute sift keypoints and matches
     method_post = "lowe"
-    contrastThreshold = 0.04
+    contrastThreshold = 0.00
     edgeThreshold = 0
-    SIFTsigma = 1.6
-    distanceThreshold = 1
+    SIFTsigma = 0.1
+    distanceThreshold = 1e9
 
     print("SIFT parameters: ")
     print(f"contrastThreshold: {contrastThreshold}")

@@ -6,6 +6,14 @@ from computation_pipeline_hyper_params import *
 
 # CONVENTION: all paths variables end with "_path"
 
+# Create multiple suffix to distinguish between pipelines
+# Create filename suffix for sift kps, pairs and matches
+sift_suffix = "_sift"
+
+# create suffix for filtered points computation
+filt_suffix = "_filt"
+
+
 # Create filename where to load the original images
 original_imgs_path_prefix = f"{relative_path}/{img_folder}"
 
@@ -66,8 +74,6 @@ correct_match_filename_prefix = f"{dist_filename_prefix}_correct_match"
 # Define path to save the chosen keypoints displayed
 filtered_kp_path = "filtered_keypoints"
 
-# Create filename suffix for sift kps, pairs and matches
-sift_suffix = "_sift"
 
 sift_radical = sift_suffix if use_sift else ""
 
@@ -90,6 +96,5 @@ irl_suffix = "_irl" if img_folder[:3] == "irl" else ""
 
 # Create filename for cropped uint images (for SIFT)
 cropped_ims_filenames = [
-    f"{descrip_filename_prefixes[id_image]}_cropped_im"
-    for id_image in range(2)
+    f"{descrip_filename_prefixes[id_image]}_cropped_im" for id_image in range(2)
 ]
