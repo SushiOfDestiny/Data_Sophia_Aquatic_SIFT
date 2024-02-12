@@ -1,7 +1,6 @@
 import numpy as np
 
 from computation_pipeline_hyper_params import *
-
 # Goal: create the filenames for all objects save during the computation pipeline
 
 # CONVENTION: all paths variables end with "_path"
@@ -74,12 +73,9 @@ correct_match_filename_prefix = f"{dist_filename_prefix}_correct_match"
 # Define path to save the chosen keypoints displayed
 filtered_kp_path = "filtered_keypoints"
 
-
-sift_radical = sift_suffix if use_sift else ""
-
 # Create filename for the log files containing everything that was printed
 log_path = "execution_logs"
-log_filename = f"{dist_filename_prefix}_log{sift_radical}"
+
 
 # stack all folders paths
 required_folders_paths = [
