@@ -64,6 +64,56 @@ def compute_distances_matches_pairs(subimage_descriptors, y_lengths, x_lengths):
     return distances_matches, idx1_matches, idx2_matches
 
 
+# @njit(parallel=True)
+# def compute_minimal_distances_matches_pairs(subimage_descriptors, y_lengths, x_lengths):
+#     """
+#     Compute matches of minimal distances to pixels of image 1
+#     subimage_descriptors: list of 2 arrays of descriptors, each for 1 image, each containing as much element as pixels, each element
+#     of shape (3 * nb_bins * nb_bins * nb_angular_bins, )
+#     return:
+#     - 1D numpy array of distances_matches, with distances_matches[id_pix1] = minimal distance between pixel of image1 at index id_pix1 and any pixel of image 2
+#     - 1D numpy array of indices in subimage_coords[0] of the pixel in image 1 that appears in the match in distances_matches, at the same position, therefore
+#     always equals to np.arange(y_lengths[0] * x_lengths[0])
+#     - 1D numpy array of indices in subimage_coords[1] of the pixel in image 2 that appears in the match in distances_matches, at the same position
+#     """
+
+#     # initialize null array of distances_matches
+#     nb_matches = y_lengths[0] * x_lengths[0]
+#     distances_matches = np.zeros((nb_matches,), dtype=np.float32)
+#     idx1_matches = np.zeros((nb_matches,), dtype=np.int32)
+#     idx2_matches = np.zeros((nb_matches,), dtype=np.int32)
+
+#     for idx_pixel_im1 in numba.prange(len(subimage_descriptors[0])):
+
+#         descrip_pixel_im1 = subimage_descriptors[0][idx_pixel_im1]
+
+#         # Initialize minimum distance to descriptor of pixel1 and index of corresponding pixel2
+#         min_dist = np.inf
+#         min_idx = None
+
+#         for idx_pixel_im2 in range(len(subimage_descriptors[1])):
+
+#             descrip_pixel_im2 = subimage_descriptors[1][idx_pixel_im2]
+
+#             # compute index of distance in the distances_matches array
+#             pix2_dist = desc.compute_descriptor_distance(
+#                 descrip_pixel_im1, descrip_pixel_im2
+#             )
+#             # update minimum distance and index
+#             if pix2_dist < min_dist or min_idx is None:
+#                 min_dist = pix2_dist
+#                 min_idx = idx_pixel_im2
+
+#         # store minimum distance and index
+#         distances_matches[idx_pixel_im1] = min_dist
+
+#         # store coordinates
+#         idx1_matches[idx_pixel_im1] = idx_pixel_im1
+#         idx2_matches[idx_pixel_im1] = min_idx
+
+#     return distances_matches, idx1_matches, idx2_matches
+
+
 @njit(parallel=True)
 def compute_minimal_distances_matches_pairs(subimage_descriptors, y_lengths, x_lengths):
     """
@@ -73,12 +123,12 @@ def compute_minimal_distances_matches_pairs(subimage_descriptors, y_lengths, x_l
     return:
     - 1D numpy array of distances_matches, with distances_matches[id_pix1] = minimal distance between pixel of image1 at index id_pix1 and any pixel of image 2
     - 1D numpy array of indices in subimage_coords[0] of the pixel in image 1 that appears in the match in distances_matches, at the same position, therefore
-    always equals to np.arange(y_lengths[0] * x_lengths[0])
+    always equals to np.arange(len(distances_matches))
     - 1D numpy array of indices in subimage_coords[1] of the pixel in image 2 that appears in the match in distances_matches, at the same position
     """
 
     # initialize null array of distances_matches
-    nb_matches = y_lengths[0] * x_lengths[0]
+    nb_matches = len(subimage_descriptors[0])
     distances_matches = np.zeros((nb_matches,), dtype=np.float32)
     idx1_matches = np.zeros((nb_matches,), dtype=np.int32)
     idx2_matches = np.zeros((nb_matches,), dtype=np.int32)

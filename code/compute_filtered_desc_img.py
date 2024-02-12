@@ -190,10 +190,10 @@ if __name__ == "__main__":
 
         # save img_descriptors and list of coordinates, with special filt_suffix
         np.save(
-            f"{descrip_path}/{descrip_filenames[id_image]}{filt_suffix}",
+            f"{descrip_path}/{descrip_filenames[id_image]}",
             filtered_imgs_descs,
         )
         np.save(
-            f"{descrip_path}/{kp_coords_filenames[id_image]}{filt_suffix}",
+            f"{descrip_path}/{kp_coords_filenames[id_image]}",
             filtered_kp_coords,
         )
