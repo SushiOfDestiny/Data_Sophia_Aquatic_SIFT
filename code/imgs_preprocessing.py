@@ -34,7 +34,7 @@ if __name__ == "__main__":
     for id_image in range(2):
         axs[id_image].imshow(ims[id_image], cmap="gray")
 
-    plt.show()
+    # plt.show()
 
     # compute float32 versions for calculations
     float_ims = [vh.convert_uint8_to_float32(ims[i]) for i in range(2)]
@@ -46,7 +46,7 @@ if __name__ == "__main__":
         ]
 
     # Save blurred images
-    np.save(blurred_imgs_path, float_ims)
+    np.save(blurred_imgs_filename, float_ims)
 
     print(f"Blurred images saved in {original_imgs_path_prefix}")
 

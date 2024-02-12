@@ -101,7 +101,7 @@ if __name__ == "__main__":
         )
         for id_image in range(2)
     ]
-    float_ims = np.load(f"{blurred_imgs_path}.npy")
+    float_ims = np.load(f"{blurred_imgs_filename}.npy")
 
     # load all computed objects
 
@@ -148,11 +148,18 @@ if __name__ == "__main__":
         f"number of good matches at a precision of {epsilon} pixels: ",
         len(good_matches),
     )
-    print("percentage of good matches: ", len(good_matches) / len(matches) * 100.0)
+    print(
+        "percentage of good matches within matches: ",
+        len(good_matches) / len(matches) * 100.0,
+    )
+    print(
+        "percentage of matched keypoints within all subimage 1 pixels: ",
+        len(good_matches) / (x_lengths[0] * y_lengths[0]) * 100.0,
+    )
 
     # look at some matches
 
-    chosen_matches_idx = [0, 1, 2]
+    chosen_matches_idx = [0, 1]
     for match_idx in chosen_matches_idx:
         # display 1 match, object here is not DMatch, but a couple of DMatch, as Sift returns
         # we get here only the Dmatch
@@ -163,7 +170,7 @@ if __name__ == "__main__":
             ims,
             chosen_Dmatch,
             kps_coords,
-            show_plot=False,
+            show_plot=True,
             # save_path=filtered_kp_path,  # comment or pass None to not save the image
             filename_prefix=correct_match_filename_prefix,
             dpi=800,
@@ -267,3 +274,18 @@ if __name__ == "__main__":
 
     print("Statistics about the distances of the bad matches")
     print_distance_infos(bad_matches)
+
+    # look at filtered keypoints on image
+    if use_filt:
+        # plot the filtered pixels on each subimage side by side
+        fig, ax = plt.subplots(1, 2, figsize=(10, 5))
+        for id_image in range(2):
+            ax[id_image].imshow(float_ims[id_image], cmap="gray")
+            ax[id_image].scatter(
+                kps_coords[id_image][:, 0],
+                kps_coords[id_image][:, 1],
+                c="r",
+                s=2,
+            )
+            ax[id_image].set_title(f"Filtered pixels in subimage {id_image}")
+        plt.show()

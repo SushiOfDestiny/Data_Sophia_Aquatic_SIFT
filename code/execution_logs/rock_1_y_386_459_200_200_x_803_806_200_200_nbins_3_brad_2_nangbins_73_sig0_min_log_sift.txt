@@ -444,3 +444,141 @@ finished saving translated sift keypoints
 
 2024-02-12 10:22:26,628 - All scripts are done. The pipeline is finished.
 2024-02-12 10:22:26,628 - All scripts are done. The pipeline is finished.
+2024-02-12 10:51:51,893 - Start running the pipeline
+2024-02-12 10:51:51,894 - All infos are saved in execution_logs/rock_1_y_386_459_200_200_x_803_806_200_200_nbins_3_brad_2_nangbins_73_sig0_min_log_sift 
+
+2024-02-12 10:51:51,894 - Run the script print_pipe_hparams.py
+2024-02-12 10:51:51,962 - bin_radius = 2
+blur_sigma = 1.0
+border_size = 1
+delta_angle = 5.0
+distance_type = min
+epsilon = None
+im_ext = png
+im_name1 = left
+im_name2 = right
+im_names = ('left', 'right')
+img_folder = blender/rocks
+nb_angular_bins = 73
+nb_bins = 3
+neigh_radius = 9
+normalization_mode = global
+photo_name = rock_1
+relative_path = ../data
+sigma = 0
+use_sift = True
+x_lengths = [200, 200]
+x_starts = [803, 806]
+y_lengths = [200, 200]
+y_starts = [386, 459]
+
+2024-02-12 10:51:51,964 - Script print_pipe_hparams.py is done.
+
+2024-02-12 10:51:51,964 - Run the script compute_sift_kps.py
+2024-02-12 10:51:52,929 - SIFT parameters: 
+contrastThreshold: 0.0
+edgeThreshold: 0
+SIFTsigma: 0.1
+distanceThreshold: 1000000000.0
+finished saving translated sift kp coords
+finished saving translated sift kp_pairs
+finished saving sift matches
+finished saving translated sift keypoints
+
+2024-02-12 10:51:52,929 - Script compute_sift_kps.py is done.
+
+2024-02-12 10:51:52,929 - All scripts are done. Launch Blender or a display script.
+
+
+2024-02-12 10:55:27,271 - Start running the pipeline
+2024-02-12 10:55:27,271 - All infos are saved in execution_logs/rock_1_y_386_459_200_200_x_803_806_200_200_nbins_3_brad_2_nangbins_73_sig0_min_log_sift 
+
+2024-02-12 10:55:27,271 - Run the script print_pipe_hparams.py
+2024-02-12 10:55:27,335 - bin_radius = 2
+blur_sigma = 1.0
+border_size = 1
+delta_angle = 5.0
+distance_type = min
+epsilon = None
+im_ext = png
+im_name1 = left
+im_name2 = right
+im_names = ('left', 'right')
+img_folder = blender/rocks
+nb_angular_bins = 73
+nb_bins = 3
+neigh_radius = 9
+normalization_mode = global
+photo_name = rock_1
+relative_path = ../data
+sigma = 0
+use_sift = True
+x_lengths = [200, 200]
+x_starts = [803, 806]
+y_lengths = [200, 200]
+y_starts = [386, 459]
+
+2024-02-12 10:55:27,336 - Script print_pipe_hparams.py is done.
+
+2024-02-12 10:55:27,337 - Run the script compute_sift_kps.py
+2024-02-12 10:55:28,223 - SIFT parameters: 
+contrastThreshold: 0.0
+edgeThreshold: 0
+SIFTsigma: 0.1
+distanceThreshold: 1000000000.0
+finished saving translated sift kp coords
+finished saving translated sift kp_pairs
+finished saving sift matches
+finished saving translated sift keypoints
+
+2024-02-12 10:55:28,223 - Script compute_sift_kps.py is done.
+
+2024-02-12 10:55:28,223 - All scripts are done. Launch Blender or a display script.
+
+
+2024-02-12 10:57:09,154 - Start running the pipeline
+2024-02-12 10:57:09,154 - All infos are saved in execution_logs/rock_1_y_386_459_200_200_x_803_806_200_200_nbins_3_brad_2_nangbins_73_sig0_min_log_sift 
+
+2024-02-12 10:57:09,155 - Run the script print_pipe_hparams.py
+2024-02-12 10:57:09,220 - bin_radius = 2
+blur_sigma = 1.0
+border_size = 1
+delta_angle = 5.0
+distance_type = min
+epsilon = None
+im_ext = png
+im_name1 = left
+im_name2 = right
+im_names = ('left', 'right')
+img_folder = blender/rocks
+nb_angular_bins = 73
+nb_bins = 3
+neigh_radius = 9
+normalization_mode = global
+photo_name = rock_1
+relative_path = ../data
+sigma = 0
+use_sift = True
+x_lengths = [200, 200]
+x_starts = [803, 806]
+y_lengths = [200, 200]
+y_starts = [386, 459]
+
+2024-02-12 10:57:09,220 - Script print_pipe_hparams.py is done.
+
+2024-02-12 10:57:09,220 - Run the script compute_sift_kps.py
+2024-02-12 10:57:10,107 - SIFT parameters: 
+contrastThreshold: 0.0
+edgeThreshold: 0
+SIFTsigma: 0.1
+distanceThreshold: 1000000000.0
+finished saving translated sift kp coords
+finished saving translated sift kp_pairs
+finished saving sift matches
+finished saving translated sift keypoints
+
+2024-02-12 10:57:10,107 - Script compute_sift_kps.py is done.
+
+2024-02-12 10:57:10,107 - All scripts are done. Launch Blender or a display script.
+
+

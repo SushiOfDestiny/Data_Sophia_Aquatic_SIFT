@@ -1,0 +1,61 @@
+2024-02-12 14:03:28,357 - Start running the pipeline
+2024-02-12 14:03:28,357 - All infos are saved in execution_logs/rocks_2_7_deg_cam_to_scale_y_491_471_200_200_x_880_660_200_200_nbins_3_brad_2_nangbins_73_sig0_min_log_sift 
+
+2024-02-12 14:03:28,357 - Run the script print_pipe_hparams.py
+2024-02-12 14:03:28,373 - bin_radius = 2
+blender_filename = rocks_2_7_deg_cam_to_scale
+blur_sigma = 1.0
+border_size = 1
+delta_angle = 5.0
+distance_type = min
+epsilon = None
+im_ext = png
+im_name1 = rocks_2_7_deg_cam_to_scale_left
+im_name2 = rocks_2_7_deg_cam_to_scale_right
+im_names = ('rocks_2_7_deg_cam_to_scale_left', 'rocks_2_7_deg_cam_to_scale_right')
+img_folder = blender/rocks_2
+nb_angular_bins = 73
+nb_bins = 3
+neigh_radius = 9
+normalization_mode = global
+photo_name = rocks_2_7_deg_cam_to_scale
+relative_path = ../data
+sigma = 0
+x_lengths = [200, 200]
+x_starts = [880, 660]
+y_lengths = [200, 200]
+y_starts = [491, 471]
+
+2024-02-12 14:03:28,373 - Script print_pipe_hparams.py is done.
+
+2024-02-12 14:03:28,373 - Run the script compute_sift_kps.py
+2024-02-12 14:03:28,969 - SIFT parameters: 
+contrastThreshold: 0.0
+edgeThreshold: 0
+SIFTsigma: 0.1
+distanceThreshold: 1000000000.0
+finished saving translated sift kp coords
+finished saving translated sift kp_pairs
+finished saving sift matches
+finished saving translated sift keypoints
+
+2024-02-12 14:03:28,969 - Script compute_sift_kps.py is done.
+
+2024-02-12 14:03:28,969 - All scripts are done. Launch Blender or a display script.
+
+
+2024-02-12 14:03:30,303 - Start running the post blender pipeline
+2024-02-12 14:03:30,304 - Run the script display_sift_matches.py
+2024-02-12 14:03:31,441 - number of pixels in image 0 2073600
+number of sift keypoints in image 0 0
+percentage of sift keypoints in image 0 0.0
+number of pixels in image 1 2073600
+number of sift keypoints in image 1 0
+percentage of sift keypoints in image 1 0.0
+number of unfiltered sift matches 0
+number of good sift matches at a precision of None pixels:  0
+Statistics about the distances of the good sift matches
+
+2024-02-12 14:03:31,441 - Script display_sift_matches.py is done.
+
+2024-02-12 14:03:31,441 - All scripts are done. The pipeline is finished.

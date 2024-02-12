@@ -6,15 +6,15 @@ from filenames_creation import *
 from general_pipeline_before_blender import create_logger
 
 
-# create the logger
-logger = create_logger(f"{log_path}/{log_filename}.txt")
-
-
-scripts = [
-    f"display{irl_suffix}{sift_radical}_matches.py",
-]
-
 if __name__ == "__main__":
+
+    # create the logger
+    logger = create_logger(f"{log_path}/{log_filename}.txt")
+
+
+    scripts = [
+        f"display{irl_radical}{sift_radical}_matches.py",
+    ]   
 
     logger.info("Start running the post blender pipeline")
 

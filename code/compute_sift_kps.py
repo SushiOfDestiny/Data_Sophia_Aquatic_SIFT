@@ -48,12 +48,6 @@ if __name__ == "__main__":
         for id_image in range(2)
     ]
 
-    # compute sift keypoints and matches
-    method_post = "lowe"
-    contrastThreshold = 0.00
-    edgeThreshold = 0
-    SIFTsigma = 0.1
-    distanceThreshold = 1e9
 
     print("SIFT parameters: ")
     print(f"contrastThreshold: {contrastThreshold}")
@@ -100,10 +94,10 @@ if __name__ == "__main__":
                 for id_image in range(2)
             ]
 
-    # # draw the translated matches
-    # draw_good_keypoints(
-    #     ims[0], ims[1], trans_sift_kps[0], trans_sift_kps[1], sift_matches, 5
-    # )
+    # draw the translated matches
+    draw_good_keypoints(
+        ims[0], ims[1], trans_sift_kps[0], trans_sift_kps[1], sift_matches, 5
+    )
 
     # compute keypoints int pixels coordinates as list of 2 numpy arrays
     trans_sift_kps_coords = [
@@ -132,7 +126,7 @@ if __name__ == "__main__":
     # save trans sift coords of kps
     for id_image in range(2):
         np.save(
-            f"{descrip_path}/{kp_coords_filenames[id_image]}{sift_suffix}",
+            f"{descrip_path}/{kp_coords_filenames[id_image]}",
             trans_sift_kps_coords[id_image],
         )
     print("finished saving translated sift kp coords")
@@ -140,19 +134,19 @@ if __name__ == "__main__":
     # save the matches and keypoints using function from matching/saving.py
     save_kp_pairs_to_arr(
         trans_sift_kp_pairs,
-        f"{matches_path}/{kp_pairs_filename}{sift_suffix}",
+        f"{matches_path}/{kp_pairs_filename}",
     )
     print("finished saving translated sift kp_pairs")
 
     save_matches(
         sift_matches,
-        f"{matches_path}/{matches_filename}{sift_suffix}",
+        f"{matches_path}/{matches_filename}",
     )
     print("finished saving sift matches")
 
     for id_image in range(2):
         save_keypoints(
             trans_sift_kps[id_image],
-            f"{matches_path}/{kp_filenames[id_image]}{sift_suffix}",
+            f"{matches_path}/{kp_filenames[id_image]}",
         )
     print("finished saving translated sift keypoints")

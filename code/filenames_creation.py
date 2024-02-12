@@ -1,4 +1,5 @@
 import numpy as np
+import os
 
 from computation_pipeline_hyper_params import *
 
@@ -9,22 +10,28 @@ from computation_pipeline_hyper_params import *
 # Create multiple suffix to distinguish between pipelines
 # Create filename suffix for sift kps, pairs and matches
 sift_suffix = "_sift"
-
+sift_radical = "_sift" if use_sift else ""
 # create suffix for filtered points computation
 filt_suffix = "_filt"
+filt_radical = f"_filt_{percentile}" if use_filt else ""
+# create suffix for type of distance
+dist_type_suffix = "" if distance_type == "all" else "_min"
+
+# Create filename radical for irl images
+irl_radical = "_irl" if img_folder[:3] == "irl" else ""
 
 
 # Create filename where to load the original images
 original_imgs_path_prefix = f"{relative_path}/{img_folder}"
 
 # Create the filename for the blurred images
-blurred_imgs_path = f"{original_imgs_path_prefix}/blurred_ims_bsig{int(blur_sigma)}"
+blurred_imgs_filename = (
+    f"{original_imgs_path_prefix}/blurred_{photo_name}_bsig{int(blur_sigma)}"
+)
 
 
 # Create suffix for descriptor parameters
-descrip_suffix = (
-    f"_nbins_{nb_bins}_brad_{bin_radius}_nangbins_{nb_angular_bins}_sig{int(sigma)}"
-)
+descrip_suffix = f"_nbins_{nb_bins}_brad_{bin_radius}_nangbins_{nb_angular_bins}_sig{int(sigma)}{sift_radical}{filt_radical}"
 
 # Define path to save the descriptors and coordinates
 descrip_path = "computed_descriptors"
@@ -33,16 +40,13 @@ descrip_filename_prefixes = [
     f"{photo_name}_{im_names[id_image]}_y_{y_starts[id_image]}_{y_lengths[id_image]}_x_{x_starts[id_image]}_{x_lengths[id_image]}{descrip_suffix}"
     for id_image in range(2)
 ]
-descrip_filenames = [
-    f"{descrip_filename_prefixes[id_image]}_descs" for id_image in range(2)
-]
+descrip_filenames = descrip_filename_prefixes
+
 # Create filename for the keypoints coordinates
 kp_coords_filenames = [
     f"{descrip_filename_prefixes[id_image]}_coords" for id_image in range(2)
 ]
 
-# Define suffix for filename
-dist_type_suffix = "" if distance_type == "all" else "_min"
 
 # Define path to save the distances and matches
 dist_path = "computed_distances"
@@ -74,12 +78,10 @@ correct_match_filename_prefix = f"{dist_filename_prefix}_correct_match"
 # Define path to save the chosen keypoints displayed
 filtered_kp_path = "filtered_keypoints"
 
-
-sift_radical = sift_suffix if use_sift else ""
-
 # Create filename for the log files containing everything that was printed
 log_path = "execution_logs"
-log_filename = f"{dist_filename_prefix}_log{sift_radical}"
+log_filename = f"{dist_filename_prefix}_log{sift_radical}{filt_radical}"
+
 
 # stack all folders paths
 required_folders_paths = [
@@ -89,9 +91,6 @@ required_folders_paths = [
     filtered_kp_path,
     log_path,
 ]
-
-# create irl suffix for pipeline
-irl_suffix = "_irl" if img_folder[:3] == "irl" else ""
 
 
 # Create filename for cropped uint images (for SIFT)

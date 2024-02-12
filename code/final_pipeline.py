@@ -1,8 +1,11 @@
 import subprocess
-from computation_pipeline_hyper_params import blender_filename
-from filenames_creation import original_imgs_path_prefix, sift_radical
+import os
+from computation_pipeline_hyper_params import *
+from filenames_creation import *
+import argparse
 
 if __name__ == '__main__':
     subprocess.call(["python", "general_pipeline_before_blender.py"])
-    print(subprocess.check_output(f'blender {original_imgs_path_prefix}/{blender_filename}.blend -b --python-expr filter{sift_radical}_matches.py'))
+    out = subprocess.check_output(f'blender {original_imgs_path_prefix}/{blender_filename}.blend -b -P filter_matches.py', shell=True)
+    print(out)
     subprocess.call(["python", "general_pipeline_after_blender.py"])

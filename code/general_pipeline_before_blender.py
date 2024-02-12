@@ -30,32 +30,33 @@ def create_logger(logpath):
     logger.addHandler(handler)
     logger.addHandler(console_handler)
 
+    logger.propagate = False
+
     return logger
 
 
-# change filenames and scripts if sift is used
-# List of scripts to run
-if use_sift:
+if __name__ == "__main__":    
+
+    # change filenames and scripts if sift is used
+    # List of scripts to run
     scripts = [
-        "create_all_folders.py",
-        "print_pipe_hparams.py",
-        "compute_sift_kps.py",
+            "create_all_folders.py",
+            "print_pipe_hparams.py",
+            "imgs_preprocessing.py",
     ]
-else:
-    scripts = [
-        "create_all_folders.py",
-        "print_pipe_hparams.py",
-        "imgs_preprocessing.py",
-        "compute_desc_img.py",
-        "compute_distances.py",
-        "create_cv_objs.py",
-    ]
+    if use_sift:
+        scripts.extend([
+            "compute_sift_kps.py"
+        ])
+    else:
+        scripts.extend([
+            "compute_desc_img.py",
+            "compute_distances.py",
+            "create_cv_objs.py",
+        ])
 
-# create the logger
-logger = create_logger(f"{log_path}/{log_filename}.txt")
-
-
-if __name__ == "__main__":
+    # create the logger
+    logger = create_logger(f"{log_path}/{log_filename}.txt")
 
     # first create all the folders
     subprocess.call(["python", scripts[0]])
