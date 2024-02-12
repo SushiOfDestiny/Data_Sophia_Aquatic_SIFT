@@ -63,17 +63,8 @@ if __name__ == "__main__":
 
     # print general info about proportions of keypoints and matches
 
-    for id_image in range(2):
-        print(f"number of pixels in image {id_image}", ims[id_image].size)
-        print(f"number of sift keypoints in image {id_image}", len(kps[id_image]))
-        print(
-            f"percentage of sift keypoints in image {id_image}",
-            len(kps[id_image]) / ims[id_image].size * 100.0,
-        )
-    print("number of unfiltered sift matches", len(matches))
-    print(
-        f"number of good sift matches at a precision of {epsilon} pixels: ",
-        len(good_matches),
+    dm.print_general_kp_matches_infos(
+        y_lengths, x_lengths, kps, matches, good_matches, epsilon
     )
 
     # print stats about good matches and bad matches
