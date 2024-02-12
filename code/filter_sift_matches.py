@@ -24,7 +24,7 @@ if __name__ == "__main__":
     cam_2 = bpy.data.objects["Cam_2"]
 
     storage_folder = f"{matches_path}"
-    sift_kp_pairs_file = f"{storage_folder}/{kp_pairs_filename}{sift_suffix}.npy"
+    sift_kp_pairs_file = f"{storage_folder}/{kp_pairs_filename}.npy"
 
     # filter matches
     sift_correct_matches, sift_correct_matches_idxs, sift_matched_3d_pts = (
@@ -40,5 +40,5 @@ if __name__ == "__main__":
 
     matching.save_correct_matches(
         sift_correct_matches_idxs_arr,
-        f"{storage_folder}/{correct_matches_idxs_filename}{sift_suffix}",
+        f"{storage_folder}/{correct_matches_idxs_filename}",
     )

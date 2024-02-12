@@ -3,7 +3,6 @@ import logging
 import subprocess
 from computation_pipeline_hyper_params import *
 from filenames_creation import *
-import argparse
 
 
 def create_logger(logpath):
@@ -37,16 +36,9 @@ def create_logger(logpath):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--sift", help="use SIFT instead of homemade descriptor", action="store_true")
-    args = parser.parse_args()
-    use_sift = args.sift
-
     # change filenames and scripts if sift is used
     # List of scripts to run
     if use_sift:
-        sift_radical = "_sift"
-        log_filename = f"{dist_filename_prefix}_log{sift_radical}"
         scripts = [
             "create_all_folders.py",
             "print_pipe_hparams.py",
@@ -54,8 +46,6 @@ if __name__ == "__main__":
             "compute_sift_kps.py",
         ]
     else:
-        sift_radical = ""
-        log_filename = f"{dist_filename_prefix}_log"
         scripts = [
             "create_all_folders.py",
             "print_pipe_hparams.py",

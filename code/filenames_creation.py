@@ -1,4 +1,5 @@
 import numpy as np
+import os
 
 from computation_pipeline_hyper_params import *
 
@@ -9,18 +10,13 @@ from computation_pipeline_hyper_params import *
 # Create multiple suffix to distinguish between pipelines
 # Create filename suffix for sift kps, pairs and matches
 sift_suffix = "_sift"
-# create suffix for prefiltered points computation
+sift_radical = "_sift" if use_sift else ""
+# create suffix for filtered points computation
 filt_suffix = "_filt"
-
-# create adapted radicals
-filt_radical = filt_suffix if use_filt else ""
-irl_radical = "_irl" if img_folder[:3] == "irl" else ""
-
+filt_radical = "_filt" if use_filt else ""
 # Define suffix for filename
 dist_type_suffix = "" if distance_type == "all" else "_min"
 
-# define radical depending on different scenarii
-filt_radical = filt_suffix if use_filt else ""
 
 # Create filename where to load the original images
 original_imgs_path_prefix = f"{relative_path}/{img_folder}"
@@ -31,8 +27,8 @@ blurred_imgs_filename = (
 )
 
 
-# Create suffix for descriptor parameters with sift or prefiltering
-descrip_suffix = f"_nbins_{nb_bins}_brad_{bin_radius}_nangbins_{nb_angular_bins}_sig{int(sigma)}{filt_radical}"
+# Create suffix for descriptor parameters
+descrip_suffix = f"_nbins_{nb_bins}_brad_{bin_radius}_nangbins_{nb_angular_bins}_sig{int(sigma)}{sift_radical}{filt_radical}"
 
 # Define path to save the descriptors and coordinates
 descrip_path = "computed_descriptors"
@@ -81,6 +77,7 @@ filtered_kp_path = "filtered_keypoints"
 
 # Create filename for the log files containing everything that was printed
 log_path = "execution_logs"
+log_filename = f"{dist_filename_prefix}_log{sift_radical}{filt_radical}"
 
 
 # stack all folders paths

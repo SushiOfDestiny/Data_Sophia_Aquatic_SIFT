@@ -35,25 +35,25 @@ if __name__ == "__main__":
         )
         for id_image in range(2)
     ]
-    float_ims = np.load(f"{blurred_imgs_path}.npy")
+    float_ims = np.load(f"{blurred_imgs_filename}.npy")
 
     # load all computed objects
     # load unfiltered keypoints coordinates
     kps_coords = [
-        np.load(f"{descrip_path}/{kp_coords_filenames[id_image]}{sift_suffix}.npy")
+        np.load(f"{descrip_path}/{kp_coords_filenames[id_image]}.npy")
         for id_image in range(2)
     ]
 
     # load unfiltered keypoints, matches and index of good matches
     kps = [
-        load_keypoints(f"{matches_path}/{kp_filenames[id_image]}{sift_suffix}")
+        load_keypoints(f"{matches_path}/{kp_filenames[id_image]}")
         for id_image in range(2)
     ]
-    matches = load_matches(f"{matches_path}/{matches_filename}{sift_suffix}")
+    matches = load_matches(f"{matches_path}/{matches_filename}")
 
     # Load matches filtered by blender
     correct_matches_idxs = np.load(
-        f"{matches_path}/{correct_matches_idxs_filename}{sift_suffix}.npy"
+        f"{matches_path}/{correct_matches_idxs_filename}.npy"
     )
 
     # filter good matches according to blender
@@ -149,7 +149,7 @@ if __name__ == "__main__":
     #         kps_coords,
     #         show_plot=False,
     #         # save_path=filtered_kp_path,  # comment or pass None to not save the image
-    #         filename_prefix=f"{correct_match_filename_prefix}{sift_suffix}",
+    #         filename_prefix=f"{correct_match_filename_prefix}",
     #         dpi=800,
     #         im_names=im_names,
     #     )
