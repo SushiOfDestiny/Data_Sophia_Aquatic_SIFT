@@ -67,6 +67,28 @@ def display_match(
         plt.show()
 
 
+def print_general_kp_matches_infos(ims, kps, matches, good_matches, epsilon):
+    """print general infos and percentage of keypoints and good matches among the pixels and matches."""
+    for id_image in range(2):
+        print(f"number of pixels in image {id_image}", ims[id_image].size)
+        print(f"number of sift keypoints in image {id_image}", len(kps[id_image]))
+        print(
+            f"percentage of sift keypoints in image {id_image}",
+            len(kps[id_image]) / ims[id_image].size * 100.0,
+        )
+    print("number of unfiltered sift matches", len(matches))
+    print(
+        f"number of good sift matches at a precision of {epsilon} pixels: ",
+        len(good_matches),
+    )
+    print(
+        f"Percentage of good matches within matches: {len(good_matches) / len(matches) * 100.0}"
+    )
+    print(
+        f"Percentage of good matches within pixels in subimage 1: {len(good_matches) / ims[0].size * 100.0}"
+    )
+
+
 def print_distance_infos(matches_list):
     """
     Print some information about the distances of the matches.
@@ -150,27 +172,8 @@ if __name__ == "__main__":
     )
 
     # print general info about proportions of keypoints and matches
-
-    for id_image in range(2):
-        print(
-            f"number of pixels in subimage {id_image}",
-            x_lengths[id_image] * y_lengths[id_image],
-        )
-        print(f"number of keypoints in image {id_image}", len(kps[id_image]))
-
-    print("number of computed matches", len(matches))
-    print(
-        f"number of good matches at a precision of {epsilon} pixels: ",
-        len(good_matches),
-    )
-    print(
-        "percentage of good matches within matches: ",
-        len(good_matches) / len(matches) * 100.0,
-    )
-    print(
-        "percentage of matched keypoints within all subimage 1 pixels: ",
-        len(good_matches) / (x_lengths[0] * y_lengths[0]) * 100.0,
-    )
+    print_general_kp_matches_infos(float_ims, kps, matches, good_matches, epsilon)
+    
 
     # look at some matches
 
