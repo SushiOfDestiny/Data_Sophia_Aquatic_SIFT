@@ -12,10 +12,18 @@
 # im_name2 = "right"
 # im_names = (im_name1, im_name2)
 # im_ext = "png"
+# photo_name = "rock_1"
+# im_name1 = "left"
+# im_name2 = "right"
+# im_names = (im_name1, im_name2)
+# im_ext = "png"
 
 # # choose if sift must be used
 # use_sift = True
+# # choose if sift must be used
+# use_sift = True
 
+# # set the coordinates of the subimages
 # # set the coordinates of the subimages
 
 # y_starts = [386, 459]
