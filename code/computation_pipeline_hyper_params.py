@@ -448,18 +448,11 @@ im_name2 = "right"
 im_names = (im_name1, im_name2)
 im_ext = "png"
 
-# choose if sift must be used instead of our home made descriptor
-use_sift = False
-
-# choose if filter
-use_filt = False
-
-
 # set the coordinates of the subimages
 y_starts = [386, 459]
-y_lengths = [10, 10]
+y_lengths = [100, 100]
 x_starts = [803, 806]
-x_lengths = [10, 10]
+x_lengths = [100, 100]
 
 # define sigma for the gaussian blur
 blur_sigma = 1.0
@@ -481,3 +474,10 @@ distance_type = "min"
 
 # define the blender filtering precision threshold
 epsilon = None
+
+# choose if sift must be used instead of our home made descriptor
+use_sift = True
+
+# choose if filter the keypoints
+use_filt = False
+percentile = 50
