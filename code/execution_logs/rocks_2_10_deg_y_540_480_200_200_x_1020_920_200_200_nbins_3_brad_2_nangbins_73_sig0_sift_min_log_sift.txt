@@ -1,0 +1,150 @@
+2024-02-12 16:27:21,654 - Start running the pipeline
+2024-02-12 16:27:21,654 - All infos are saved in execution_logs/rocks_2_10_deg_y_540_480_200_200_x_1020_920_200_200_nbins_3_brad_2_nangbins_73_sig0_sift_min_log_sift 
+
+2024-02-12 16:27:21,654 - Run the script print_pipe_hparams.py
+2024-02-12 16:27:21,736 - SIFTsigma = 1.6
+bin_radius = 2
+blender_filename = rocks_2_10_deg_cam_to_scale
+blur_sigma = 0.5
+border_size = 1
+contrastThreshold = 0.0
+delta_angle = 5.0
+distanceThreshold = 1000000000.0
+distance_type = min
+edgeThreshold = 0.0
+epsilon = None
+im_ext = png
+im_name1 = rocks_2_10_deg_cam_left
+im_name2 = rocks_2_10_deg_cam_right
+im_names = ('rocks_2_10_deg_cam_left', 'rocks_2_10_deg_cam_right')
+img_folder = blender/rocks_2
+method_post = lowe
+nb_angular_bins = 73
+nb_bins = 3
+neigh_radius = 9
+normalization_mode = global
+photo_name = rocks_2_10_deg
+relative_path = ../data
+sigma = 0
+use_filt = False
+use_sift = True
+x_lengths = [200, 200]
+x_starts = [1020, 920]
+y_lengths = [200, 200]
+y_starts = [540, 480]
+
+2024-02-12 16:27:21,736 - Script print_pipe_hparams.py is done.
+
+2024-02-12 16:27:21,736 - Run the script imgs_preprocessing.py
+2024-02-12 16:27:26,136 - shapes of images (1080, 1920) (1080, 1920)
+Blurred images saved in ../data/blender/rocks_2
+Cropped images saved in ../data/blender/rocks_2
+
+2024-02-12 16:27:26,136 - Script imgs_preprocessing.py is done.
+
+2024-02-12 16:27:26,136 - Run the script compute_sift_kps.py
+2024-02-12 16:27:30,976 - SIFT parameters: 
+contrastThreshold: 0.0
+edgeThreshold: 0.0
+SIFTsigma: 1.6
+distanceThreshold: 1000000000.0
+finished saving translated sift kp coords
+finished saving translated sift kp_pairs
+finished saving sift matches
+finished saving translated sift keypoints
+
+2024-02-12 16:27:30,976 - Script compute_sift_kps.py is done.
+
+2024-02-12 16:27:30,976 - All scripts are done. Launch Blender or a display script.
+
+
+2024-02-12 16:27:33,007 - Start running the post blender pipeline
+2024-02-12 16:27:33,007 - Run the script display_sift_matches.py
+2024-02-12 16:27:34,969 - number of pixels in image 0 2073600
+number of sift keypoints in image 0 1208
+percentage of sift keypoints in image 0 0.05825617283950617
+number of pixels in image 1 2073600
+number of sift keypoints in image 1 1194
+percentage of sift keypoints in image 1 0.05758101851851852
+number of unfiltered sift matches 1208
+number of good sift matches at a precision of None pixels:  0
+Statistics about the distances of the good sift matches
+
+2024-02-12 16:27:34,971 - Script display_sift_matches.py is done.
+
+2024-02-12 16:27:34,971 - All scripts are done. The pipeline is finished.
+2024-02-12 16:28:48,117 - Start running the pipeline
+2024-02-12 16:28:48,117 - All infos are saved in execution_logs/rocks_2_10_deg_y_540_480_200_200_x_1020_920_200_200_nbins_3_brad_2_nangbins_73_sig0_sift_min_log_sift 
+
+2024-02-12 16:28:48,117 - Run the script print_pipe_hparams.py
+2024-02-12 16:28:48,182 - SIFTsigma = 1.6
+bin_radius = 2
+blender_filename = rocks_2_10_deg_cam_to_scale
+blur_sigma = 0.5
+border_size = 1
+contrastThreshold = 0.0
+delta_angle = 5.0
+distanceThreshold = 1000000000.0
+distance_type = min
+edgeThreshold = 0.0
+epsilon = None
+im_ext = png
+im_name1 = rocks_2_10_deg_cam_left
+im_name2 = rocks_2_10_deg_cam_right
+im_names = ('rocks_2_10_deg_cam_left', 'rocks_2_10_deg_cam_right')
+img_folder = blender/rocks_2
+method_post = lowe
+nb_angular_bins = 73
+nb_bins = 3
+neigh_radius = 9
+normalization_mode = global
+photo_name = rocks_2_10_deg
+relative_path = ../data
+sigma = 0
+use_filt = False
+use_sift = True
+x_lengths = [200, 200]
+x_starts = [1020, 920]
+y_lengths = [200, 200]
+y_starts = [540, 480]
+
+2024-02-12 16:28:48,182 - Script print_pipe_hparams.py is done.
+
+2024-02-12 16:28:48,182 - Run the script imgs_preprocessing.py
+2024-02-12 16:28:53,979 - shapes of images (1080, 1920) (1080, 1920)
+Blurred images saved in ../data/blender/rocks_2
+Cropped images saved in ../data/blender/rocks_2
+
+2024-02-12 16:28:53,979 - Script imgs_preprocessing.py is done.
+
+2024-02-12 16:28:53,980 - Run the script compute_sift_kps.py
+2024-02-12 16:29:03,981 - SIFT parameters: 
+contrastThreshold: 0.0
+edgeThreshold: 0.0
+SIFTsigma: 1.6
+distanceThreshold: 1000000000.0
+finished saving translated sift kp coords
+finished saving translated sift kp_pairs
+finished saving sift matches
+finished saving translated sift keypoints
+
+2024-02-12 16:29:03,981 - Script compute_sift_kps.py is done.
+
+2024-02-12 16:29:03,981 - All scripts are done. Launch Blender or a display script.
+
+
+2024-02-12 16:29:06,005 - Start running the post blender pipeline
+2024-02-12 16:29:06,005 - Run the script display_sift_matches.py
+2024-02-12 16:29:08,080 - number of pixels in image 0 2073600
+number of sift keypoints in image 0 1208
+percentage of sift keypoints in image 0 0.05825617283950617
+number of pixels in image 1 2073600
+number of sift keypoints in image 1 1194
+percentage of sift keypoints in image 1 0.05758101851851852
+number of unfiltered sift matches 1208
+number of good sift matches at a precision of None pixels:  0
+Statistics about the distances of the good sift matches
+
+2024-02-12 16:29:08,080 - Script display_sift_matches.py is done.
+
+2024-02-12 16:29:08,080 - All scripts are done. The pipeline is finished.

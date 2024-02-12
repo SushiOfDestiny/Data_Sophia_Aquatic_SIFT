@@ -97,3 +97,8 @@ required_folders_paths = [
 cropped_ims_filenames = [
     f"{descrip_filename_prefixes[id_image]}_cropped_im" for id_image in range(2)
 ]
+
+# Create filename for cropped float images (visualization)
+cropped_float_ims_filenames = [
+    f"{descrip_filename_prefixes[id_image]}_cropped_float_im" for id_image in range(2)
+]
