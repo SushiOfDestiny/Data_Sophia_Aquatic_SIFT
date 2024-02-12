@@ -484,7 +484,7 @@
 # contrastThreshold = 0.0
 # edgeThreshold = 0.0
 # SIFTsigma = 1.6
-# distanceThreshold = 1e9 
+# distanceThreshold = 1e9
 
 # ##############
 # # Pipeline ? #
@@ -535,17 +535,17 @@
 
 
 # #############
-# Pipeline 2.2 # for sift subimage
+# Pipeline 2.2 #
 # #############
 
 # define images to load
 relative_path = "../data"
 # img_folder = "blender/rocks"
-img_folder = "blender/rocks"
-photo_name = "rock_1"
-blender_filename = "rocks"
-im_name1 = "left"
-im_name2 = "right"
+img_folder = "blender/rocks_2"
+photo_name = "rocks_2_10_deg"
+blender_filename = "rocks_2_10_deg_cam_to_scale"
+im_name1 = "rocks_2_10_deg_cam_left"
+im_name2 = "rocks_2_10_deg_cam_right"
 im_names = (im_name1, im_name2)
 im_ext = "png"
 
@@ -577,7 +577,7 @@ distance_type = "min"
 epsilon = None
 
 # choose to prefilter keypoints
-use_filt=True
+use_filt = True
 percentile = 70
 
 # choose if sift must be used
@@ -588,4 +588,4 @@ method_post = "lowe"
 contrastThreshold = 0.0
 edgeThreshold = 0.0
 SIFTsigma = 1.6
-distanceThreshold = 1e9 
+distanceThreshold = 1e9
