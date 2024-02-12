@@ -579,6 +579,8 @@ epsilon = None
 # choose to prefilter keypoints
 use_filt = True
 percentile = 70
+use_filt = True
+percentile = 20
 
 # choose if sift must be used
 use_sift = False
@@ -587,5 +589,4 @@ use_sift = False
 method_post = "lowe"
 contrastThreshold = 0.0
 edgeThreshold = 0.0
-SIFTsigma = 1.6
 distanceThreshold = 1e9
