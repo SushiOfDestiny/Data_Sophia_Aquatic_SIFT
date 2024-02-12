@@ -90,6 +90,13 @@ def compute_good_and_bad_matches(matches, good_matches_kps_idx):
     bad_matches = [matches[i] for i in bad_matches_idx]
     return good_matches, bad_matches
 
+def display_distance_scatter(matches, good_matches_kps_idx, image_distances_filename_npy):
+    image_distances = np.load(image_distances_filename_npy)
+    mask = np.array([0 for i in range(len(matches))], dtype=np.uint8)
+    mask[good_matches_kps_idx] = 1
+    plt.scatter([match.distance for match in matches], image_distances, mask)
+    
+
 
 if __name__ == "__main__":
 
@@ -290,6 +297,13 @@ if __name__ == "__main__":
     print("Statistics about the distances of the bad matches")
     print_distance_infos(bad_matches)
 
+    # Scatter plot distances
+    display_distance_scatter(
+        matches=matches,
+        good_matches_kps_idx=good_matches_kps_idx,
+        image_distances_filename_npy=f"{matches_path}/{image_distances_filename}.npy"
+    )
+
     # look at filtered keypoints on image
     if use_filt:
         # plot the filtered pixels on each subimage side by side
@@ -304,3 +318,5 @@ if __name__ == "__main__":
             )
             ax[id_image].set_title(f"Filtered pixels in subimage {id_image}")
         plt.show()
+
+

@@ -36,12 +36,18 @@ def check_correct_match_pt(scene, x1_cv_px, y1_cv_px, x2_cv_px, y2_cv_px, cam_1,
     if epsilon is None:
         if abs(x2_img1_px - x1_cv_px) >= 1 or abs(y2_img1_px - y1_cv_px) >= 1:
             return False, None
+        else:
+            print("Match")
+            return True, vec_1, ((x2_img1_px - x1_cv_px)**2 + (y2_img1_px - y1_cv_px)**2)
     else:
         if (vec_1 - vec_2).length > epsilon:
             return False, None
+        else:
+            print("Match")
+            return True, vec_1, None
     
-    print("Match")
-    return True, vec_1
+    
+    
 
     # if (not result_1) or (not result_2):
     #     # Check if both rays hit
