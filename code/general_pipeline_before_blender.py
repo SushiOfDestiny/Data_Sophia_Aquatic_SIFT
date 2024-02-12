@@ -38,22 +38,21 @@ def create_logger(logpath):
 if __name__ == "__main__":
     # change filenames and scripts if sift is used
     # List of scripts to run
+    scripts = [
+            "create_all_folders.py",
+            "print_pipe_hparams.py",
+            "imgs_preprocessing.py",
+    ]
     if use_sift:
-        scripts = [
-            "create_all_folders.py",
-            "print_pipe_hparams.py",
-            "imgs_preprocessing.py",
-            "compute_sift_kps.py",
-        ]
+        scripts.extend([
+            "compute_sift_kps.py"
+        ])
     else:
-        scripts = [
-            "create_all_folders.py",
-            "print_pipe_hparams.py",
-            "imgs_preprocessing.py",
+        scripts.extend([
             "compute_desc_img.py",
             "compute_distances.py",
             "create_cv_objs.py",
-        ]
+        ])
 
     # create the logger
     logger = create_logger(f"{log_path}/{log_filename}.txt")
