@@ -474,7 +474,17 @@ distance_type = "min"
 
 # define the blender filtering precision threshold
 epsilon = None
-blender_filename = "rocks_2_7_deg_cam_to_scale"
+blender_filename = "rocks"
+
+use_sift=True
+use_filt=False
+
+# SIFT parameters
+method_post = "lowe"
+contrastThreshold = 0.0
+edgeThreshold = 0.0
+SIFTsigma = 1.6
+distanceThreshold = 1e9 
 
 # ##############
 # # Pipeline ? #
