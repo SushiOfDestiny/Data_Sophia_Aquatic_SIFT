@@ -1,0 +1,105 @@
+2024-02-12 10:06:04,755 - Start running the pipeline
+2024-02-12 10:06:04,756 - All infos are saved in execution_logs/rock_1_y_386_459_200_200_x_803_806_200_200_nbins_3_brad_2_nangbins_73_sig0_min_log 
+
+2024-02-12 10:06:04,756 - Run the script print_pipe_hparams.py
+2024-02-12 10:06:04,768 - bin_radius = 2
+blur_sigma = 1.0
+border_size = 1
+delta_angle = 5.0
+distance_type = min
+epsilon = None
+im_ext = png
+im_name1 = left
+im_name2 = right
+im_names = ('left', 'right')
+img_folder = blender/rocks
+nb_angular_bins = 73
+nb_bins = 3
+neigh_radius = 9
+normalization_mode = global
+photo_name = rock_1
+relative_path = ../data
+sigma = 0
+use_sift = False
+x_lengths = [200, 200]
+x_starts = [803, 806]
+y_lengths = [200, 200]
+y_starts = [386, 459]
+
+2024-02-12 10:06:04,768 - Script print_pipe_hparams.py is done.
+
+2024-02-12 10:06:04,768 - Run the script imgs_preprocessing.py
+2024-02-12 10:06:17,419 - shapes of images (1080, 1920) (1080, 1920)
+Blurred images saved in ../data/blender/rocks
+Cropped images saved in ../data/blender/rocks
+
+2024-02-12 10:06:17,419 - Script imgs_preprocessing.py is done.
+
+2024-02-12 10:06:17,419 - Run the script compute_desc_img.py
+2024-02-12 10:24:29,839 - feat computation beginning for image 0: 2024-02-12 10:06:18.338725
+feat computation end for image 0 2024-02-12 10:06:32.197023
+feat compute time for image 0 0:00:13.858298
+shape of overall_features[0] of image 0 (1080, 1920, 2)
+desc computation beginning for image 0 2024-02-12 10:06:32.197057
+desc computation end for image 0 2024-02-12 10:15:33.551148
+desc compute time for image 0 0:09:01.354091
+feat computation beginning for image 1: 2024-02-12 10:15:33.725674
+feat computation end for image 1 2024-02-12 10:15:40.347251
+feat compute time for image 1 0:00:06.621577
+shape of overall_features[0] of image 1 (1080, 1920, 2)
+desc computation beginning for image 1 2024-02-12 10:15:40.347292
+desc computation end for image 1 2024-02-12 10:24:29.228064
+desc compute time for image 1 0:08:48.880772
+
+2024-02-12 10:24:29,839 - Script compute_desc_img.py is done.
+
+2024-02-12 10:24:29,839 - Run the script compute_distances.py
+2024-02-12 10:28:11,411 - same number of descriptors and coordinates for image 0: True
+also equal to the number of pixels: True
+same number of descriptors and coordinates for image 1: True
+also equal to the number of pixels: True
+Start computing distances: 2024-02-12 10:24:30.889773
+End computing distances: 2024-02-12 10:28:11.153057
+Compute time: 0:03:40.263284
+Chosen distance type: min
+
+2024-02-12 10:28:11,411 - Script compute_distances.py is done.
+
+2024-02-12 10:28:11,411 - Run the script create_cv_objs.py
+2024-02-12 10:28:12,888 - finished creating opencv objects
+beginning saving opencv objects to file
+finished saving kp_pairs
+finished saving matches
+finished saving keypoints
+
+2024-02-12 10:28:12,889 - Script create_cv_objs.py is done.
+
+2024-02-12 10:28:12,889 - All scripts are done. Launch Blender or a display script.
+
+
+2024-02-12 10:31:24,145 - Start running the post blender pipeline
+2024-02-12 10:31:24,145 - Start running the post blender pipeline
+2024-02-12 10:31:24,145 - Run the script display_matches.py
+2024-02-12 10:31:24,145 - Run the script display_matches.py
+2024-02-12 10:31:54,089 - number of pixels in subimage 0 40000
+number of keypoints in image 0 40000
+number of pixels in subimage 1 40000
+number of keypoints in image 1 40000
+number of computed matches 40000
+number of good matches at a precision of None pixels:  12127
+percentage of good matches:  30.317499999999995
+
+2024-02-12 10:31:54,089 - number of pixels in subimage 0 40000
+number of keypoints in image 0 40000
+number of pixels in subimage 1 40000
+number of keypoints in image 1 40000
+number of computed matches 40000
+number of good matches at a precision of None pixels:  12127
+percentage of good matches:  30.317499999999995
+
+2024-02-12 10:31:54,090 - Script display_matches.py is done.
+
+2024-02-12 10:31:54,090 - Script display_matches.py is done.
+
+2024-02-12 10:31:54,090 - All scripts are done. The pipeline is finished.
+2024-02-12 10:31:54,090 - All scripts are done. The pipeline is finished.
