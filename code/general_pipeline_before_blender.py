@@ -35,7 +35,8 @@ def create_logger(logpath):
     return logger
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":    
+
     # change filenames and scripts if sift is used
     # List of scripts to run
     scripts = [

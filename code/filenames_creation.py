@@ -14,8 +14,11 @@ sift_radical = "_sift" if use_sift else ""
 # create suffix for filtered points computation
 filt_suffix = "_filt"
 filt_radical = "_filt" if use_filt else ""
-# Define suffix for filename
+# create suffix for type of distance
 dist_type_suffix = "" if distance_type == "all" else "_min"
+
+# Create filename radical for irl images
+irl_radical = "_irl" if img_folder[:3] == "irl" else ""
 
 
 # Create filename where to load the original images
