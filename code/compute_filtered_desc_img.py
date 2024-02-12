@@ -121,7 +121,7 @@ def filter_compute_desc_pixels(
 
 if __name__ == "__main__":
     # Load preprocessed images as numpy arrays
-    float_ims = np.load(f"{blurred_imgs_path}.npy")
+    float_ims = np.load(f"{blurred_imgs_filename}.npy")
 
     # compute descriptors for 2 images
     for id_image in range(2):
@@ -170,7 +170,7 @@ if __name__ == "__main__":
         )
         print(f"number of filtered accepted pixels: {np.sum(masked_array)}")
         print(
-            f"percentage of filtered accepted pixels: {np.sum(masked_array) / y_lengths[id_image] * x_lengths[id_image]}"
+            f"percentage of filtered accepted pixels: {np.sum(masked_array) / (y_lengths[id_image] * x_lengths[id_image])}"
         )
 
         before = datetime.now()

@@ -101,7 +101,7 @@ if __name__ == "__main__":
         )
         for id_image in range(2)
     ]
-    float_ims = np.load(f"{blurred_imgs_path}.npy")
+    float_ims = np.load(f"{blurred_imgs_filename}.npy")
 
     # load all computed objects
 
