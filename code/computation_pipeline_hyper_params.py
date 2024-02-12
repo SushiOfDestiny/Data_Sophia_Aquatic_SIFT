@@ -578,7 +578,7 @@ epsilon = None
 
 # choose to prefilter keypoints
 use_filt=True
-percentile = 70
+percentile = 20
 
 # choose if sift must be used
 use_sift = False
