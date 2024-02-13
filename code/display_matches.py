@@ -87,7 +87,7 @@ def print_general_kp_matches_infos(
             f"percentage of {cropped_sift_radical} keypoints in image {id_image}",
             len(kps[id_image]) / (y_lengths[id_image] * x_lengths[id_image]) * 100.0,
         )
-    print("number of unfiltered {cropped_sift_radical} matches", len(matches))
+    print(f"number of unfiltered {cropped_sift_radical} matches", len(matches))
     print(
         f"number of good {cropped_sift_radical} matches at a precision of {epsilon} pixels: ",
         len(good_matches),
@@ -285,11 +285,11 @@ if __name__ == "__main__":
     # look at mask of prefiltered pixels
     if use_filt:
 
-        masked_arrays = [None, None]
+        mask_arrays = [None, None]
 
         for id_image in range(2):
 
-            masked_arrays[id_image], mean_abs_curvs, y_slice, x_slice = (
+            mask_arrays[id_image], mean_abs_curvs, y_slice, x_slice = (
                 cp_desc.filter_by_mean_abs_curv(
                     float_ims[id_image],
                     overall_features_ims[id_image][1],
@@ -305,7 +305,7 @@ if __name__ == "__main__":
         fig, axs = plt.subplots(1, 2, figsize=(20, 10))
         for id_image in range(2):
             axs[id_image].imshow(float_ims[id_image], cmap="gray")
-            axs[id_image].imshow(masked_arrays[id_image], cmap="jet", alpha=0.5)
+            axs[id_image].imshow(mask_arrays[id_image], cmap="jet", alpha=0.5)
             axs[id_image].set_title(
                 f"Filtered pixels by mean curvature in subimage {id_image}, with percentile {percentile}"
             )
@@ -318,11 +318,11 @@ if __name__ == "__main__":
 
         # check if coords of keypoints match with mask of prefiltered pixels
         for id_image in range(2):
-            nb_masked_kps = np.sum(masked_arrays[id_image] > 0)
+            nb_masked_kps = np.sum(mask_arrays[id_image] > 0)
             found_kps = 0
             for id_kp in range(len(kps_coords[id_image])):
                 x, y = kps_coords[id_image][id_kp]
-                if masked_arrays[id_image][y, x] > 0:
+                if mask_arrays[id_image][y, x] > 0:
                     found_kps += 1
             print(
                 f"Number of keypoints found in the filtered pixels for image {id_image}: {found_kps}"
