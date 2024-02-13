@@ -28,6 +28,7 @@ def check_correct_match(kp_arr_file, cam_1, cam_2, epsilon=None):
 
     # pt_pairs is a list of pairs of OpenCV keypoints, we need to get coordinates from it
     kp_arr = np.load(kp_arr_file)
+    image_distances = np.empty(kp_arr.shape[1]) # image_distances[i] is the distance between the two points in matches[i]
     correct_matches = []
     correct_matches_idxs = []
     matched_3d_pts = []
@@ -41,7 +42,7 @@ def check_correct_match(kp_arr_file, cam_1, cam_2, epsilon=None):
         x2_cv_px = round(kp_arr[1, i, 0])
         y2_cv_px = round(kp_arr[1, i, 1])
 
-        r, vec = check_correct_match_pt(
+        r, vec, dist = check_correct_match_pt(
             scene,
             x1_cv_px,
             y1_cv_px,
@@ -62,7 +63,10 @@ def check_correct_match(kp_arr_file, cam_1, cam_2, epsilon=None):
             correct_matches_idxs.append(i)
             matched_3d_pts.append(vec)
 
-    return correct_matches, correct_matches_idxs, matched_3d_pts
+        image_distances[i] = dist
+        
+
+    return correct_matches, correct_matches_idxs, matched_3d_pts, image_distances
 
 
 def save_correct_matches(correct_matches_idxs, idx_filename):

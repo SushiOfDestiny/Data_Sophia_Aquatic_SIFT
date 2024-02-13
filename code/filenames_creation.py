@@ -82,6 +82,7 @@ filtered_kp_path = "filtered_keypoints"
 log_path = "execution_logs"
 log_filename = f"{dist_filename_prefix}_log{sift_radical}{filt_radical}"
 
+image_distances_filename = "image_distances"
 
 # stack all folders paths
 required_folders_paths = [

@@ -1,5 +1,7 @@
 import bpy, bpy_extras
 from shift import img_px_to_img_m, get_world_from_img_co
+from draw_points import draw_points, draw_ray
+from math import sqrt
 
 def check_correct_match_pt(scene, x1_cv_px, y1_cv_px, x2_cv_px, y2_cv_px, cam_1, cam_1_params, cam_2, cam_2_params, epsilon=None):
     '''Tests if two image points given by their x and y coordinates are correct stereo matches
@@ -13,7 +15,9 @@ def check_correct_match_pt(scene, x1_cv_px, y1_cv_px, x2_cv_px, y2_cv_px, cam_1,
     Returns : (is_correct, 3d_loc)'''
 
     # Get image frame coordinates from pixel coordinates
+    
     x1_img_m, y1_img_m = img_px_to_img_m(x1_cv_px, y1_cv_px, cam_1, scene)
+
     x2_img_m, y2_img_m = img_px_to_img_m(x2_cv_px, y2_cv_px, cam_2, scene)
 
     # Compute world coordinates from image frame coordinates
@@ -32,16 +36,66 @@ def check_correct_match_pt(scene, x1_cv_px, y1_cv_px, x2_cv_px, y2_cv_px, cam_1,
     # Dilate and shift coordinates
     x2_img1_px = x2_img1_camco*cam_1_params['res_x_px']
     y2_img1_px = (cam_1_params['res_y_px']- y2_img1_camco*cam_1_params['res_y_px'])
+    y2_img1_px_other = y2_img1_camco*cam_1_params['res_y_px']
 
     if epsilon is None:
         if abs(x2_img1_px - x1_cv_px) >= 1 or abs(y2_img1_px - y1_cv_px) >= 1:
-            return False, None
+            return False, None, None
+        else:
+            # print('----')
+            # print('New match')
+            
+            # print('Left point coordinates')
+            # print(x1_cv_px)
+            # print(y1_cv_px)
+            # print('Right point coordinates')
+            # print(x2_cv_px)
+            # print(y2_cv_px)
+
+            # print('Left point image coordinates')
+            # print(x1_img_m)
+            # print(y1_img_m)
+            # print('Right point image coordinates')
+            # print(x2_img_m)
+            # print(y2_img_m)
+
+            # print('World vector coordinates')
+            # print(pt_world_1)
+            # print(pt_world_2)
+
+            # draw_points([pt_world_1], 'pt_left')
+            # draw_points([pt_world_2], 'pt_right')
+
+            # draw_ray(pt_world_1, cam_1, "left ray")
+            # draw_ray(pt_world_2, cam_2, "right ray")
+
+            # print('Ray intersect world coordinates')
+            # print(vec_1)
+            # print(vec_2)
+
+            # print('Point world 2 on img 1 cam coordinates')
+            # print(pt_world_2_on_img1_camco)
+
+            # print('Left projection px coordinates')
+            # print(x2_img1_px)
+            # print(y2_img1_px)
+
+            # draw_points([vec_1], "ray_intersect_left")
+            # draw_points([vec_2], "ray_intersect_right")
+
+            # draw_points([pt_world_1], "pt_image_left")
+            # draw_points([pt_world_2], "pt_image_right")
+            # draw_points([pt_world_2_on_img1_camco], "pt_image_right_on_image_left")
+            return True, vec_1, sqrt(((x2_img1_px - x1_cv_px)**2 + (y2_img1_px - y1_cv_px)**2))
+        
+    if (vec_1 - vec_2).length > epsilon:
+        return False, None, None
     else:
-        if (vec_1 - vec_2).length > epsilon:
-            return False, None
+        print("Match")
+        return True, vec_1, None
     
-    print("Match")
-    return True, vec_1
+    
+    
 
     # if (not result_1) or (not result_2):
     #     # Check if both rays hit

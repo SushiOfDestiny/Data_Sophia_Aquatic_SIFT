@@ -1,0 +1,46 @@
+2024-02-12 19:01:57,976 - Start running the pipeline
+2024-02-12 19:01:57,976 - All infos are saved in execution_logs/rocks_2_10_deg_y_10_10_1900_1900_x_10_10_1060_1060_nbins_3_brad_2_nangbins_73_sig0_filt_20_min_log_filt_20 
+
+2024-02-12 19:01:57,976 - Run the script print_pipe_hparams.py
+2024-02-12 19:01:57,989 - SIFTsigma = 1.6
+bin_radius = 2
+blender_filename = rocks_2_10_deg_cam_to_scale
+blur_sigma = 1.0
+border_size = 1
+contrastThreshold = 0.0
+delta_angle = 5.0
+distanceThreshold = 1000000000.0
+distance_type = min
+edgeThreshold = 0.0
+epsilon = None
+im_ext = png
+im_name1 = rocks_2_10_deg_cam_to_scale_left
+im_name2 = rocks_2_10_deg_cam_to_scale_right
+im_names = ('rocks_2_10_deg_cam_to_scale_left', 'rocks_2_10_deg_cam_to_scale_right')
+img_folder = blender/rocks_2
+method_post = lowe
+nb_angular_bins = 73
+nb_bins = 3
+neigh_radius = 9
+normalization_mode = global
+percentile = 20
+photo_name = rocks_2_10_deg
+relative_path = ../data
+sigma = 0
+use_filt = True
+use_sift = False
+x_lengths = [1060, 1060]
+x_starts = [10, 10]
+y_lengths = [1900, 1900]
+y_starts = [10, 10]
+
+2024-02-12 19:01:57,990 - Script print_pipe_hparams.py is done.
+
+2024-02-12 19:01:57,990 - Run the script imgs_preprocessing.py
+2024-02-12 19:02:24,094 - shapes of images (1080, 1920) (1080, 1920)
+Blurred images saved in ../data/blender/rocks_2
+Cropped images saved in ../data/blender/rocks_2
+
+2024-02-12 19:02:24,095 - Script imgs_preprocessing.py is done.
+
+2024-02-12 19:02:24,095 - Run the script compute_desc_img.py

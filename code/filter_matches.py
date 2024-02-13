@@ -17,7 +17,7 @@ from filenames_creation import *
 sys.path.append("../blender")
 
 import matching as matching
-import differential as differential
+#import differential as differential
 
 
 if __name__ == "__main__":
@@ -30,7 +30,7 @@ if __name__ == "__main__":
     kp_pairs_file = f"{storage_folder}/{kp_pairs_filename}.npy"
 
     # filter matches
-    correct_matches, correct_matches_idxs, matched_3d_pts = (
+    correct_matches, correct_matches_idxs, matched_3d_pts, image_distances = (
         matching.check_correct_match(kp_pairs_file, cam_1, cam_2, epsilon)
     )
 
@@ -45,6 +45,9 @@ if __name__ == "__main__":
         correct_matches_idxs_arr,
         f"{storage_folder}/{correct_matches_idxs_filename}",
     )
+
+    # store image distances
+    np.save(f"{storage_folder}/{image_distances_filename}", image_distances)
 
     # print("depth map computing...")
     # t = time.time()
