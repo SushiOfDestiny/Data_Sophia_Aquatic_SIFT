@@ -5,7 +5,7 @@ import sys
 import cv2 as cv
 import numpy as np
 import matplotlib.pyplot as plt
-from descriptor import unflatten_descriptor
+import descriptor as desc
 import visu_hessian as vh
 import visu_descriptor as visu_desc
 
@@ -15,6 +15,8 @@ from saving import load_matches, load_keypoints
 from computation_pipeline_hyper_params import *
 
 from filenames_creation import *
+
+import compute_desc_img as cp_desc
 
 
 def display_match(
@@ -77,7 +79,10 @@ def print_general_kp_matches_infos(
             f"number of pixels in image {id_image}",
             y_lengths[id_image] * x_lengths[id_image],
         )
-        print(f"number of {cropped_sift_radical} keypoints in image {id_image}", len(kps[id_image]))
+        print(
+            f"number of {cropped_sift_radical} keypoints in image {id_image}",
+            len(kps[id_image]),
+        )
         print(
             f"percentage of {cropped_sift_radical} keypoints in image {id_image}",
             len(kps[id_image]) / (y_lengths[id_image] * x_lengths[id_image]) * 100.0,
@@ -119,15 +124,22 @@ def compute_good_and_bad_matches(matches, good_matches_kps_idx):
     return good_matches, bad_matches
 
 
-def display_distance_scatter(matches, good_matches_kps_idx, image_distances_filename_npy):
+def display_distance_scatter(
+    matches, good_matches_kps_idx, image_distances_filename_npy
+):
     image_distances = np.load(image_distances_filename_npy)
     mask = np.array(["b" for i in range(len(matches))], dtype=object)
     print(mask)
     mask[good_matches_kps_idx] = "r"
     print(mask)
-    plt.scatter([match[0].distance for match in matches], image_distances, c=mask, marker='+', s=0.01)
+    plt.scatter(
+        [match[0].distance for match in matches],
+        image_distances,
+        c=mask,
+        marker="+",
+        s=0.01,
+    )
     plt.show()
-    
 
 
 if __name__ == "__main__":
@@ -150,12 +162,12 @@ if __name__ == "__main__":
         for id_image in range(2)
     ]
 
-    # show cropped float images
-    fig, axs = plt.subplots(1, 2, figsize=(20, 10))
-    for id_image in range(2):
-        axs[id_image].imshow(cropped_float_ims[id_image], cmap="gray")
+    # # show cropped float images
+    # fig, axs = plt.subplots(1, 2, figsize=(20, 10))
+    # for id_image in range(2):
+    #     axs[id_image].imshow(cropped_float_ims[id_image], cmap="gray")
 
-    plt.show()
+    # plt.show()
 
     # load all computed objects
 
@@ -195,7 +207,7 @@ if __name__ == "__main__":
 
     # look at some matches
 
-    chosen_matches_idx = [0, 1]
+    chosen_matches_idx = []
     for match_idx in chosen_matches_idx:
         # display 1 match, object here is not DMatch, but a couple of DMatch, as Sift returns
         # we get here only the Dmatch
@@ -228,7 +240,7 @@ if __name__ == "__main__":
         # display the descriptor of the point in the 2 images
         # for id_image in range(2):
         #     visu_desc.display_descriptor(
-        #         descriptor_histograms=unflatten_descriptor(
+        #         descriptor_histograms=desc.unflatten_descriptor(
         #             descs[id_image][chosen_Dmatch.queryIdx],
         #             nb_bins=nb_bins,
         #             nb_angular_bins=nb_angular_bins,
@@ -236,6 +248,94 @@ if __name__ == "__main__":
         #         descriptor_name=f"Descriptor of the match {match_idx} in {im_names[id_image]}",
         #         show_plot=False,
         #     )
+
+    # Look at information about the curvatures and gradients of the good and bad keypoints
+    print(f"feat computation beginning for both images")
+    overall_features_ims = [
+        desc.compute_features_overall_abs(float_ims[id_image], border_size=border_size)
+        for id_image in range(2)
+    ]
+
+    # look at the mean absolute curvatures
+    mean_abs_curvs_ims = [
+        cp_desc.compute_mean_abs_curv_arr(overall_features_ims[id_image][1])
+        for id_image in range(2)
+    ]
+
+    # start with good keypoints
+    y_kps = [kps_coords[id_image][:, 1] for id_image in range(2)]
+    x_kps = [kps_coords[id_image][:, 0] for id_image in range(2)]
+
+    y_gd_kps = [y_kps[id_image][correct_matches_idxs] for id_image in range(2)]
+    x_gd_kps = [x_kps[id_image][correct_matches_idxs] for id_image in range(2)]
+
+    good_mean_abs_curvs = [
+        mean_abs_curvs_ims[id_image][y_gd_kps[id_image], x_gd_kps[id_image]]
+        for id_image in range(2)
+    ]
+
+    for id_image in range(2):
+        print(
+            f"Mean value of mean absolute curvature of the good keypoints in image {id_image}: {np.mean(good_mean_abs_curvs[id_image])}"
+        )
+        print(
+            f"Standard deviation of mean absolute curvature of the good keypoints in image {id_image}: {np.std(good_mean_abs_curvs[id_image])}"
+        )
+
+    # look at mask of prefiltered pixels
+    if use_filt:
+
+        mask_arrays = [None, None]
+
+        for id_image in range(2):
+
+            mask_arrays[id_image], mean_abs_curvs, y_slice, x_slice = (
+                cp_desc.filter_by_mean_abs_curv(
+                    float_ims[id_image],
+                    overall_features_ims[id_image][1],
+                    y_starts[id_image],
+                    y_lengths[id_image],
+                    x_starts[id_image],
+                    x_lengths[id_image],
+                    percentile,
+                )
+            )
+
+        # display the filtered pixels
+        fig, axs = plt.subplots(1, 2, figsize=(20, 10))
+        for id_image in range(2):
+            axs[id_image].imshow(float_ims[id_image], cmap="gray")
+            axs[id_image].imshow(mask_arrays[id_image], cmap="jet", alpha=0.5)
+            axs[id_image].set_title(
+                f"Filtered pixels by mean curvature in subimage {id_image}, with percentile {percentile}"
+            )
+
+        # save the plot
+        plt.savefig(
+            f"{descrip_path}/{descrip_filename_prefixes[id_image]}_filtered_pixels.png"
+        )
+        plt.show()
+
+        # check if coords of keypoints match with mask of prefiltered pixels
+        for id_image in range(2):
+            nb_masked_kps = np.sum(mask_arrays[id_image] > 0)
+            found_kps = 0
+            for id_kp in range(len(kps_coords[id_image])):
+                x, y = kps_coords[id_image][id_kp]
+                if mask_arrays[id_image][y, x] > 0:
+                    found_kps += 1
+            print(
+                f"Number of keypoints found in the filtered pixels for image {id_image}: {found_kps}"
+            )
+            print(f"Number of masked keypoints for image {id_image}: {nb_masked_kps}")
+            print(
+                f"Percentage of keypoints found in the filtered pixels for image {id_image}: {found_kps / nb_masked_kps * 100.0}"
+            )
+
+        # Look at
+
+    # stop here
+    sys.exit()
 
     # look at the average descriptors of the good matches
     good_matches_kps = [
@@ -286,21 +386,21 @@ if __name__ == "__main__":
     avg_descs = [avg_good_descs, avg_bad_descs]
     descs_names = [good_descs_names, bad_descs_names]
 
-    for id_desc in range(2):
-        for id_image in range(2):
-            visu_desc.display_descriptor(
-                descriptor_histograms=unflatten_descriptor(
-                    avg_descs[id_desc][id_image],
-                    nb_bins=nb_bins,
-                    nb_angular_bins=nb_angular_bins,
-                ),
-                descriptor_name=descs_names[id_desc][id_image],
-                show_plot=False,
-            )
+    # for id_desc in range(2):
+    #     for id_image in range(2):
+    #         visu_desc.display_descriptor(
+    #             descriptor_histograms=desc.unflatten_descriptor(
+    #                 avg_descs[id_desc][id_image],
+    #                 nb_bins=nb_bins,
+    #                 nb_angular_bins=nb_angular_bins,
+    #             ),
+    #             descriptor_name=descs_names[id_desc][id_image],
+    #             show_plot=False,
+    #         )
 
-    visu_desc.display_descriptor(
-            descriptor_histograms=unflatten_descriptor(kps_coords[match_idx])
-    )
+    # visu_desc.display_descriptor(
+    #         descriptor_histograms=desc.unflatten_descriptor(kps_coords[match_idx])
+    # )
 
     plt.show()
 
@@ -332,5 +432,3 @@ if __name__ == "__main__":
             )
             ax[id_image].set_title(f"Preiltered pixels in subimage {id_image}")
         plt.show()
-
-
