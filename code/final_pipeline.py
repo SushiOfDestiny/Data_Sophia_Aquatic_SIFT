@@ -2,7 +2,6 @@ import subprocess
 import os
 from computation_pipeline_hyper_params import *
 from filenames_creation import *
-import argparse
 
 if __name__ == '__main__':
     subprocess.call(["python", "general_pipeline_before_blender.py"])

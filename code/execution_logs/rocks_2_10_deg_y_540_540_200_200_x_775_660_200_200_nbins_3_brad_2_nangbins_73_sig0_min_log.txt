@@ -1,0 +1,121 @@
+2024-02-12 17:42:45,571 - Start running the pipeline
+2024-02-12 17:42:45,571 - All infos are saved in execution_logs/rocks_2_10_deg_y_540_540_200_200_x_775_660_200_200_nbins_3_brad_2_nangbins_73_sig0_min_log 
+
+2024-02-12 17:42:45,572 - Run the script print_pipe_hparams.py
+2024-02-12 17:42:45,590 - SIFTsigma = 1.6
+bin_radius = 2
+blender_filename = rocks_2_10_deg_cam_to_scale
+blur_sigma = 1.0
+border_size = 1
+contrastThreshold = 0.0
+delta_angle = 5.0
+distanceThreshold = 1000000000.0
+distance_type = min
+edgeThreshold = 0.0
+epsilon = None
+im_ext = png
+im_name1 = rocks_2_10_deg_cam_to_scale_left
+im_name2 = rocks_2_10_deg_cam_to_scale_right
+im_names = ('rocks_2_10_deg_cam_to_scale_left', 'rocks_2_10_deg_cam_to_scale_right')
+img_folder = blender/rocks_2
+method_post = lowe
+nb_angular_bins = 73
+nb_bins = 3
+neigh_radius = 9
+normalization_mode = global
+percentile = 20
+photo_name = rocks_2_10_deg
+relative_path = ../data
+sigma = 0
+use_filt = False
+use_sift = False
+x_lengths = [200, 200]
+x_starts = [775, 660]
+y_lengths = [200, 200]
+y_starts = [540, 540]
+
+2024-02-12 17:42:45,590 - Script print_pipe_hparams.py is done.
+
+2024-02-12 17:42:45,591 - Run the script imgs_preprocessing.py
+2024-02-12 17:42:50,013 - shapes of images (1080, 1920) (1080, 1920)
+Blurred images saved in ../data/blender/rocks_2
+Cropped images saved in ../data/blender/rocks_2
+
+2024-02-12 17:42:50,014 - Script imgs_preprocessing.py is done.
+
+2024-02-12 17:42:50,014 - Run the script compute_desc_img.py
+2024-02-12 18:01:08,184 - feat computation beginning for image 0: 2024-02-12 17:42:50.932287
+feat computation end for image 0 2024-02-12 17:43:04.382405
+feat compute time for image 0 0:00:13.450118
+shape of overall_features[0] of image 0 (1080, 1920, 2)
+desc computation beginning for image 0 2024-02-12 17:43:04.382454
+desc computation end for image 0 2024-02-12 17:52:08.116304
+desc compute time for image 0 0:09:03.733850
+feat computation beginning for image 1: 2024-02-12 17:52:08.287817
+feat computation end for image 1 2024-02-12 17:52:14.794717
+feat compute time for image 1 0:00:06.506900
+shape of overall_features[0] of image 1 (1080, 1920, 2)
+desc computation beginning for image 1 2024-02-12 17:52:14.794756
+desc computation end for image 1 2024-02-12 18:01:07.573042
+desc compute time for image 1 0:08:52.778286
+
+2024-02-12 18:01:08,184 - Script compute_desc_img.py is done.
+
+2024-02-12 18:01:08,184 - Run the script compute_distances.py
+2024-02-12 18:04:53,945 - same number of descriptors and coordinates for image 0: True
+also equal to the number of pixels: True
+same number of descriptors and coordinates for image 1: True
+also equal to the number of pixels: True
+Start computing distances: 2024-02-12 18:01:09.240795
+End computing distances: 2024-02-12 18:04:53.686455
+Compute time: 0:03:44.445660
+Chosen distance type: min
+
+2024-02-12 18:04:53,946 - Script compute_distances.py is done.
+
+2024-02-12 18:04:53,946 - Run the script create_cv_objs.py
+2024-02-12 18:04:55,415 - finished creating opencv objects
+beginning saving opencv objects to file
+finished saving kp_pairs
+finished saving matches
+finished saving keypoints
+
+2024-02-12 18:04:55,415 - Script create_cv_objs.py is done.
+
+2024-02-12 18:04:55,415 - All scripts are done. Launch Blender or a display script.
+
+
+2024-02-12 18:04:56,749 - Start running the post blender pipeline
+2024-02-12 18:04:56,749 - Run the script display_matches.py
+2024-02-12 18:06:49,814 - 
+2024-02-12 18:06:49,814 - Script display_matches.py is done.
+
+2024-02-12 18:06:49,814 - All scripts are done. The pipeline is finished.
+2024-02-13 09:33:18,276 - Start running the post blender pipeline
+2024-02-13 09:33:18,276 - Run the script display_matches.py
+2024-02-13 09:33:44,812 - number of pixels in image 0 40000
+number of sift keypoints in image 0 40000
+percentage of sift keypoints in image 0 100.0
+number of pixels in image 1 40000
+number of sift keypoints in image 1 40000
+percentage of sift keypoints in image 1 100.0
+number of unfiltered sift matches 40000
+number of good sift matches at a precision of None pixels:  6819
+Percentage of good matches within matches: 17.0475
+Percentage of good matches within pixels in subimage 1: 17.0475
+Statistics about the distances of the good matches
+Minimal distance: 14.636612892150879
+Maximal distance: 33.75011444091797
+Mean distance: 21.473179926426813
+Standard deviation of the distances: 1.9777352805540858
+Statistics about the distances of the bad matches
+Minimal distance: 14.351648330688477
+Maximal distance: 48.21108627319336
+Mean distance: 23.148203935413644
+Standard deviation of the distances: 2.5646310495073865
+['b' 'b' 'b' ... 'b' 'b' 'b']
+['b' 'b' 'b' ... 'b' 'b' 'b']
+
+2024-02-13 09:33:44,813 - Script display_matches.py is done.
+
+2024-02-13 09:33:44,813 - All scripts are done. The pipeline is finished.

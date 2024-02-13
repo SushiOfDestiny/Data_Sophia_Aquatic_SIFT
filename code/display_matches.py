@@ -71,19 +71,20 @@ def print_general_kp_matches_infos(
     y_lengths, x_lengths, kps, matches, good_matches, epsilon
 ):
     """print general infos and percentage of keypoints and good matches among the pixels and matches."""
+    cropped_sift_radical = "" if not use_sift else sift_radical[1:]
     for id_image in range(2):
         print(
             f"number of pixels in image {id_image}",
             y_lengths[id_image] * x_lengths[id_image],
         )
-        print(f"number of sift keypoints in image {id_image}", len(kps[id_image]))
+        print(f"number of {cropped_sift_radical} keypoints in image {id_image}", len(kps[id_image]))
         print(
-            f"percentage of sift keypoints in image {id_image}",
+            f"percentage of {cropped_sift_radical} keypoints in image {id_image}",
             len(kps[id_image]) / (y_lengths[id_image] * x_lengths[id_image]) * 100.0,
         )
-    print("number of unfiltered sift matches", len(matches))
+    print("number of unfiltered {cropped_sift_radical} matches", len(matches))
     print(
-        f"number of good sift matches at a precision of {epsilon} pixels: ",
+        f"number of good {cropped_sift_radical} matches at a precision of {epsilon} pixels: ",
         len(good_matches),
     )
     print(
@@ -116,6 +117,7 @@ def compute_good_and_bad_matches(matches, good_matches_kps_idx):
     bad_matches_idx = np.setdiff1d(np.arange(len(matches)), good_matches_kps_idx)
     bad_matches = [matches[i] for i in bad_matches_idx]
     return good_matches, bad_matches
+
 
 def display_distance_scatter(matches, good_matches_kps_idx, image_distances_filename_npy):
     image_distances = np.load(image_distances_filename_npy)
@@ -284,23 +286,23 @@ if __name__ == "__main__":
     avg_descs = [avg_good_descs, avg_bad_descs]
     descs_names = [good_descs_names, bad_descs_names]
 
-    # for id_desc in range(2):
-    #     for id_image in range(2):
-    #         visu_desc.display_descriptor(
-    #             descriptor_histograms=unflatten_descriptor(
-    #                 avg_descs[id_desc][id_image],
-    #                 nb_bins=nb_bins,
-    #                 nb_angular_bins=nb_angular_bins,
-    #             ),
-    #             descriptor_name=descs_names[id_desc][id_image],
-    #             show_plot=False,
-    #         )
+    for id_desc in range(2):
+        for id_image in range(2):
+            visu_desc.display_descriptor(
+                descriptor_histograms=unflatten_descriptor(
+                    avg_descs[id_desc][id_image],
+                    nb_bins=nb_bins,
+                    nb_angular_bins=nb_angular_bins,
+                ),
+                descriptor_name=descs_names[id_desc][id_image],
+                show_plot=False,
+            )
 
-    # visu_desc.display_descriptor(
-    #         descriptor_histograms=unflatten_descriptor(kps_coords[match_idx])
-    # )
+    visu_desc.display_descriptor(
+            descriptor_histograms=unflatten_descriptor(kps_coords[match_idx])
+    )
 
-    # plt.show()
+    plt.show()
 
     # look at the distances of the good and bad matches
     print("Statistics about the distances of the good matches")
@@ -309,12 +311,12 @@ if __name__ == "__main__":
     print("Statistics about the distances of the bad matches")
     print_distance_infos(bad_matches)
 
-    # Scatter plot distances
-    display_distance_scatter(
-        matches=matches,
-        good_matches_kps_idx=good_matches_kps_idx,
-        image_distances_filename_npy=f"{matches_path}/{image_distances_filename}.npy"
-    )
+    # # Scatter plot distances
+    # display_distance_scatter(
+    #     matches=matches,
+    #     good_matches_kps_idx=good_matches_kps_idx,
+    #     image_distances_filename_npy=f"{matches_path}/{image_distances_filename}.npy"
+    # )
 
     # look at filtered keypoints on image
     if use_filt:
@@ -328,7 +330,7 @@ if __name__ == "__main__":
                 c="r",
                 s=2,
             )
-            ax[id_image].set_title(f"Filtered pixels in subimage {id_image}")
+            ax[id_image].set_title(f"Preiltered pixels in subimage {id_image}")
         plt.show()
 
 
