@@ -82,7 +82,7 @@ def print_general_kp_matches_infos(
             f"percentage of {cropped_sift_radical} keypoints in image {id_image}",
             len(kps[id_image]) / (y_lengths[id_image] * x_lengths[id_image]) * 100.0,
         )
-    print("number of unfiltered {cropped_sift_radical} matches", len(matches))
+    print(f"number of unfiltered {cropped_sift_radical} matches", len(matches))
     print(
         f"number of good {cropped_sift_radical} matches at a precision of {epsilon} pixels: ",
         len(good_matches),
