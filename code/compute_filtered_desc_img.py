@@ -148,9 +148,9 @@ if __name__ == "__main__":
         mean_abs_curvs = compute_mean_abs_curv_arr(abs_eigvals)
         # mask the pixels with a mean absolute curvature below the chosen percentile
         # mask array is same shape as feature compute and therefore whole image
-        masked_array = np.zeros(shape=(float_ims[id_image].shape[:2]), dtype=np.int32)
+        mask_array = np.zeros(shape=(float_ims[id_image].shape[:2]), dtype=np.int32)
         # compute percentile only in subimage
-        masked_array[y_slice, x_slice] = mask_percentile(
+        mask_array[y_slice, x_slice] = mask_percentile(
             mean_abs_curvs[y_slice, x_slice], percentile=percentile
         )
 
@@ -168,9 +168,9 @@ if __name__ == "__main__":
         print(
             f"number of pixels in subimage: {y_lengths[id_image] * x_lengths[id_image]}"
         )
-        print(f"number of filtered accepted pixels: {np.sum(masked_array)}")
+        print(f"number of filtered accepted pixels: {np.sum(mask_array)}")
         print(
-            f"percentage of filtered accepted pixels: {np.sum(masked_array) / (y_lengths[id_image] * x_lengths[id_image])}"
+            f"percentage of filtered accepted pixels: {np.sum(mask_array) / (y_lengths[id_image] * x_lengths[id_image])}"
         )
 
         before = datetime.now()
@@ -182,7 +182,7 @@ if __name__ == "__main__":
             y_lengths[id_image],
             x_starts[id_image],
             x_lengths[id_image],
-            mask_array=masked_array,
+            mask_array=mask_array,
         )
         after = datetime.now()
         print(f"desc computation end for image {id_image}", after)

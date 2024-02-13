@@ -75,7 +75,7 @@ def sort_matches_by_distance(matches_list):
 
 if __name__ == "__main__":
 
-    # load keypoints coordinates
+    # load coordinates of original keypoints,(so they can be absent from the matched keypoints)
     kp_coords = [
         np.load(f"{descrip_path}/{kp_coords_filenames[id_image]}.npy")
         for id_image in range(2)

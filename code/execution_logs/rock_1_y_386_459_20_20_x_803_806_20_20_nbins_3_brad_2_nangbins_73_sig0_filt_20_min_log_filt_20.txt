@@ -37,3 +37,73 @@ y_starts = [386, 459]
 2024-02-12 17:09:29,693 - Script print_pipe_hparams.py is done.
 
 2024-02-12 17:09:29,693 - Run the script imgs_preprocessing.py
+2024-02-12 17:09:31,915 - shapes of images (1080, 1920) (1080, 1920)
+
+2024-02-12 17:09:31,915 - Script imgs_preprocessing.py is done.
+
+2024-02-12 17:09:31,915 - Run the script compute_desc_img.py
+2024-02-12 17:10:52,388 - feat computation beginning for image 0: 2024-02-12 17:09:33.576195
+feat computation end for image 0 2024-02-12 17:09:53.447348
+feat compute time for image 0 0:00:19.871153
+shape of overall_features[0] of image 0 (1080, 1920, 2)
+filter pixel by mean absolute curvature percentile in subimage
+Min mean curvature: 0.0
+Max mean curvature: 0.05298895016312599
+Mean mean curvature: 0.018078608438372612
+Standard deviation of the mean curvatures: 0.01270684227347374
+Percentile 20%: 0.007881503552198521
+number of pixels in subimage: 400
+number of filtered accepted pixels: 320
+percentage of filtered accepted pixels: 80.0
+desc computation beginning for image 0 2024-02-12 17:10:01.437788
+desc computation end for image 0 2024-02-12 17:10:23.261513
+desc compute time for image 0 0:00:21.823725
+feat computation beginning for image 1: 2024-02-12 17:10:23.261513
+feat computation end for image 1 2024-02-12 17:10:34.196898
+feat compute time for image 1 0:00:10.935385
+shape of overall_features[0] of image 1 (1080, 1920, 2)
+filter pixel by mean absolute curvature percentile in subimage
+Min mean curvature: 0.0
+Max mean curvature: 0.056369487196207047
+Mean mean curvature: 0.018642254173755646
+Standard deviation of the mean curvatures: 0.012943082489073277
+Percentile 20%: 0.008615612238645676
+number of pixels in subimage: 400
+number of filtered accepted pixels: 320
+percentage of filtered accepted pixels: 80.0
+desc computation beginning for image 1 2024-02-12 17:10:41.873302
+desc computation end for image 1 2024-02-12 17:10:51.965436
+desc compute time for image 1 0:00:10.092134
+
+2024-02-12 17:10:52,388 - Script compute_desc_img.py is done.
+
+2024-02-12 17:10:52,388 - Run the script compute_distances.py
+2024-02-12 17:10:57,464 - same number of descriptors and coordinates for image 0: True
+also equal to the number of pixels: False
+same number of descriptors and coordinates for image 1: True
+also equal to the number of pixels: False
+Start computing distances: 2024-02-12 17:10:54.282043
+End computing distances: 2024-02-12 17:10:57.031748
+Compute time: 0:00:02.749705
+Chosen distance type: min
+
+2024-02-12 17:10:57,464 - Script compute_distances.py is done.
+
+2024-02-12 17:10:57,464 - Run the script create_cv_objs.py
+2024-02-12 17:10:59,442 - finished creating opencv objects
+beginning saving opencv objects to file
+finished saving kp_pairs
+finished saving matches
+finished saving keypoints
+
+2024-02-12 17:10:59,443 - Script create_cv_objs.py is done.
+
+2024-02-12 17:10:59,444 - All scripts are done. Launch Blender or a display script.
+
+
+2024-02-12 17:11:01,847 - Start running the post blender pipeline
+2024-02-12 17:11:01,847 - Run the script display_matches.py
+2024-02-12 17:11:04,071 - 
+2024-02-12 17:11:04,071 - Script display_matches.py is done.
+
+2024-02-12 17:11:04,071 - All scripts are done. The pipeline is finished.
