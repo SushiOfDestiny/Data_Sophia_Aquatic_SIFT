@@ -31,6 +31,15 @@ def draw_points_in_camera_frame(pt_list, ob_name, cam):
     pt_list_global = [cam.matrix_world @ pt for pt in pt_list]
     draw_points(pt_list_global, ob_name)
 
+def draw_ray(pt_world, cam, ray_name):
+    me = bpy.data.meshes.new(ray_name + "Mesh")
+    ob = bpy.data.objects.new(ray_name, me)
+
+    me.from_pydata([cam.location, pt_world], [(0, 1)], [])
+    me.update()
+
+    bpy.context.collection.objects.link(ob)
+
 # distance to canvas = f/d, where f is the camera's focal length and d is the sensor size
 # f = 0.05
 # d = 0.036
