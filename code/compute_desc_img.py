@@ -142,7 +142,109 @@ def filter_by_mean_abs_curv(
         mean_abs_curvs[y_slice, x_slice], percentile=percentile
     )
 
-    return mask_array, mean_abs_curvs, y_slice, x_slice
+    return masked_array, mean_abs_curvs, y_slice, x_slice
+
+def filter_by_std_neighbor_curv(
+        float_im, eigvals, y_start, y_length, x_start, x_length, percentile, bin_radius
+):
+    """
+    Filter the pixels of an image by a given percentile of standard deviation absolute curvature in a neighborhood
+    
+    Arguments:
+    float_im: numpy array of shape (h, w) containing the image
+    eigvals: numpy array of shape (h, w) containing the eigenvalues (curvature values) for each pixel
+    y_start, x_start: int, the start of the subimage
+    percentile: int, the percentile to use for filtering
+
+    Returns:
+    - masked_array: numpy array of shape (h, w) containing the filtered pixel mask    
+    """
+
+    y_slice = slice(y_start, y_start + y_length)
+    x_slice = slice(x_start, x_start + x_length)
+
+    eigval_means = np.mean(eigvals, axis=2) # compute mean of curvature values for each pixel
+
+    bins_std = np.zeros(shape=(y_length, x_length), dtype=np.float32)
+    for y in range(bin_radius, bins_std.shape[0]-bin_radius):
+        for x in range(bin_radius, bins_std.shape[1]-bin_radius):
+            bins_std[y, x] = np.std(eigval_means[y-bin_radius:y+bin_radius, x-bin_radius, x+bin_radius])
+    
+    # Compute percentile prefiltering mask
+    mask = np.zeros(shape=float_im.shape[:2], dtype=bool)
+    threshold = np.percentile(bins_std, percentile)
+    mask[y_slice, x_slice] = bins_std > threshold
+    
+    return mask
+
+
+# @njit(parallel=True)
+# def filter_compute_desc_pixels(
+#     overall_features,
+#     y_start,
+#     y_length,
+#     x_start,
+#     x_length,
+#     mask_array,
+#     border_size=1,
+#     nb_bins=1,
+#     bin_radius=2,
+#     delta_angle=5.0,
+#     sigma=0,
+#     normalization_mode="global",
+# ):
+#     """
+#     Compute descriptors for a set of pixels in an image
+#     overall_features: list of numpy arrays, of same shape (h, w) as whole image, overall features for the image, computed within a border
+#     mask_array: numpy array of same shape (h, w) as whole image containing the mask for the pixels, pixels of value 0 are not computed
+#     return numpy arrays:
+#     numpy array of flattened descriptors, of shape (n, 3 * nb_bins * nb_bins * nb_angular_bins)
+#     numpy array of pixels coordinates in the same order as the pixels, of shape (n, 2), in the frame of the whole image
+#     where n is the number of filtered pixels (<= y_length * x_length)
+#     pixel_position is (x, y)
+#     """
+#     # initialize the descriptors and coords as numpy array
+#     nb_filtered_pixels = np.sum(np.where(mask_array > 0, 1, 0))
+
+#     nb_angular_bins = int(360.0 / delta_angle) + 1
+#     img_descriptors = np.zeros(
+#         shape=(nb_filtered_pixels, 3 * nb_bins * nb_bins * nb_angular_bins),
+#         dtype=np.float32,
+#     )
+#     coords = np.zeros(shape=(nb_filtered_pixels, 2), dtype=np.int32)
+
+#     # initialize index in arrays
+#     arr_idx = 0
+#     # use numba.prange for parallelization
+#     # for i in numba.prange(y_start, y_start + y_length):
+#     for i in numba.prange(y_start, y_start + y_length):
+#         # for j in numba.prange(x_start, x_start + x_length):  # careful about prange
+#         for j in range(x_start, x_start + x_length):  # careful about prange
+#             if mask_array[i, j] > 0:
+#                 # ensure kp_position is (horizontal=rows, vertical=cols)
+#                 pixel_position = (j, i)
+
+#                 descrip = desc.compute_descriptor_histograms_1_2_rotated(
+#                     overall_features_1_2=overall_features,
+#                     kp_position=pixel_position,
+#                     nb_bins=nb_bins,
+#                     bin_radius=bin_radius,
+#                     delta_angle=delta_angle,
+#                     sigma=sigma,
+#                     normalization_mode=normalization_mode,
+#                 )
+
+#                 # flatten the list
+#                 flat_descrip = desc.flatten_descriptor(descrip)
+#                 img_descriptors[arr_idx] = flat_descrip
+#                 coords[arr_idx] = np.array(pixel_position)
+
+#                 # update array index
+#                 arr_idx += 1
+
+#     print(np.sum(coords[:, 0] == 0))
+
+#     return img_descriptors, coords
 
 
 @njit(parallel=True)
