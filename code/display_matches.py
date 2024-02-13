@@ -69,6 +69,60 @@ def display_match(
         plt.show()
 
 
+def display_matches(
+    ims,
+    match_list,
+    kps_coords,
+    show_plot=False,
+    save_path="None",
+    filename_prefix=None,
+    dpi=800,
+    epsilon=1,
+    distance_type="min",
+    im_names=None,
+):
+    """
+    Plot a match between the 2 images
+    ims: list of 2 images, each being a numpy array
+    dmatch: DMatch object
+    kps_coords: list of 2 numpy arrays of shape (n, 2), each containing the coordinates of the keypoints of the image, coordinates are (x, y)
+    show_plot: boolean, whether to display the plot or not
+    save_path: string, path to the directory where the image should be saved
+    filename_prefix: string, beginning of name of the file to save the image as
+    dpi: int, resolution of the saved image in dots per inch
+    """
+    matched_kps_pos = [
+        (
+            kps_coords[0][match[0].queryIdx],
+            kps_coords[1][match[0].trainIdx],
+        )
+        for match in match_list
+    ]
+
+    fig, axs = plt.subplots(1, 2, figsize=(20, 10))
+
+    for id_image in range(2):
+        axs[id_image].imshow(ims[id_image], cmap="gray")
+        for id_match in range(len(match_list)):
+            axs[id_image].scatter(
+                matched_kps_pos[id_match][id_image][0],
+                matched_kps_pos[id_match][id_image][1],
+                c="r",
+                s=10,
+            )
+
+    if save_path is not None and filename_prefix is not None:
+        filename_suffix = f"_{matched_kps_pos[0][0]}_{matched_kps_pos[0][1]}_{matched_kps_pos[1][0]}_{matched_kps_pos[1][1]}"
+        if not os.path.exists(save_path):
+            os.makedirs(save_path)
+        plt.savefig(
+            f"{save_path}/{filename_prefix}_{filename_suffix}_multi.png", dpi=dpi
+        )
+
+    if show_plot:
+        plt.show()
+
+
 def print_general_kp_matches_infos(
     y_lengths, x_lengths, kps, matches, good_matches, epsilon
 ):
@@ -87,7 +141,7 @@ def print_general_kp_matches_infos(
             f"percentage of {cropped_sift_radical} keypoints in image {id_image}",
             len(kps[id_image]) / (y_lengths[id_image] * x_lengths[id_image]) * 100.0,
         )
-    print("number of unfiltered {cropped_sift_radical} matches", len(matches))
+    print(f"number of unfiltered {cropped_sift_radical} matches", len(matches))
     print(
         f"number of good {cropped_sift_radical} matches at a precision of {epsilon} pixels: ",
         len(good_matches),
@@ -207,26 +261,38 @@ if __name__ == "__main__":
 
     # look at some matches
 
-    chosen_matches_idx = []
+    chosen_matches_idx = list(range(2))
     for match_idx in chosen_matches_idx:
         # display 1 match, object here is not DMatch, but a couple of DMatch, as Sift returns
         # we get here only the Dmatch
         chosen_Dmatch = good_matches[match_idx][0]
 
+        # # display the match
+        # display_match(
+        #     ims,
+        #     chosen_Dmatch,
+        #     kps_coords,
+        #     show_plot=True,
+        #     # save_path=filtered_kp_path,  # comment or pass None to not save the image
+        #     filename_prefix=correct_match_filename_prefix,
+        #     dpi=800,
+        #     im_names=im_names,
+        # )
+
         # display the match
-        display_match(
+        display_matches(
             ims,
-            chosen_Dmatch,
+            good_matches[match_idx : match_idx + 1],
             kps_coords,
             show_plot=True,
             # save_path=filtered_kp_path,  # comment or pass None to not save the image
-            filename_prefix=correct_match_filename_prefix,
+            filename_prefix=None,
             dpi=800,
             im_names=im_names,
         )
 
         # display topological properties
-        chosen_kps = [kps[0][chosen_Dmatch.queryIdx], kps[1][chosen_Dmatch.trainIdx]]
+        # chosen_kps = [kps[0][chosen_Dmatch.queryIdx], kps[1][chosen_Dmatch.trainIdx]]
         # vh.topological_visualization_pipeline(
         #     kps=chosen_kps,
         #     uint_ims=ims,
@@ -248,6 +314,16 @@ if __name__ == "__main__":
         #         descriptor_name=f"Descriptor of the match {match_idx} in {im_names[id_image]}",
         #         show_plot=False,
         #     )
+
+    # display random matches
+    rd_idx = np.random.choice(len(good_matches), 10)
+    rd_good_matches = [good_matches[i] for i in rd_idx]
+    display_matches(ims, rd_good_matches, kps_coords, show_plot=True, im_names=im_names)
+
+    # display random b
+
+    # stop
+    sys.exit()
 
     # Look at information about the curvatures and gradients of the good and bad keypoints
     print(f"feat computation beginning for both images")
