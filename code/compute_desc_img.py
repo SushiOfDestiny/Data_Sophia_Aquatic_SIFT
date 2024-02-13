@@ -173,6 +173,54 @@ def filter_compute_desc_pixels(
     return img_descriptors, coords
 
 
+def print_info_curvatures(masked_array, mean_abs_curvs, y_slice, x_slice):
+    """
+    print some stats about mean curvatures and filtered points
+    y_slices, x_slices: slice objects to define the subimage (ban also be lists)
+    """
+    print(f"Min mean curvature: {np.min(mean_abs_curvs[y_slice, x_slice])}")
+    print(f"Max mean curvature: {np.max(mean_abs_curvs[y_slice, x_slice])}")
+    print(f"Mean mean curvature: {np.mean(mean_abs_curvs[y_slice, x_slice])}")
+    print(
+        f"Standard deviation of the mean curvatures: {np.std(mean_abs_curvs[y_slice, x_slice])}"
+    )
+    print(
+        f"Percentile {percentile}%: {np.percentile(mean_abs_curvs[y_slice, x_slice], percentile)}"
+    )
+
+    print(f"number of pixels in subimage: {y_lengths[id_image] * x_lengths[id_image]}")
+    print(f"number of filtered accepted pixels: {np.sum(masked_array)}")
+    print(
+        f"percentage of filtered accepted pixels: {100. * np.sum(masked_array) / (y_lengths[id_image] * x_lengths[id_image])}"
+    )
+
+
+def filter_by_mean_abs_curv(
+    float_im, abs_eigvals, y_start, y_length, x_start, x_length, percentile
+):
+    """
+    Filter the pixels of an image by a given percentile of mean absolute curvature
+    float_im: numpy array of shape (h, w) containing the image
+    abs_eigvals: numpy array of shape (h, w) containing the absolute value of eigenvalue for each pixel
+    y_start, x_start: int, the start of the subimage
+    percentile: int, the percentile to use for filtering
+    return: numpy array of shape (h, w) containing the mask for the pixels
+    return also the mean absolute curvature array, and the slice of the subimage
+    """
+    y_slice = slice(y_start, y_start + y_length)
+    x_slice = slice(x_start, x_start + x_length)
+    mean_abs_curvs = compute_mean_abs_curv_arr(abs_eigvals)
+    # mask the pixels with a mean absolute curvature below the chosen percentile
+    # mask array is same shape as feature compute and therefore whole image
+    masked_array = np.zeros(shape=(float_im.shape[:2]), dtype=np.int32)
+    # compute percentile only in subimage
+    masked_array[y_slice, x_slice] = mask_percentile(
+        mean_abs_curvs[y_slice, x_slice], percentile=percentile
+    )
+
+    return masked_array, mean_abs_curvs, y_slice, x_slice
+
+
 if __name__ == "__main__":
 
     # Load preprocessed images as numpy arrays
@@ -218,41 +266,32 @@ if __name__ == "__main__":
             print(f"desc compute time for image {id_image}", after - before)
         else:
             print("filter pixel by mean absolute curvature percentile in subimage")
-            y_slice = slice(
-                y_starts[id_image], y_starts[id_image] + y_lengths[id_image]
+            print(
+                f"prefiltering by mean absolute curvature beginning for image {id_image}",
+                before,
             )
-            x_slice = slice(
-                x_starts[id_image], x_starts[id_image] + x_lengths[id_image]
-            )
-            abs_eigvals = overall_features[1]
-            mean_abs_curvs = compute_mean_abs_curv_arr(abs_eigvals)
-            # mask the pixels with a mean absolute curvature below the chosen percentile
-            # mask array is same shape as feature compute and therefore whole image
-            masked_array = np.zeros(
-                shape=(float_ims[id_image].shape[:2]), dtype=np.int32
-            )
-            # compute percentile only in subimage
-            masked_array[y_slice, x_slice] = mask_percentile(
-                mean_abs_curvs[y_slice, x_slice], percentile=percentile
+            before = datetime.now()
+
+            masked_array, mean_abs_curvs, y_slice, x_slice = filter_by_mean_abs_curv(
+                float_ims[id_image],
+                overall_features[1],
+                y_starts[id_image],
+                y_lengths[id_image],
+                x_starts[id_image],
+                x_lengths[id_image],
+                percentile,
             )
 
-            # print some stats about mean curvatures and filtered points
-            print(f"Min mean curvature: {np.min(mean_abs_curvs[y_slice, x_slice])}")
-            print(f"Max mean curvature: {np.max(mean_abs_curvs[y_slice, x_slice])}")
-            print(f"Mean mean curvature: {np.mean(mean_abs_curvs[y_slice, x_slice])}")
-            print(
-                f"Standard deviation of the mean curvatures: {np.std(mean_abs_curvs[y_slice, x_slice])}"
-            )
-            print(
-                f"Percentile {percentile}%: {np.percentile(mean_abs_curvs[y_slice, x_slice], percentile)}"
-            )
+            print_info_curvatures(masked_array, mean_abs_curvs, y_slice, x_slice)
 
+            after = datetime.now()
             print(
-                f"number of pixels in subimage: {y_lengths[id_image] * x_lengths[id_image]}"
+                f"prefiltering by mean absolute curvature end for image {id_image}",
+                after,
             )
-            print(f"number of filtered accepted pixels: {np.sum(masked_array)}")
             print(
-                f"percentage of filtered accepted pixels: {100. * np.sum(masked_array) / (y_lengths[id_image] * x_lengths[id_image])}"
+                f"prefiltering by mean absolute curvature compute time for image {id_image}",
+                after - before,
             )
 
             before = datetime.now()
@@ -265,6 +304,11 @@ if __name__ == "__main__":
                 x_starts[id_image],
                 x_lengths[id_image],
                 mask_array=masked_array,
+                nb_bins=nb_bins,
+                bin_radius=bin_radius,
+                delta_angle=delta_angle,
+                sigma=sigma,
+                normalization_mode=normalization_mode,
             )
             after = datetime.now()
             print(f"desc computation end for image {id_image}", after)
@@ -284,22 +328,16 @@ if __name__ == "__main__":
         # plt.show()
 
         # save img_descriptors and list of coordinates
-
-        if not use_filt:
-            np.save(
-                f"{descrip_path}/{descrip_filenames[id_image]}",
-                img_descriptors,
-            )
-            np.save(
-                f"{descrip_path}/{kp_coords_filenames[id_image]}",
-                coords,
-            )
-        else:
-            np.save(
-                f"{descrip_path}/{descrip_filenames[id_image]}",
-                filtered_imgs_descs,
-            )
-            np.save(
-                f"{descrip_path}/{kp_coords_filenames[id_image]}",
-                filtered_kp_coords,
-            )
+        objects_to_save = (
+            [img_descriptors, coords]
+            if use_filt
+            else [filtered_imgs_descs, filtered_kp_coords]
+        )
+        np.save(
+            f"{descrip_path}/{descrip_filenames[id_image]}",
+            objects_to_save[0],
+        )
+        np.save(
+            f"{descrip_path}/{kp_coords_filenames[id_image]}",
+            objects_to_save[1],
+        )

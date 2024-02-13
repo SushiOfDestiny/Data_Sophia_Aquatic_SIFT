@@ -121,7 +121,7 @@ def compute_minimal_distances_matches_pairs(subimage_descriptors, y_lengths, x_l
     subimage_descriptors: list of 2 arrays of descriptors, each for 1 image, each containing as much element as pixels, each element
     of shape (3 * nb_bins * nb_bins * nb_angular_bins, )
     return:
-    - 1D numpy array of distances_matches, with distances_matches[id_pix1] = minimal distance between pixel of image1 at index id_pix1 and any pixel of image 2
+    - 1D numpy array of distances_matches of length the number of prefiltered keypoints, with distances_matches[id_pix1] = minimal distance between pixel of image1 at index id_pix1 (indice in the prefiltered keypoints list) and any pixel of image 2
     - 1D numpy array of indices in subimage_coords[0] of the pixel in image 1 that appears in the match in distances_matches, at the same position, therefore
     always equals to np.arange(len(distances_matches))
     - 1D numpy array of indices in subimage_coords[1] of the pixel in image 2 that appears in the match in distances_matches, at the same position
