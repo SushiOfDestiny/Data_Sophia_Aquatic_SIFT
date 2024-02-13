@@ -19,60 +19,71 @@ from computation_pipeline_hyper_params import *
 from filenames_creation import *
 
 
-@njit(parallel=True)
-def compute_desc_pixels(
-    overall_features,
-    y_start,
-    y_length,
-    x_start,
-    x_length,
-    border_size=1,
-    nb_bins=1,
-    bin_radius=2,
-    delta_angle=5.0,
-    sigma=0,
-    normalization_mode="global",
-):
+def compute_non_null_coords(mask_array):
     """
-    Compute descriptors for a set of pixels in an image
-    overall_features: overall features for the image, computed within a border
-    return numpy arrays:
-    numpyarray of flattened descriptors, of shape (n, 3 * nb_bins * nb_bins * nb_angular_bins)
-    numpy array of pixels coordinates in the same order as the pixels, of shape (n, 2)
-    where n is the number of pixels = y_length * x_length
-    pixel_position is (x, y)
+    Compute the indices of non null pixels in a mask array
+    mask_array: numpy array of shape (h, w) containing the mask for the pixels
+    return: numpy array of shape (n, 2) containing the coordinates of non null pixels
+    coordinates are (x, y)
     """
-    # initialize the descriptors and coords array
-    nb_angular_bins = int(360.0 / delta_angle) + 1
-    n = y_length * x_length
-    img_descriptors = np.zeros(
-        (n, 3 * nb_bins * nb_bins * nb_angular_bins), dtype=np.float32
-    )
-    coords = np.zeros((n, 2), dtype=np.int32)
-    # use numba.prange for parallelization
-    for i in numba.prange(y_start, y_start + y_length):
-        # for j in numba.prange(x_start, x_start + x_length):  # careful about prange
-        for j in range(x_start, x_start + x_length):  # careful about prange
-            # ensure kp_position is (horizontal=rows, vertical=cols)
-            pixel_position = (j, i)
+    coords = np.array([np.array([j, i]) for (i, j) in np.argwhere(mask_array > 0)])
+    return coords
 
-            descrip = desc.compute_descriptor_histograms_1_2_rotated(
-                overall_features_1_2=overall_features,
-                kp_position=pixel_position,
-                nb_bins=nb_bins,
-                bin_radius=bin_radius,
-                delta_angle=delta_angle,
-                sigma=sigma,
-                normalization_mode=normalization_mode,
-            )
 
-            # flatten the list
-            flat_descrip = desc.flatten_descriptor(descrip)
-            arr_idx = (i - y_start) * x_length + (j - x_start)
-            img_descriptors[arr_idx] = flat_descrip
-            coords[arr_idx] = np.array(pixel_position)
+# @njit(parallel=True)
+# def compute_desc_pixels(
+#     overall_features,
+#     y_start,
+#     y_length,
+#     x_start,
+#     x_length,
+#     border_size=1,
+#     nb_bins=1,
+#     bin_radius=2,
+#     delta_angle=5.0,
+#     sigma=0,
+#     normalization_mode="global",
+# ):
+#     """
+#     Compute descriptors for a set of pixels in an image
+#     overall_features: overall features for the image, computed within a border
+#     return numpy arrays:
+#     numpyarray of flattened descriptors, of shape (n, 3 * nb_bins * nb_bins * nb_angular_bins)
+#     numpy array of pixels coordinates in the same order as the pixels, of shape (n, 2)
+#     where n is the number of pixels = y_length * x_length
+#     pixel_position is (x, y)
+#     """
+#     # initialize the descriptors and coords array
+#     nb_angular_bins = int(360.0 / delta_angle) + 1
+#     n = y_length * x_length
+#     imgs_descs = np.zeros(
+#         (n, 3 * nb_bins * nb_bins * nb_angular_bins), dtype=np.float32
+#     )
+#     coords = np.zeros((n, 2), dtype=np.int32)
+#     # use numba.prange for parallelization
+#     for i in numba.prange(y_start, y_start + y_length):
+#         # for j in numba.prange(x_start, x_start + x_length):  # careful about prange
+#         for j in range(x_start, x_start + x_length):  # careful about prange
+#             # ensure kp_position is (horizontal=rows, vertical=cols)
+#             pixel_position = (j, i)
 
-    return img_descriptors, coords
+#             descrip = desc.compute_descriptor_histograms_1_2_rotated(
+#                 overall_features_1_2=overall_features,
+#                 kp_position=pixel_position,
+#                 nb_bins=nb_bins,
+#                 bin_radius=bin_radius,
+#                 delta_angle=delta_angle,
+#                 sigma=sigma,
+#                 normalization_mode=normalization_mode,
+#             )
+
+#             # flatten the list
+#             flat_descrip = desc.flatten_descriptor(descrip)
+#             arr_idx = (i - y_start) * x_length + (j - x_start)
+#             imgs_descs[arr_idx] = flat_descrip
+#             coords[arr_idx] = np.array(pixel_position)
+
+#     return imgs_descs, coords
 
 
 def compute_mean_abs_curv_arr(eigvals):
@@ -108,34 +119,6 @@ def mask_percentile(arr, percentile=50, threshold=0.001):
     return mask_array
 
 
-def print_info_curvatures(
-    masked_array, mean_abs_curvs, y_slice, x_slice, y_length, x_length, percentile
-):
-    """
-    print some stats about mean curvatures and filtered points
-    masked_array: numpy array of shape (h, w) containing the mask for the pixels
-    mean_abs_curvs: numpy array of shape (h, w) containing the mean absolute curvature for each pixel
-    y_slices, x_slices: slice objects to define the subimage (ban also be lists)
-    y_length, x_length: int, the length of the subimage
-    percentile: int, the percentile to use for filtering
-    """
-    print(f"Min mean curvature: {np.min(mean_abs_curvs[y_slice, x_slice])}")
-    print(f"Max mean curvature: {np.max(mean_abs_curvs[y_slice, x_slice])}")
-    print(f"Mean mean curvature: {np.mean(mean_abs_curvs[y_slice, x_slice])}")
-    print(
-        f"Standard deviation of the mean curvatures: {np.std(mean_abs_curvs[y_slice, x_slice])}"
-    )
-    print(
-        f"Percentile {percentile}%: {np.percentile(mean_abs_curvs[y_slice, x_slice], percentile)}"
-    )
-
-    print(f"number of pixels in subimage: {y_length * x_length}")
-    print(f"number of filtered accepted pixels: {np.sum(masked_array)}")
-    print(
-        f"percentage of filtered accepted pixels: {100. * np.sum(masked_array) / (y_length * x_length)}"
-    )
-
-
 def filter_by_mean_abs_curv(
     float_im, abs_eigvals, y_start, y_length, x_start, x_length, percentile
 ):
@@ -153,86 +136,17 @@ def filter_by_mean_abs_curv(
     mean_abs_curvs = compute_mean_abs_curv_arr(abs_eigvals)
     # mask the pixels with a mean absolute curvature below the chosen percentile
     # mask array is same shape as feature compute and therefore whole image
-    masked_array = np.zeros(shape=(float_im.shape[:2]), dtype=np.int32)
+    mask_array = np.zeros(shape=(float_im.shape[:2]), dtype=np.int32)
     # compute percentile only in subimage
-    masked_array[y_slice, x_slice] = mask_percentile(
+    mask_array[y_slice, x_slice] = mask_percentile(
         mean_abs_curvs[y_slice, x_slice], percentile=percentile
     )
 
-    return masked_array, mean_abs_curvs, y_slice, x_slice
-
-
-# @njit(parallel=True)
-# def filter_compute_desc_pixels(
-#     overall_features,
-#     y_start,
-#     y_length,
-#     x_start,
-#     x_length,
-#     mask_array,
-#     border_size=1,
-#     nb_bins=1,
-#     bin_radius=2,
-#     delta_angle=5.0,
-#     sigma=0,
-#     normalization_mode="global",
-# ):
-#     """
-#     Compute descriptors for a set of pixels in an image
-#     overall_features: list of numpy arrays, of same shape (h, w) as whole image, overall features for the image, computed within a border
-#     mask_array: numpy array of same shape (h, w) as whole image containing the mask for the pixels, pixels of value 0 are not computed
-#     return numpy arrays:
-#     numpy array of flattened descriptors, of shape (n, 3 * nb_bins * nb_bins * nb_angular_bins)
-#     numpy array of pixels coordinates in the same order as the pixels, of shape (n, 2), in the frame of the whole image
-#     where n is the number of filtered pixels (<= y_length * x_length)
-#     pixel_position is (x, y)
-#     """
-#     # initialize the descriptors and coords as numpy array
-#     nb_filtered_pixels = np.sum(np.where(mask_array > 0, 1, 0))
-
-#     nb_angular_bins = int(360.0 / delta_angle) + 1
-#     img_descriptors = np.zeros(
-#         shape=(nb_filtered_pixels, 3 * nb_bins * nb_bins * nb_angular_bins),
-#         dtype=np.float32,
-#     )
-#     coords = np.zeros(shape=(nb_filtered_pixels, 2), dtype=np.int32)
-
-#     # initialize index in arrays
-#     arr_idx = 0
-#     # use numba.prange for parallelization
-#     # for i in numba.prange(y_start, y_start + y_length):
-#     for i in numba.prange(y_start, y_start + y_length):
-#         # for j in numba.prange(x_start, x_start + x_length):  # careful about prange
-#         for j in range(x_start, x_start + x_length):  # careful about prange
-#             if mask_array[i, j] > 0:
-#                 # ensure kp_position is (horizontal=rows, vertical=cols)
-#                 pixel_position = (j, i)
-
-#                 descrip = desc.compute_descriptor_histograms_1_2_rotated(
-#                     overall_features_1_2=overall_features,
-#                     kp_position=pixel_position,
-#                     nb_bins=nb_bins,
-#                     bin_radius=bin_radius,
-#                     delta_angle=delta_angle,
-#                     sigma=sigma,
-#                     normalization_mode=normalization_mode,
-#                 )
-
-#                 # flatten the list
-#                 flat_descrip = desc.flatten_descriptor(descrip)
-#                 img_descriptors[arr_idx] = flat_descrip
-#                 coords[arr_idx] = np.array(pixel_position)
-
-#                 # update array index
-#                 arr_idx += 1
-
-#     print(np.sum(coords[:, 0] == 0))
-
-#     return img_descriptors, coords
+    return mask_array, mean_abs_curvs, y_slice, x_slice
 
 
 @njit(parallel=True)
-def filter_compute_desc_pixels(
+def compute_desc_pixels(
     overall_features,
     coords,
     border_size=1,
@@ -243,9 +157,10 @@ def filter_compute_desc_pixels(
     normalization_mode="global",
 ):
     """
-    Compute descriptors for a set of pixels in an image
+    Compute descriptors for a set of pixels coordinates in an image
     overall_features: list of numpy arrays, of same shape (h, w) as whole image, overall features for the image, computed within a border
-    coords: np.array of coordinates of pixels to compute descriptor for (in the whole image), shape (n, 2), pixel_position is (x, y)
+    coords: np.array of coordinates of pixels to compute descriptor for (in the whole image), shape (n, 2),
+    pixel_position is (x, y)
     return numpy arrays:
     numpy array of flattened descriptors, of shape (n, 3 * nb_bins * nb_bins * nb_angular_bins)
     """
@@ -253,7 +168,7 @@ def filter_compute_desc_pixels(
     nb_filtered_pixels = len(coords)
 
     nb_angular_bins = int(360.0 / delta_angle) + 1
-    img_descriptors = np.zeros(
+    imgs_descs = np.zeros(
         shape=(nb_filtered_pixels, 3 * nb_bins * nb_bins * nb_angular_bins),
         dtype=np.float32,
     )
@@ -274,9 +189,37 @@ def filter_compute_desc_pixels(
 
         # flatten the list
         flat_descrip = desc.flatten_descriptor(descrip)
-        img_descriptors[pix_idx] = flat_descrip
+        imgs_descs[pix_idx] = flat_descrip
 
-    return img_descriptors
+    return imgs_descs
+
+
+def print_info_curvatures(
+    mask_array, mean_abs_curvs, y_slice, x_slice, y_length, x_length, percentile
+):
+    """
+    print some stats about mean curvatures and filtered points
+    mask_array: numpy array of shape (h, w) containing the mask for the pixels
+    mean_abs_curvs: numpy array of shape (h, w) containing the mean absolute curvature for each pixel
+    y_slices, x_slices: slice objects to define the subimage (ban also be lists)
+    y_length, x_length: int, the length of the subimage
+    percentile: int, the percentile to use for filtering
+    """
+    print(f"Min mean curvature: {np.min(mean_abs_curvs[y_slice, x_slice])}")
+    print(f"Max mean curvature: {np.max(mean_abs_curvs[y_slice, x_slice])}")
+    print(f"Mean mean curvature: {np.mean(mean_abs_curvs[y_slice, x_slice])}")
+    print(
+        f"Standard deviation of the mean curvatures: {np.std(mean_abs_curvs[y_slice, x_slice])}"
+    )
+    print(
+        f"Percentile {percentile}%: {np.percentile(mean_abs_curvs[y_slice, x_slice], percentile)}"
+    )
+
+    print(f"number of pixels in subimage: {y_length * x_length}")
+    print(f"number of filtered accepted pixels: {np.sum(mask_array)}")
+    print(
+        f"percentage of filtered accepted pixels: {100. * np.sum(mask_array) / (y_length * x_length)}"
+    )
 
 
 if __name__ == "__main__":
@@ -303,84 +246,18 @@ if __name__ == "__main__":
 
         # switch function call depending on use_filt
         if not use_filt:
+
             before = datetime.now()
             print(f"desc computation beginning for image {id_image}", before)
-            # pass the defined h-parameters
-            img_descriptors, coords = compute_desc_pixels(
-                overall_features,
-                y_starts[id_image],
-                y_lengths[id_image],
-                x_starts[id_image],
-                x_lengths[id_image],
-                border_size,
-                nb_bins=nb_bins,
-                bin_radius=bin_radius,
-                delta_angle=delta_angle,
-                sigma=sigma,
-                normalization_mode=normalization_mode,
-            )
-            after = datetime.now()
-            print(f"desc computation end for image {id_image}", after)
-            print(f"desc compute time for image {id_image}", after - before)
+
+            # create mask with ones only in subimage
+            mask_array = np.zeros(shape=(float_ims[id_image].shape[:2]), dtype=np.int32)
+            mask_array[
+                y_starts[id_image] : y_starts[id_image] + y_lengths[id_image],
+                x_starts[id_image] : x_starts[id_image] + x_lengths[id_image],
+            ] = 1
+
         else:
-            # print("filter pixel by mean absolute curvature percentile in subimage")
-            # print(
-            #     f"prefiltering by mean absolute curvature beginning for image {id_image}",
-            #     before,
-            # )
-            # before = datetime.now()
-
-            # masked_array, mean_abs_curvs, y_slice, x_slice = filter_by_mean_abs_curv(
-            #     float_ims[id_image],
-            #     overall_features[1],
-            #     y_starts[id_image],
-            #     y_lengths[id_image],
-            #     x_starts[id_image],
-            #     x_lengths[id_image],
-            #     percentile,
-            # )
-
-            # print_info_curvatures(
-            #     masked_array,
-            #     mean_abs_curvs,
-            #     y_slice,
-            #     x_slice,
-            #     y_lengths[id_image],
-            #     x_lengths[id_image],
-            #     percentile,
-            # )
-
-            # after = datetime.now()
-            # print(
-            #     f"prefiltering by mean absolute curvature end for image {id_image}",
-            #     after,
-            # )
-            # print(
-            #     f"prefiltering by mean absolute curvature compute time for image {id_image}",
-            #     after - before,
-            # )
-
-            # before = datetime.now()
-            # print(f"desc computation beginning for image {id_image}", before)
-            # # compute descriptors and coords only for filtered pixels
-            # filtered_imgs_descs, filtered_kp_coords = filter_compute_desc_pixels(
-            #     overall_features,
-            #     y_starts[id_image],
-            #     y_lengths[id_image],
-            #     x_starts[id_image],
-            #     x_lengths[id_image],
-            #     mask_array=masked_array,
-            #     nb_bins=nb_bins,
-            #     bin_radius=bin_radius,
-            #     delta_angle=delta_angle,
-            #     sigma=sigma,
-            #     normalization_mode=normalization_mode,
-            # )
-            # after = datetime.now()
-            # print(f"desc computation end for image {id_image}", after)
-            # print(f"desc compute time for image {id_image}", after - before)
-
-            # bug fix
             print("filter pixel by mean absolute curvature percentile in subimage")
             print(
                 f"prefiltering by mean absolute curvature beginning for image {id_image}",
@@ -388,7 +265,7 @@ if __name__ == "__main__":
             )
             before = datetime.now()
 
-            masked_array, mean_abs_curvs, y_slice, x_slice = filter_by_mean_abs_curv(
+            mask_array, mean_abs_curvs, y_slice, x_slice = filter_by_mean_abs_curv(
                 float_ims[id_image],
                 overall_features[1],
                 y_starts[id_image],
@@ -397,20 +274,6 @@ if __name__ == "__main__":
                 x_lengths[id_image],
                 percentile,
             )
-
-            print_info_curvatures(
-                masked_array,
-                mean_abs_curvs,
-                y_slice,
-                x_slice,
-                y_lengths[id_image],
-                x_lengths[id_image],
-                percentile,
-            )
-
-            # compute array of coordinates of filtered pixels, ie 2D indices of 1 values in the mask array
-            # in the frame of the whole image
-            filtered_kp_coords = np.argwhere(masked_array > 0)
 
             after = datetime.now()
             print(
@@ -422,27 +285,42 @@ if __name__ == "__main__":
                 after - before,
             )
 
-            before = datetime.now()
-            print(f"desc computation beginning for image {id_image}", before)
-            # compute descriptors and coords only for filtered pixels
-            filtered_imgs_descs = filter_compute_desc_pixels(
-                overall_features,
-                coords=filtered_kp_coords,
-                border_size=border_size,
-                nb_bins=nb_bins,
-                bin_radius=bin_radius,
-                delta_angle=delta_angle,
-                sigma=sigma,
-                normalization_mode=normalization_mode,
+            print_info_curvatures(
+                mask_array,
+                mean_abs_curvs,
+                y_slice,
+                x_slice,
+                y_lengths[id_image],
+                x_lengths[id_image],
+                percentile,
             )
-            after = datetime.now()
-            print(f"desc computation end for image {id_image}", after)
-            print(f"desc compute time for image {id_image}", after - before)
 
-            # print number of n such as img_descriptors[n] = 0.
-            print(
-                f"Number of empty filtered descriptors {np.sum([1 for descrip in filtered_imgs_descs if np.sum(descrip) == 0])}"
-            )
+        # compute coordinates of prefiltered pixels
+        kp_coords = compute_non_null_coords(mask_array)
+        print(f"coords array shape: {kp_coords.shape}")
+
+        before = datetime.now()
+        print(f"desc computation beginning for image {id_image}", before)
+
+        imgs_descs = compute_desc_pixels(
+            overall_features,
+            kp_coords,
+            border_size=border_size,
+            nb_bins=nb_bins,
+            bin_radius=bin_radius,
+            delta_angle=delta_angle,
+            sigma=sigma,
+            normalization_mode=normalization_mode,
+        )
+
+        after = datetime.now()
+        print(f"desc computation end for image {id_image}", after)
+        print(f"desc compute time for image {id_image}", after - before)
+
+        # print number of n such as imgs_descs[n] = 0.
+        print(
+            f"Number of empty filtered descriptors {np.sum([1 for descrip in imgs_descs if np.sum(descrip) == 0])}"
+        )
 
         # # plot the filtered pixels on each subimage side by side
         # fig, ax = plt.subplots(1, 2, figsize=(10, 5))
@@ -457,22 +335,12 @@ if __name__ == "__main__":
         #     ax[id_image].set_title(f"Filtered pixels in subimage {id_image}")
         # plt.show()
 
-        # save img_descriptors and list of coordinates
-        if not use_filt:
-            np.save(
-                f"{descrip_path}/{descrip_filenames[id_image]}",
-                img_descriptors,
-            )
-            np.save(
-                f"{descrip_path}/{kp_coords_filenames[id_image]}",
-                kp_coords,
-            )
-        else:
-            np.save(
-                f"{descrip_path}/{descrip_filenames[id_image]}",
-                filtered_imgs_descs,
-            )
-            np.save(
-                f"{descrip_path}/{kp_coords_filenames[id_image]}",
-                filtered_kp_coords,
-            )
+        # save imgs_descs and list of coordinates
+        np.save(
+            f"{descrip_path}/{descrip_filenames[id_image]}",
+            imgs_descs,
+        )
+        np.save(
+            f"{descrip_path}/{kp_coords_filenames[id_image]}",
+            kp_coords,
+        )
