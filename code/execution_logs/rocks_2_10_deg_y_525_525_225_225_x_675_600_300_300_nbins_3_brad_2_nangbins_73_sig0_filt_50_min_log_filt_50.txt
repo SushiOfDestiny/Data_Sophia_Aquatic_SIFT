@@ -1,0 +1,6 @@
+2024-02-13 14:15:06,879 - Start running the post blender pipeline
+2024-02-13 14:15:06,879 - Run the script display_matches.py
+2024-02-13 14:15:09,309 - 
+2024-02-13 14:15:09,309 - Script display_matches.py is done.
+
+2024-02-13 14:15:09,309 - All scripts are done. The pipeline is finished.

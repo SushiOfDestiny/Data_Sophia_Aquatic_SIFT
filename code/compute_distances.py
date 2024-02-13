@@ -24,44 +24,44 @@ from filenames_creation import *
 # first use bruteforce matching
 
 
-@njit
-def compute_distances_matches_pairs(subimage_descriptors, y_lengths, x_lengths):
-    """
-    Compute distances_matches between all pairs of descriptors from 2 images
-    subimage_descriptors: list of 2 arrays of descriptors, each for 1 image, each containing as much element as pixels, each element
-    of shape (3 * nb_bins * nb_bins * nb_angular_bins, )
-    return:
-    - 1D numpy array of distances_matches, with distances_matches[id_pix1 * nb_pix2 + id_pix2] = distance between pixel
-    of coords subimage_coords[0][id_pix1] of image 1 and pixel subimage_coords[2][id_pix2] of image 2
-    - 1D numpy array of indices in subimage_coords[0] of the pixel in image 1 that appears in the match in distances_matches, at the same position
-    - 1D numpy array of indices in subimage_coords[1] of the pixel in image 2 that appears in the match in distances_matches, at the same position
-    """
+# @njit
+# def compute_distances_matches_pairs(subimage_descriptors, y_lengths, x_lengths):
+#     """
+#     Compute distances_matches between all pairs of descriptors from 2 images
+#     subimage_descriptors: list of 2 arrays of descriptors, each for 1 image, each containing as much element as pixels, each element
+#     of shape (3 * nb_bins * nb_bins * nb_angular_bins, )
+#     return:
+#     - 1D numpy array of distances_matches, with distances_matches[id_pix1 * nb_pix2 + id_pix2] = distance between pixel
+#     of coords subimage_coords[0][id_pix1] of image 1 and pixel subimage_coords[2][id_pix2] of image 2
+#     - 1D numpy array of indices in subimage_coords[0] of the pixel in image 1 that appears in the match in distances_matches, at the same position
+#     - 1D numpy array of indices in subimage_coords[1] of the pixel in image 2 that appears in the match in distances_matches, at the same position
+#     """
 
-    # initialize null array of distances_matches
-    nb_matches = y_lengths[0] * x_lengths[0] * y_lengths[1] * x_lengths[1]
-    distances_matches = np.zeros((nb_matches,), dtype=np.float32)
-    idx1_matches = np.zeros((nb_matches,), dtype=np.int32)
-    idx2_matches = np.zeros((nb_matches,), dtype=np.int32)
+#     # initialize null array of distances_matches
+#     nb_matches = y_lengths[0] * x_lengths[0] * y_lengths[1] * x_lengths[1]
+#     distances_matches = np.zeros((nb_matches,), dtype=np.float32)
+#     idx1_matches = np.zeros((nb_matches,), dtype=np.int32)
+#     idx2_matches = np.zeros((nb_matches,), dtype=np.int32)
 
-    for idx_pixel_im1 in tqdm(range(len(subimage_descriptors[0]))):
+#     for idx_pixel_im1 in tqdm(range(len(subimage_descriptors[0]))):
 
-        descrip_pixel_im1 = subimage_descriptors[0][idx_pixel_im1]
+#         descrip_pixel_im1 = subimage_descriptors[0][idx_pixel_im1]
 
-        for idx_pixel_im2 in range(len(subimage_descriptors[1])):
+#         for idx_pixel_im2 in range(len(subimage_descriptors[1])):
 
-            descrip_pixel_im2 = subimage_descriptors[1][idx_pixel_im2]
+#             descrip_pixel_im2 = subimage_descriptors[1][idx_pixel_im2]
 
-            # compute index of distance in the distances_matches array
-            dist_idx = idx_pixel_im1 * len(subimage_descriptors[1]) + idx_pixel_im2
-            distances_matches[dist_idx] = desc.compute_descriptor_distance(
-                descrip_pixel_im1, descrip_pixel_im2
-            )
+#             # compute index of distance in the distances_matches array
+#             dist_idx = idx_pixel_im1 * len(subimage_descriptors[1]) + idx_pixel_im2
+#             distances_matches[dist_idx] = desc.compute_descriptor_distance(
+#                 descrip_pixel_im1, descrip_pixel_im2
+#             )
 
-            # store coordinates
-            idx1_matches[dist_idx] = idx_pixel_im1
-            idx2_matches[dist_idx] = idx_pixel_im2
+#             # store coordinates
+#             idx1_matches[dist_idx] = idx_pixel_im1
+#             idx2_matches[dist_idx] = idx_pixel_im2
 
-    return distances_matches, idx1_matches, idx2_matches
+#     return distances_matches, idx1_matches, idx2_matches
 
 
 # @njit(parallel=True)
@@ -229,13 +229,6 @@ if __name__ == "__main__":
             f"{descrip_path}/{kp_coords_filenames[id_image]}.npy"
         )
 
-        # Look at shapes
-        print(
-            f"same number of descriptors and coordinates for image {id_image}: {subimage_descriptors[id_image].shape[0] == subimage_coords[id_image].shape[0]}"
-        )
-        print(
-            f"also equal to the number of pixels: {subimage_descriptors[id_image].shape[0] == y_lengths[id_image] * x_lengths[id_image]}"
-        )
 
     # choose between all distances or minimal distances
 
