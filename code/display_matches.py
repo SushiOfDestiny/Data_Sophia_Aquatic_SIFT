@@ -286,23 +286,23 @@ if __name__ == "__main__":
     avg_descs = [avg_good_descs, avg_bad_descs]
     descs_names = [good_descs_names, bad_descs_names]
 
-    # for id_desc in range(2):
-    #     for id_image in range(2):
-    #         visu_desc.display_descriptor(
-    #             descriptor_histograms=unflatten_descriptor(
-    #                 avg_descs[id_desc][id_image],
-    #                 nb_bins=nb_bins,
-    #                 nb_angular_bins=nb_angular_bins,
-    #             ),
-    #             descriptor_name=descs_names[id_desc][id_image],
-    #             show_plot=False,
-    #         )
+    for id_desc in range(2):
+        for id_image in range(2):
+            visu_desc.display_descriptor(
+                descriptor_histograms=unflatten_descriptor(
+                    avg_descs[id_desc][id_image],
+                    nb_bins=nb_bins,
+                    nb_angular_bins=nb_angular_bins,
+                ),
+                descriptor_name=descs_names[id_desc][id_image],
+                show_plot=False,
+            )
 
-    # visu_desc.display_descriptor(
-    #         descriptor_histograms=unflatten_descriptor(kps_coords[match_idx])
-    # )
+    visu_desc.display_descriptor(
+            descriptor_histograms=unflatten_descriptor(kps_coords[match_idx])
+    )
 
-    # plt.show()
+    plt.show()
 
     # look at the distances of the good and bad matches
     print("Statistics about the distances of the good matches")
