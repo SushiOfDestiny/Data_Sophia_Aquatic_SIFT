@@ -161,6 +161,39 @@ def filter_by_mean_abs_curv(
 
     return masked_array, mean_abs_curvs, y_slice, x_slice
 
+def filter_by_std_neighbor_curv(
+        float_im, eigvals, y_start, y_length, x_start, x_length, percentile, bin_radius
+):
+    """
+    Filter the pixels of an image by a given percentile of standard deviation absolute curvature in a neighborhood
+    
+    Arguments:
+    float_im: numpy array of shape (h, w) containing the image
+    eigvals: numpy array of shape (h, w) containing the eigenvalues (curvature values) for each pixel
+    y_start, x_start: int, the start of the subimage
+    percentile: int, the percentile to use for filtering
+
+    Returns:
+    - masked_array: numpy array of shape (h, w) containing the filtered pixel mask    
+    """
+
+    y_slice = slice(y_start, y_start + y_length)
+    x_slice = slice(x_start, x_start + x_length)
+
+    eigval_means = np.mean(eigvals, axis=2) # compute mean of curvature values for each pixel
+
+    bins_std = np.zeros(shape=(y_length, x_length), dtype=np.float32)
+    for y in range(bin_radius, bins_std.shape[0]-bin_radius):
+        for x in range(bin_radius, bins_std.shape[1]-bin_radius):
+            bins_std[y, x] = np.std(eigval_means[y-bin_radius:y+bin_radius, x-bin_radius, x+bin_radius])
+    
+    # Compute percentile prefiltering mask
+    mask = np.zeros(shape=float_im.shape[:2], dtype=bool)
+    threshold = np.percentile(bins_std, percentile)
+    mask[y_slice, x_slice] = bins_std > threshold
+    
+    return mask
+
 
 # @njit(parallel=True)
 # def filter_compute_desc_pixels(
