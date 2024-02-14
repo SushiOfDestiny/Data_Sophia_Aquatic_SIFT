@@ -289,8 +289,6 @@ if __name__ == "__main__":
         f"Percentage of good {cropped_sift_radical} matches within the {nb_minimal_matches} minimal matches: {nb_good_minimal_matches / nb_minimal_matches * 100.0}"
     )
 
-    sys.exit()  # stop here
-
     chosen_matches_idx = list(range(2))
     for match_idx in chosen_matches_idx:
 
