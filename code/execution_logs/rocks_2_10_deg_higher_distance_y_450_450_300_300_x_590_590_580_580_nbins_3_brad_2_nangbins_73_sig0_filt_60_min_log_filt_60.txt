@@ -551,3 +551,165 @@ Percentage of keypoints found in the filtered pixels for image 1: 100.0
 2024-02-14 18:47:42,487 - Script display_matches.py is done.
 
 2024-02-14 18:47:42,487 - All scripts are done. The pipeline is finished.
+2024-02-14 19:01:38,918 - Start running the post blender pipeline
+2024-02-14 19:01:38,918 - Run the script print_pipe_hparams.py
+2024-02-14 19:01:38,986 - SIFTsigma = 0.5
+bin_radius = 2
+blender_filename = rocks_2_10_deg_higher_distance
+blur_sigma = 1.0
+border_size = 1
+contrastThreshold = 0.0
+delta_angle = 5.0
+distanceThreshold = 1000000000.0
+distance_type = min
+edgeThreshold = 0.0
+epsilon = None
+filt_type = mean
+im_ext = png
+im_name1 = rocks_2_10_deg_higher_distance_left
+im_name2 = rocks_2_10_deg_higher_distance_right
+im_names = ('rocks_2_10_deg_higher_distance_left', 'rocks_2_10_deg_higher_distance_right')
+img_folder = blender/rocks_2
+method_post = lowe
+nb_angular_bins = 73
+nb_bins = 3
+neigh_radius = 9
+normalization_mode = global
+percentile = 60
+photo_name = rocks_2_10_deg_higher_distance
+relative_path = ../data
+sigma = 0
+use_filt = True
+use_sift = False
+x_lengths = [580, 580]
+x_starts = [590, 590]
+y_lengths = [300, 300]
+y_starts = [450, 450]
+
+2024-02-14 19:01:38,987 - Script print_pipe_hparams.py is done.
+
+2024-02-14 19:01:38,987 - Run the script display_matches.py
+2024-02-14 19:09:41,544 - number of pixels in image 0 174000
+number of  keypoints in image 0 69600
+percentage of  keypoints in subimage 0 40.0
+number of pixels in image 1 174000
+number of  keypoints in image 1 69600
+percentage of  keypoints in subimage 1 40.0
+number of blender unfiltered  matches 69600
+number of good  matches at a precision of None pixels:  17110
+Percentage of good  matches within matches: 24.583333333333332
+Percentage of good  matches within pixels in subimage 1: 9.833333333333332
+percentage of kept matches in the subimage 1: 2%
+corresponding number of kept matches: 3480
+Number of good  matches within the 3480 minimal matches: 2579
+Percentage of good  matches within the 3480 minimal matches: 74.10919540229885
+Statistics about the distances of the good matches
+Minimal distance of  matches: 10.182843208312988
+Maximal distance of  matches: 33.68654251098633
+Mean distance of  matches: 20.81904555270018
+Standard deviation of the distances of  matches: 1.9911940803169799
+Statistics about the distances of the bad matches
+Minimal distance of  matches: 14.105473518371582
+Maximal distance of  matches: 44.49974822998047
+Mean distance of  matches: 23.2405294766447
+Standard deviation of the distances of  matches: 2.7203537532972355
+feat computation beginning for both images
+Mean value of mean absolute curvature of the good keypoints in image 0: 0.02119937725365162
+Standard deviation of mean absolute curvature of the good keypoints in image 0: 0.007550434675067663
+Mean value of mean absolute curvature of the good keypoints in image 1: 0.021103836596012115
+Standard deviation of mean absolute curvature of the good keypoints in image 1: 0.007866580970585346
+Mean value of mean absolute curvature of the bad keypoints in image 0: 0.020607003942131996
+Standard deviation of mean absolute curvature of the bad keypoints in image 0: 0.007979367859661579
+Mean value of mean absolute curvature of the bad keypoints in image 1: 0.021226197481155396
+Standard deviation of mean absolute curvature of the bad keypoints in image 1: 0.008010544814169407
+Number of keypoints found in the filtered pixels for image 0: 69600
+Number of mask keypoints for image 0: 69600
+Percentage of keypoints found in the filtered pixels for image 0: 100.0
+Number of keypoints found in the filtered pixels for image 1: 69600
+Number of mask keypoints for image 1: 69600
+Percentage of keypoints found in the filtered pixels for image 1: 100.0
+
+2024-02-14 19:09:41,547 - Script display_matches.py is done.
+
+2024-02-14 19:09:41,548 - All scripts are done. The pipeline is finished.
+2024-02-14 19:10:23,303 - Start running the post blender pipeline
+2024-02-14 19:10:23,303 - Run the script print_pipe_hparams.py
+2024-02-14 19:10:23,376 - SIFTsigma = 0.5
+bin_radius = 2
+blender_filename = rocks_2_10_deg_higher_distance
+blur_sigma = 1.0
+border_size = 1
+contrastThreshold = 0.0
+delta_angle = 5.0
+distanceThreshold = 1000000000.0
+distance_type = min
+edgeThreshold = 0.0
+epsilon = None
+filt_type = mean
+im_ext = png
+im_name1 = rocks_2_10_deg_higher_distance_left
+im_name2 = rocks_2_10_deg_higher_distance_right
+im_names = ('rocks_2_10_deg_higher_distance_left', 'rocks_2_10_deg_higher_distance_right')
+img_folder = blender/rocks_2
+method_post = lowe
+nb_angular_bins = 73
+nb_bins = 3
+neigh_radius = 9
+normalization_mode = global
+percentile = 60
+photo_name = rocks_2_10_deg_higher_distance
+relative_path = ../data
+sigma = 0
+use_filt = True
+use_sift = False
+x_lengths = [580, 580]
+x_starts = [590, 590]
+y_lengths = [300, 300]
+y_starts = [450, 450]
+
+2024-02-14 19:10:23,379 - Script print_pipe_hparams.py is done.
+
+2024-02-14 19:10:23,380 - Run the script display_matches.py
+2024-02-14 19:11:47,098 - number of pixels in image 0 174000
+number of  keypoints in image 0 69600
+percentage of  keypoints in subimage 0 40.0
+number of pixels in image 1 174000
+number of  keypoints in image 1 69600
+percentage of  keypoints in subimage 1 40.0
+number of blender unfiltered  matches 69600
+number of good  matches at a precision of None pixels:  17110
+Percentage of good  matches within matches: 24.583333333333332
+Percentage of good  matches within pixels in subimage 1: 9.833333333333332
+percentage of kept matches in the subimage 1: 3%
+corresponding number of kept matches: 5220
+Number of good  matches within the 5220 minimal matches: 3751
+Percentage of good  matches within the 5220 minimal matches: 71.85823754789273
+Statistics about the distances of the good matches
+Minimal distance of  matches: 10.182843208312988
+Maximal distance of  matches: 33.68654251098633
+Mean distance of  matches: 20.81904555270018
+Standard deviation of the distances of  matches: 1.9911940803169799
+Statistics about the distances of the bad matches
+Minimal distance of  matches: 14.105473518371582
+Maximal distance of  matches: 44.49974822998047
+Mean distance of  matches: 23.2405294766447
+Standard deviation of the distances of  matches: 2.7203537532972355
+feat computation beginning for both images
+Mean value of mean absolute curvature of the good keypoints in image 0: 0.02119937725365162
+Standard deviation of mean absolute curvature of the good keypoints in image 0: 0.007550434675067663
+Mean value of mean absolute curvature of the good keypoints in image 1: 0.021103836596012115
+Standard deviation of mean absolute curvature of the good keypoints in image 1: 0.007866580970585346
+Mean value of mean absolute curvature of the bad keypoints in image 0: 0.020607003942131996
+Standard deviation of mean absolute curvature of the bad keypoints in image 0: 0.007979367859661579
+Mean value of mean absolute curvature of the bad keypoints in image 1: 0.021226197481155396
+Standard deviation of mean absolute curvature of the bad keypoints in image 1: 0.008010544814169407
+Number of keypoints found in the filtered pixels for image 0: 69600
+Number of mask keypoints for image 0: 69600
+Percentage of keypoints found in the filtered pixels for image 0: 100.0
+Number of keypoints found in the filtered pixels for image 1: 69600
+Number of mask keypoints for image 1: 69600
+Percentage of keypoints found in the filtered pixels for image 1: 100.0
+
+2024-02-14 19:11:47,102 - Script display_matches.py is done.
+
+2024-02-14 19:11:47,102 - All scripts are done. The pipeline is finished.

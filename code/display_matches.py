@@ -376,7 +376,7 @@ if __name__ == "__main__":
 
     # look at good matches percentage within the x first matches ordered by increasing distance
     # define how much match we keep depending on the size of the subimage 1
-    kept_matches_perc = 2
+    kept_matches_perc = 3
     print(f"percentage of kept matches in the subimage 1: {kept_matches_perc}%")
     nb_minimal_matches = int(kept_matches_perc / 100.0 * y_lengths[0] * x_lengths[0])
     print(f"corresponding number of kept matches: {nb_minimal_matches}")
@@ -712,16 +712,16 @@ if __name__ == "__main__":
                         percentile,
                     )
                 )
-                # Scatter plot distances
-                display_distance_curvature_scatter(
-                    good_matches=good_matches,
-                    bad_matches=bad_matches,
-                    mean_abs_curv_values=mean_abs_curvs,
-                    y_gd_kps=y_gd_kps[id_image],
-                    x_gd_kps=x_gd_kps[id_image],
-                    y_bd_kps=y_bd_kps[id_image],
-                    x_bd_kps=x_bd_kps[id_image],
-                )
+                # # Scatter plot distances
+                # display_distance_curvature_scatter(
+                #     good_matches=good_matches,
+                #     bad_matches=bad_matches,
+                #     mean_abs_curv_values=mean_abs_curvs,
+                #     y_gd_kps=y_gd_kps[id_image],
+                #     x_gd_kps=x_gd_kps[id_image],
+                #     y_bd_kps=y_bd_kps[id_image],
+                #     x_bd_kps=x_bd_kps[id_image],
+                # )
 
         elif filt_type == "std":
             for id_image in range(2):
