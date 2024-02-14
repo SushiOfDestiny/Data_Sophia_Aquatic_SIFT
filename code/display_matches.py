@@ -19,6 +19,7 @@ from filenames_creation import *
 import compute_desc_img as cp_desc
 
 import pickle
+from matplotlib.ticker import PercentFormatter
 
 
 def save_fig_pkl(fig, path, filename):
@@ -244,6 +245,76 @@ def display_distance_curvature_scatter(
     plt.show()
 
 
+def get_histogram_good_bad_other(
+    good_kps_mean_abs_curvs, bad_kps_mean_abs_curvs, other_kps_mean_abs_curvs, nbins
+):
+    """Arguments:
+    -"""
+    print(np.min(good_kps_mean_abs_curvs))
+    print(np.max(good_kps_mean_abs_curvs))
+    print(np.min(bad_kps_mean_abs_curvs))
+    print(np.max(bad_kps_mean_abs_curvs))
+    print(np.min(other_kps_mean_abs_curvs))
+    print(np.max(other_kps_mean_abs_curvs))
+
+    fig = plt.figure()
+    plt.hist(
+        x=[good_kps_mean_abs_curvs, bad_kps_mean_abs_curvs, other_kps_mean_abs_curvs],
+        bins=nbins,
+        stacked=False,
+        weights=[
+            np.ones(len(good_kps_mean_abs_curvs)) / len(good_kps_mean_abs_curvs),
+            np.ones(len(bad_kps_mean_abs_curvs)) / len(bad_kps_mean_abs_curvs),
+            np.ones(len(other_kps_mean_abs_curvs)) / len(other_kps_mean_abs_curvs),
+        ],
+        label=["good keypoints", "bad keypoints", "prefiltered keypoints"],
+    )
+    plt.xlabel("Courbure absolue moyenne")
+    plt.ylabel("Pourcentage dans la catégorie")
+    plt.gca().yaxis.set_major_formatter(PercentFormatter(1))
+    plt.title(f"{im_names[id_image]} histogram")
+    return fig
+
+
+def get_histogram(
+    mean_abs_curvs_img,
+    y_gd_kps,
+    x_gd_kps,
+    y_bd_kps,
+    x_bd_kps,
+    id_image,
+    mask_filtered_points,
+    nbins,
+):
+    other_mask = (
+        np.ones(float_ims[id_image].shape[:2], dtype=bool) - mask_filtered_points
+    )
+    cropped_other_mask = other_mask[
+        y_starts[id_image] : y_starts[id_image] + y_lengths[id_image],
+        x_starts[id_image] : x_starts[id_image] + x_lengths[id_image],
+    ]
+    other_mask_real = np.zeros(shape=(float_ims[id_image].shape[:2]), dtype=bool)
+    other_mask_real[
+        y_starts[id_image] : y_starts[id_image] + y_lengths[id_image],
+        x_starts[id_image] : x_starts[id_image] + x_lengths[id_image],
+    ] = cropped_other_mask
+    other_kps_coords = cp_desc.compute_non_null_coords(other_mask_real)
+
+    y_other_kps = other_kps_coords[:, 1]
+    x_other_kps = other_kps_coords[:, 0]
+
+    other_kps_mean_abs_curvs = mean_abs_curvs_img[y_other_kps, x_other_kps]
+    good_kps_mean_abs_curvs = mean_abs_curvs_img[y_gd_kps, x_gd_kps]
+    bad_kps_mean_abs_curvs = mean_abs_curvs_img[y_bd_kps, x_bd_kps]
+
+    return get_histogram_good_bad_other(
+        good_kps_mean_abs_curvs=good_kps_mean_abs_curvs,
+        bad_kps_mean_abs_curvs=bad_kps_mean_abs_curvs,
+        other_kps_mean_abs_curvs=other_kps_mean_abs_curvs,
+        nbins=nbins,
+    )
+
+
 if __name__ == "__main__":
 
     # load images
@@ -407,7 +478,7 @@ if __name__ == "__main__":
     # )
 
     # display random good matches
-    max_nb_matches_to_display = 250
+    max_nb_matches_to_display = 10
     nb_rd_good_matches_to_display = min(len(good_matches), max_nb_matches_to_display)
     rd_good_idx = np.random.choice(len(good_matches), nb_rd_good_matches_to_display)
     rd_good_matches = [good_matches[i] for i in rd_good_idx]
@@ -641,16 +712,16 @@ if __name__ == "__main__":
                         percentile,
                     )
                 )
-                # # Scatter plot distances
-                # display_distance_curvature_scatter(
-                #     good_matches=good_matches,
-                #     bad_matches=bad_matches,
-                #     mean_abs_curv_values=mean_abs_curvs,
-                #     y_gd_kps=y_gd_kps[id_image],
-                #     x_gd_kps=x_gd_kps[id_image],
-                #     y_bd_kps=y_bd_kps[id_image],
-                #     x_bd_kps=x_bd_kps[id_image],
-                # )
+                # Scatter plot distances
+                display_distance_curvature_scatter(
+                    good_matches=good_matches,
+                    bad_matches=bad_matches,
+                    mean_abs_curv_values=mean_abs_curvs,
+                    y_gd_kps=y_gd_kps[id_image],
+                    x_gd_kps=x_gd_kps[id_image],
+                    y_bd_kps=y_bd_kps[id_image],
+                    x_bd_kps=x_bd_kps[id_image],
+                )
 
         elif filt_type == "std":
             for id_image in range(2):
