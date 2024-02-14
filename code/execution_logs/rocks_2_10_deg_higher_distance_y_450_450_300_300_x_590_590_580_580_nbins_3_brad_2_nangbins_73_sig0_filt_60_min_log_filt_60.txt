@@ -127,3 +127,11 @@ Percentage of good  matches within the 8700 minimal matches: 68.57471264367815
 2024-02-14 12:38:57,698 - Script display_matches.py is done.
 
 2024-02-14 12:38:57,698 - All scripts are done. The pipeline is finished.
+2024-02-14 13:51:59,580 - Start running the post blender pipeline
+2024-02-14 13:51:59,580 - Run the script display_matches.py
+2024-02-14 13:52:01,616 - 
+2024-02-14 13:52:01,616 - Script display_matches.py is done.
+
+2024-02-14 13:52:01,616 - All scripts are done. The pipeline is finished.
+2024-02-14 13:52:13,986 - Start running the post blender pipeline
+2024-02-14 13:52:13,986 - Run the script display_matches.py
