@@ -1,0 +1,45 @@
+2024-02-14 16:30:08,596 - Start running the pipeline
+2024-02-14 16:30:08,596 - All infos are saved in execution_logs/irl_rock1_y_525_745_800_800_x_880_1110_1500_1500_nbins_3_brad_2_nangbins_73_sig0_filt_70_min_log_filt_70 
+
+2024-02-14 16:30:08,596 - Run the script print_pipe_hparams.py
+2024-02-14 16:30:08,608 - SIFTsigma = 0.5
+bin_radius = 2
+blur_sigma = 0
+border_size = 1
+contrastThreshold = 0.0
+delta_angle = 5.0
+distanceThreshold = 1000000000.0
+distance_type = min
+edgeThreshold = 0.0
+epsilon = None
+im_ext = jpeg
+im_name1 = scene_l_1_u
+im_name2 = scene_r_1_u
+im_names = ('scene_l_1_u', 'scene_r_1_u')
+img_folder = irl/scene_zipped
+method_post = lowe
+nb_angular_bins = 73
+nb_bins = 3
+neigh_radius = 9
+normalization_mode = global
+percentile = 70
+photo_name = irl_rock1
+relative_path = ../data
+sigma = 0
+use_filt = True
+use_sift = False
+x_lengths = [1500, 1500]
+x_starts = [880, 1110]
+y_lengths = [800, 800]
+y_starts = [525, 745]
+
+2024-02-14 16:30:08,609 - Script print_pipe_hparams.py is done.
+
+2024-02-14 16:30:08,609 - Run the script imgs_preprocessing.py
+2024-02-14 16:30:13,675 - shapes of images (2000, 3000) (2000, 3000)
+Blurred images saved in ../data/irl/scene_zipped
+Cropped images saved in ../data/irl/scene_zipped
+
+2024-02-14 16:30:13,675 - Script imgs_preprocessing.py is done.
+
+2024-02-14 16:30:13,675 - Run the script compute_desc_img.py
