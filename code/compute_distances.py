@@ -177,9 +177,11 @@ def compute_and_save_distances(
     print(f"Start computing distances: {before}")
 
     if distance_type == "all":
-        distances_matches, idx_im1_matches, idx_im2_matches = (
-            compute_distances_matches_pairs(subimage_descriptors, y_lengths, x_lengths)
-        )
+        distances_matches, idx_im1_matches, idx_im2_matches = None, None, None
+
+        # distances_matches, idx_im1_matches, idx_im2_matches = (
+        #     compute_distances_matches_pairs(subimage_descriptors, y_lengths, x_lengths)
+        # )
     elif distance_type == "min":
         # distances_matches, idx_im1_matches, idx_im2_matches = (
         #     compute_minimal_distances_matches_pairs(
@@ -188,7 +190,7 @@ def compute_and_save_distances(
         # )
         distances_matches, idx_im1_matches, idx_im2_matches = (
             match_keypoints_BBF(
-                subimage_descriptors, y_lengths, x_lengths
+                subimage_descriptors
             )
         )
     else:
