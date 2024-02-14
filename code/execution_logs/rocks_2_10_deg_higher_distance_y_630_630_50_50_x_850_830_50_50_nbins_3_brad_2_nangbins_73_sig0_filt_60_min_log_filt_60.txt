@@ -1,0 +1,127 @@
+2024-02-14 13:34:23,247 - Start running the pipeline
+2024-02-14 13:34:23,247 - All infos are saved in execution_logs/rocks_2_10_deg_higher_distance_y_630_630_50_50_x_850_830_50_50_nbins_3_brad_2_nangbins_73_sig0_filt_60_min_log_filt_60 
+
+2024-02-14 13:34:23,247 - Run the script print_pipe_hparams.py
+2024-02-14 13:34:23,267 - SIFTsigma = 0.5
+bin_radius = 2
+blender_filename = rocks_2_10_deg_higher_distance
+blur_sigma = 1.0
+border_size = 1
+contrastThreshold = 0.0
+delta_angle = 5.0
+distanceThreshold = 1000000000.0
+distance_type = min
+edgeThreshold = 0.0
+epsilon = None
+im_ext = png
+im_name1 = rocks_2_10_deg_higher_distance_left
+im_name2 = rocks_2_10_deg_higher_distance_right
+im_names = ('rocks_2_10_deg_higher_distance_left', 'rocks_2_10_deg_higher_distance_right')
+img_folder = blender/rocks_2
+method_post = lowe
+nb_angular_bins = 73
+nb_bins = 3
+neigh_radius = 9
+normalization_mode = global
+percentile = 60
+photo_name = rocks_2_10_deg_higher_distance
+relative_path = ../data
+sigma = 0
+use_filt = True
+use_sift = False
+x_lengths = [50, 50]
+x_starts = [850, 830]
+y_lengths = [50, 50]
+y_starts = [630, 630]
+
+2024-02-14 13:34:23,267 - Script print_pipe_hparams.py is done.
+
+2024-02-14 13:34:23,267 - Run the script imgs_preprocessing.py
+2024-02-14 13:34:29,942 - shapes of images (1080, 1920) (1080, 1920)
+Blurred images saved in ../data/blender/rocks_2
+Cropped images saved in ../data/blender/rocks_2
+
+2024-02-14 13:34:29,943 - Script imgs_preprocessing.py is done.
+
+2024-02-14 13:34:29,943 - Run the script compute_desc_img.py
+2024-02-14 13:35:39,581 - feat computation beginning for image 0: 2024-02-14 13:34:30.875756
+feat computation end for image 0 2024-02-14 13:34:44.534207
+feat compute time for image 0 0:00:13.658451
+shape of overall_features[0] of image 0 (1080, 1920, 2)
+filter pixel by mean absolute curvature percentile in subimage
+prefiltering by mean absolute curvature beginning for image 0 2024-02-14 13:34:30.875756
+prefiltering by mean absolute curvature end for image 0 2024-02-14 13:34:49.837968
+prefiltering by mean absolute curvature compute time for image 0 0:00:05.303726
+Min mean curvature: 0.0
+Max mean curvature: 0.0519355833530426
+Mean mean curvature: 0.008244997821748257
+Standard deviation of the mean curvatures: 0.01111852191388607
+Percentile 60%: 0.00477082431316213
+number of pixels in subimage: 2500
+number of filtered accepted pixels: 1000
+percentage of filtered accepted pixels: 40.0
+coords array shape: (1000, 2)
+desc computation beginning for image 0 2024-02-14 13:34:49.846121
+desc computation end for image 0 2024-02-14 13:35:13.721985
+desc compute time for image 0 0:00:23.875864
+Number of empty filtered descriptors 0.0
+feat computation beginning for image 1: 2024-02-14 13:35:13.743564
+feat computation end for image 1 2024-02-14 13:35:20.499658
+feat compute time for image 1 0:00:06.756094
+shape of overall_features[0] of image 1 (1080, 1920, 2)
+filter pixel by mean absolute curvature percentile in subimage
+prefiltering by mean absolute curvature beginning for image 1 2024-02-14 13:35:13.743564
+prefiltering by mean absolute curvature end for image 1 2024-02-14 13:35:25.778533
+prefiltering by mean absolute curvature compute time for image 1 0:00:05.278830
+Min mean curvature: 0.0
+Max mean curvature: 0.05265635997056961
+Mean mean curvature: 0.008379955776035786
+Standard deviation of the mean curvatures: 0.011172886937856674
+Percentile 60%: 0.005272779613731494
+number of pixels in subimage: 2500
+number of filtered accepted pixels: 1000
+percentage of filtered accepted pixels: 40.0
+coords array shape: (1000, 2)
+desc computation beginning for image 1 2024-02-14 13:35:25.786718
+desc computation end for image 1 2024-02-14 13:35:39.147809
+desc compute time for image 1 0:00:13.361091
+Number of empty filtered descriptors 0.0
+
+2024-02-14 13:35:39,581 - Script compute_desc_img.py is done.
+
+2024-02-14 13:35:39,581 - Run the script compute_distances.py
+2024-02-14 13:35:40,645 - Start computing distances: 2024-02-14 13:35:40.498300
+
+2024-02-14 13:35:40,645 - Script compute_distances.py is done.
+
+2024-02-14 13:35:40,645 - Run the script create_cv_objs.py
+2024-02-14 13:35:41,701 - 
+2024-02-14 13:35:41,701 - Script create_cv_objs.py is done.
+
+2024-02-14 13:35:41,701 - All scripts are done. Launch Blender or a display script.
+
+
+2024-02-14 13:35:42,984 - Start running the post blender pipeline
+2024-02-14 13:35:42,985 - Run the script display_matches.py
+2024-02-14 13:35:44,101 - 
+2024-02-14 13:35:44,101 - Script display_matches.py is done.
+
+2024-02-14 13:35:44,101 - All scripts are done. The pipeline is finished.
+2024-02-14 13:39:14,116 - Start running the post blender pipeline
+2024-02-14 13:39:14,116 - Run the script display_matches.py
+2024-02-14 13:43:22,381 - number of pixels in image 0 2500
+number of  keypoints in image 0 1000
+percentage of  keypoints in subimage 0 40.0
+number of pixels in image 1 2500
+number of  keypoints in image 1 1000
+percentage of  keypoints in subimage 1 40.0
+number of blender unfiltered  matches 1000
+number of good  matches at a precision of None pixels:  234
+Percentage of good  matches within matches: 23.400000000000002
+Percentage of good  matches within pixels in subimage 1: 9.36
+Number of good  matches within the 125 minimal matches: 30
+Percentage of good  matches within the 125 minimal matches: 24.0
+
+2024-02-14 13:43:22,382 - Script display_matches.py is done.
+
+2024-02-14 13:43:22,382 - All scripts are done. The pipeline is finished.
