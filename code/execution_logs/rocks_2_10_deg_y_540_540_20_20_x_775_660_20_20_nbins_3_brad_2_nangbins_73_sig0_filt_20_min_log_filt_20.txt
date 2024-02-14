@@ -125,10 +125,10 @@ Standard deviation of mean absolute curvature of the good keypoints in image 0: 
 Mean value of mean absolute curvature of the good keypoints in image 1: nan
 Standard deviation of mean absolute curvature of the good keypoints in image 1: nan
 Number of keypoints found in the filtered pixels for image 0: 0
-Number of masked keypoints for image 0: 320
+Number of mask keypoints for image 0: 320
 Percentage of keypoints found in the filtered pixels for image 0: 0.0
 Number of keypoints found in the filtered pixels for image 1: 0
-Number of masked keypoints for image 1: 320
+Number of mask keypoints for image 1: 320
 Percentage of keypoints found in the filtered pixels for image 1: 0.0
 
 2024-02-13 16:15:20,602 - Script display_matches.py is done.
@@ -261,10 +261,10 @@ Standard deviation of mean absolute curvature of the good keypoints in image 0: 
 Mean value of mean absolute curvature of the good keypoints in image 1: 0.04892149195075035
 Standard deviation of mean absolute curvature of the good keypoints in image 1: 0.024409707635641098
 Number of keypoints found in the filtered pixels for image 0: 320
-Number of masked keypoints for image 0: 320
+Number of mask keypoints for image 0: 320
 Percentage of keypoints found in the filtered pixels for image 0: 100.0
 Number of keypoints found in the filtered pixels for image 1: 320
-Number of masked keypoints for image 1: 320
+Number of mask keypoints for image 1: 320
 Percentage of keypoints found in the filtered pixels for image 1: 100.0
 
 2024-02-13 16:21:17,267 - Script display_matches.py is done.
@@ -399,10 +399,10 @@ Standard deviation of mean absolute curvature of the good keypoints in image 0: 
 Mean value of mean absolute curvature of the good keypoints in image 1: 0.04892149195075035
 Standard deviation of mean absolute curvature of the good keypoints in image 1: 0.024409707635641098
 Number of keypoints found in the filtered pixels for image 0: 320
-Number of masked keypoints for image 0: 320
+Number of mask keypoints for image 0: 320
 Percentage of keypoints found in the filtered pixels for image 0: 100.0
 Number of keypoints found in the filtered pixels for image 1: 320
-Number of masked keypoints for image 1: 320
+Number of mask keypoints for image 1: 320
 Percentage of keypoints found in the filtered pixels for image 1: 100.0
 
 2024-02-13 16:56:59,065 - Script display_matches.py is done.

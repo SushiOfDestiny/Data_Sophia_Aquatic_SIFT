@@ -11,10 +11,13 @@ if __name__ == "__main__":
     # create the logger
     logger = create_logger(f"{log_path}/{log_filename}.txt")
 
+    # scripts = [
+    #     f"display{irl_radical}{sift_radical}_matches.py",
+    # ]
 
     scripts = [
-        f"display{irl_radical}{sift_radical}_matches.py",
-    ]   
+        f"display{irl_radical}_matches.py",
+    ]
 
     logger.info("Start running the post blender pipeline")
 

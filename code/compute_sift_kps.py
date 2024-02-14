@@ -48,7 +48,6 @@ if __name__ == "__main__":
         for id_image in range(2)
     ]
 
-
     print("SIFT parameters: ")
     print(f"contrastThreshold: {contrastThreshold}")
     print(f"edgeThreshold: {edgeThreshold}")
@@ -94,10 +93,15 @@ if __name__ == "__main__":
                 for id_image in range(2)
             ]
 
-    # draw the translated matches
-    draw_good_keypoints(
-        ims[0], ims[1], trans_sift_kps[0], trans_sift_kps[1], sift_matches, len(sift_matches)
-    )
+    # # draw the translated matches
+    # draw_good_keypoints(
+    #     ims[0],
+    #     ims[1],
+    #     trans_sift_kps[0],
+    #     trans_sift_kps[1],
+    #     sift_matches,
+    #     len(sift_matches),
+    # )
 
     # compute keypoints int pixels coordinates as list of 2 numpy arrays
     trans_sift_kps_coords = [
@@ -140,13 +144,13 @@ if __name__ == "__main__":
 
     save_matches(
         sift_matches,
-        f"{matches_path}/{matches_filename}",
+        f"{matches_path}/{matches_filename}.txt",
     )
     print("finished saving sift matches")
 
     for id_image in range(2):
         save_keypoints(
             trans_sift_kps[id_image],
-            f"{matches_path}/{kp_filenames[id_image]}",
+            f"{matches_path}/{kp_filenames[id_image]}.txt",
         )
     print("finished saving translated sift keypoints")

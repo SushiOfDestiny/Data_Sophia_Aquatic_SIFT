@@ -111,3 +111,21 @@ Standard deviation of the distances: 2.3340007756992462
 2024-02-13 11:32:35,860 - Script display_matches.py is done.
 
 2024-02-13 11:32:35,861 - All scripts are done. The pipeline is finished.
+2024-02-14 11:20:53,027 - Start running the post blender pipeline
+2024-02-14 11:20:53,141 - Run the script display_matches.py
+2024-02-14 11:20:56,106 - number of pixels in image 0 67500
+number of  keypoints in image 0 67500
+percentage of  keypoints in subimage 0 100.0
+number of pixels in image 1 67500
+number of  keypoints in image 1 67500
+percentage of  keypoints in subimage 1 100.0
+number of blender unfiltered  matches 67500
+number of good  matches at a precision of None pixels:  12356
+Percentage of good  matches within matches: 18.305185185185184
+Percentage of good  matches within pixels in subimage 1: 18.305185185185184
+Number of good  matches within the 3375 minimal matches: 1460
+Percentage of good  matches within the 3375 minimal matches: 43.25925925925926
+
+2024-02-14 11:20:56,106 - Script display_matches.py is done.
+
+2024-02-14 11:20:56,106 - All scripts are done. The pipeline is finished.

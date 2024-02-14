@@ -11,6 +11,8 @@ from computation_pipeline_hyper_params import *
 # Create filename suffix for sift kps, pairs and matches
 sift_suffix = "_sift"
 sift_radical = "_sift" if use_sift else ""
+cropped_sift_radical = "" if not use_sift else sift_radical[1:]
+
 # create suffix for filtered points computation
 filt_suffix = "_filt"
 filt_radical = f"_filt_{percentile}" if use_filt else ""

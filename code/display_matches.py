@@ -21,6 +21,16 @@ import compute_desc_img as cp_desc
 import pickle
 
 
+def save_fig_pkl(fig, path, filename):
+    """
+    filename must have no extension
+    """
+    if not os.path.exists(path):
+        os.makedirs(path)
+    with open(f"{path}/{filename}.pkl", "wb") as f:
+        pickle.dump(fig, f)
+
+
 # def display_match(
 #     ims,
 #     dmatch,
@@ -120,68 +130,23 @@ def display_matches(
     title = f"{len(match_list)} {plot_title_prefix} between {im_names[0]} and {im_names[1]}, with precision threshold {epsilon} pixels"
     plt.suptitle(title)
 
+    # save the plot
     if save_path is not None and filename_prefix is not None:
         # add random number to identify the plot
         rand_id = np.random.randint(1000)
         filename_suffix = f"{plot_title_prefix}_{rand_id}"
-        if not os.path.exists(save_path):
-            os.makedirs(save_path)
-        # plt.savefig(f"{save_path}/{filename_prefix}_{filename_suffix}_multi.svg")
 
-        with open(
-            f"{save_path}/{filename_prefix}_{filename_suffix}_multi.pkl", "wb"
-        ) as f:
-            pickle.dump(fig, f)
+        save_fig_pkl(fig, save_path, f"{filename_prefix}_{filename_suffix}_multi")
 
     if show_plot:
         plt.show()
-
-
-# def display_matches2(
-#     ims,
-#     matches_idx_list,
-#     kps_coords,
-#     show_plot=False,
-#     save_path="None",
-#     filename_prefix=None,
-#     dpi=800,
-#     epsilon=1,
-#     distance_type="min",
-#     im_names=None,
-# ):
-#     """ """
-
-#     matches_colors = np.random.rand(len(matches_idx_list), 3)
-
-#     fig, axs = plt.subplots(1, 2, figsize=(20, 10))
-
-#     for id_image in range(2):
-#         axs[id_image].imshow(ims[id_image], cmap="gray")
-#         for idx in range(len(matches_idx_list)):
-#             axs[id_image].scatter(
-#                 kps_coords[id_image][matches_idx_list[idx], 0],
-#                 kps_coords[id_image][matches_idx_list[idx], 1],
-#                 c=matches_colors[idx],
-#                 s=10,
-#             )
-
-#     if save_path is not None and filename_prefix is not None:
-#         filename_suffix = f"_{matched_kps_pos[0][0]}_{matched_kps_pos[0][1]}_{matched_kps_pos[1][0]}_{matched_kps_pos[1][1]}"
-#         if not os.path.exists(save_path):
-#             os.makedirs(save_path)
-#         plt.savefig(
-#             f"{save_path}/{filename_prefix}_{filename_suffix}_multi.png", dpi=dpi
-#         )
-
-#     if show_plot:
-#         plt.show()
 
 
 def print_general_kp_matches_infos(
     y_lengths, x_lengths, kps, matches, good_matches, epsilon
 ):
     """print general infos and percentage of keypoints and good matches among the pixels and matches."""
-    cropped_sift_radical = "" if not use_sift else sift_radical[1:]
+
     for id_image in range(2):
         print(
             f"number of pixels in image {id_image}",
@@ -192,19 +157,19 @@ def print_general_kp_matches_infos(
             len(kps[id_image]),
         )
         print(
-            f"percentage of {cropped_sift_radical} keypoints in image {id_image}",
+            f"percentage of {cropped_sift_radical} keypoints in subimage {id_image}",
             len(kps[id_image]) / (y_lengths[id_image] * x_lengths[id_image]) * 100.0,
         )
-    print(f"number of unfiltered {cropped_sift_radical} matches", len(matches))
+    print(f"number of blender unfiltered {cropped_sift_radical} matches", len(matches))
     print(
         f"number of good {cropped_sift_radical} matches at a precision of {epsilon} pixels: ",
         len(good_matches),
     )
     print(
-        f"Percentage of good matches within matches: {len(good_matches) / len(matches) * 100.0}"
+        f"Percentage of good {cropped_sift_radical} matches within matches: {len(good_matches) / len(matches) * 100.0}"
     )
     print(
-        f"Percentage of good matches within pixels in subimage 1: {len(good_matches) / (y_lengths[0] * x_lengths[0]) * 100.0}"
+        f"Percentage of good {cropped_sift_radical} matches within pixels in subimage 1: {len(good_matches) / (y_lengths[0] * x_lengths[0]) * 100.0}"
     )
 
 
@@ -215,10 +180,12 @@ def print_distance_infos(matches_list):
     print the minimal, maximal and mean distances and standard deviation of the distances
     """
     distances = np.array([match[0].distance for match in matches_list])
-    print(f"Minimal distance: {np.min(distances)}")
-    print(f"Maximal distance: {np.max(distances)}")
-    print(f"Mean distance: {np.mean(distances)}")
-    print(f"Standard deviation of the distances: {np.std(distances)}")
+    print(f"Minimal distance of {cropped_sift_radical} matches: {np.min(distances)}")
+    print(f"Maximal distance of {cropped_sift_radical} matches: {np.max(distances)}")
+    print(f"Mean distance of {cropped_sift_radical} matches: {np.mean(distances)}")
+    print(
+        f"Standard deviation of the distances of {cropped_sift_radical} matches: {np.std(distances)}"
+    )
 
 
 def compute_good_and_bad_matches(matches, good_matches_kps_idx):
@@ -284,12 +251,6 @@ if __name__ == "__main__":
         np.load(f"{descrip_path}/{kp_coords_filenames[id_image]}.npy")
         for id_image in range(2)
     ]
-    descs = [
-        np.load(
-            f"{descrip_path}/{descrip_filenames[id_image]}.npy",
-        )
-        for id_image in range(2)
-    ]
 
     # load unfiltered keypoints, matches and index of good matches
     kps = [
@@ -308,16 +269,27 @@ if __name__ == "__main__":
         matches, correct_matches_idxs
     )
 
-    # print general info about proportions of keypoints and matches
+    # print general info about proportions of keypoints and good matches
     print_general_kp_matches_infos(
         y_lengths, x_lengths, kps, matches, good_matches, epsilon
     )
 
-    # look at some matches
+    # look at good matches percentage within the x first matches ordered by increasing distance
+    nb_minimal_matches = int(0.05 * y_lengths[0] * x_lengths[0])
+    minimal_matches_idx = np.argsort([match[0].distance for match in matches])[
+        :nb_minimal_matches
+    ]
+    nb_good_minimal_matches = len(
+        np.intersect1d(minimal_matches_idx, correct_matches_idxs)
+    )
+    print(
+        f"Number of good {cropped_sift_radical} matches within the {nb_minimal_matches} minimal matches: {nb_good_minimal_matches}"
+    )
+    print(
+        f"Percentage of good {cropped_sift_radical} matches within the {nb_minimal_matches} minimal matches: {nb_good_minimal_matches / nb_minimal_matches * 100.0}"
+    )
 
-    # display_matches2(
-    #     ims, correct_matches_idxs[:10], kps_coords, show_plot=True, im_names=im_names
-    # )
+    sys.exit()  # stop here
 
     chosen_matches_idx = list(range(2))
     for match_idx in chosen_matches_idx:
@@ -420,78 +392,88 @@ if __name__ == "__main__":
 
     plt.show()
 
-    # stop
-    sys.exit()
+    # # stop
+    # sys.exit()
 
-    # stop here
-    sys.exit()
+    # # stop here
+    # sys.exit()
 
-    # look at the average descriptors of the good matches
-    good_matches_kps = [
-        [kps_coords[0][match[0].queryIdx] for match in good_matches],
-        [kps_coords[1][match[0].trainIdx] for match in good_matches],
-    ]
-    good_matches_kps_idx = [
-        np.array(
-            [
-                (kp[1] - y_starts[id_image]) * x_lengths[id_image]
-                + (kp[0] - x_starts[id_image])
-                for kp in good_matches_kps[id_image]
-            ]
-        )
-        for id_image in range(2)
-    ]
-
-    good_descs_ims = [
-        descs[id_image][good_matches_kps_idx[id_image]] for id_image in range(2)
-    ]
-    avg_good_descs = [
-        np.mean(good_descs_ims[id_image], axis=0) for id_image in range(2)
-    ]
-
-    good_descs_names = [
-        f"Averaged descriptor of good matches for {im_names[id_image]}\n with nb_bins={nb_bins}, bin_radius={bin_radius}, delta_angle={delta_angle} and sigma={sigma}"
-        for id_image in range(2)
-    ]
-
-    # look at averaged bad descriptor
-
-    bad_descs = [
-        descs[id_image][
-            np.setdiff1d(
-                np.arange(np.shape(descs[id_image])[0]), good_matches_kps_idx[id_image]
+    if not use_sift:
+        descs = [
+            np.load(
+                f"{descrip_path}/{descrip_filenames[id_image]}.npy",
             )
+            for id_image in range(2)
         ]
-        for id_image in range(2)
-    ]
 
-    avg_bad_descs = [np.mean(bad_descs[id_image], axis=0) for id_image in range(2)]
+        # look at the average descriptors of the good matches
+        good_matches_kps = [
+            [kps_coords[0][match[0].queryIdx] for match in good_matches],
+            [kps_coords[1][match[0].trainIdx] for match in good_matches],
+        ]
+        good_matches_kps_idx = [
+            np.array(
+                [
+                    (kp[1] - y_starts[id_image]) * x_lengths[id_image]
+                    + (kp[0] - x_starts[id_image])
+                    for kp in good_matches_kps[id_image]
+                ]
+            )
+            for id_image in range(2)
+        ]
 
-    bad_descs_names = [
-        f"Averaged descriptor of bad matches for {im_names[id_image]}\n with nb_bins={nb_bins}, bin_radius={bin_radius}, delta_angle={delta_angle} and sigma={sigma}"
-        for id_image in range(2)
-    ]
+        good_descs_ims = [
+            descs[id_image][good_matches_kps_idx[id_image]] for id_image in range(2)
+        ]
+        avg_good_descs = [
+            np.mean(good_descs_ims[id_image], axis=0) for id_image in range(2)
+        ]
 
-    avg_descs = [avg_good_descs, avg_bad_descs]
-    descs_names = [good_descs_names, bad_descs_names]
+        good_descs_names = [
+            f"Averaged descriptor of good matches for {im_names[id_image]}\n with nb_bins={nb_bins}, bin_radius={bin_radius}, delta_angle={delta_angle} and sigma={sigma}"
+            for id_image in range(2)
+        ]
 
-    # for id_desc in range(2):
-    #     for id_image in range(2):
-    #         visu_desc.display_descriptor(
-    #             descriptor_histograms=desc.unflatten_descriptor(
-    #                 avg_descs[id_desc][id_image],
-    #                 nb_bins=nb_bins,
-    #                 nb_angular_bins=nb_angular_bins,
-    #             ),
-    #             descriptor_name=descs_names[id_desc][id_image],
-    #             show_plot=False,
-    #         )
+        # look at averaged bad descriptor
 
-    # visu_desc.display_descriptor(
-    #         descriptor_histograms=desc.unflatten_descriptor(kps_coords[match_idx])
-    # )
+        bad_descs = [
+            descs[id_image][
+                np.setdiff1d(
+                    np.arange(np.shape(descs[id_image])[0]),
+                    good_matches_kps_idx[id_image],
+                )
+            ]
+            for id_image in range(2)
+        ]
 
-    plt.show()
+        avg_bad_descs = [np.mean(bad_descs[id_image], axis=0) for id_image in range(2)]
+
+        bad_descs_names = [
+            f"Averaged descriptor of bad matches for {im_names[id_image]}\n with nb_bins={nb_bins}, bin_radius={bin_radius}, delta_angle={delta_angle} and sigma={sigma}"
+            for id_image in range(2)
+        ]
+
+        avg_descs = [avg_good_descs, avg_bad_descs]
+        descs_names = [good_descs_names, bad_descs_names]
+
+        # Look only at first eigenvalue
+        for id_desc in range(0):
+            for id_image in range(2):
+                visu_desc.display_descriptor(
+                    descriptor_histograms=desc.unflatten_descriptor(
+                        avg_descs[id_desc][id_image],
+                        nb_bins=nb_bins,
+                        nb_angular_bins=nb_angular_bins,
+                    ),
+                    descriptor_name=descs_names[id_desc][id_image],
+                    show_plot=False,
+                )
+
+        visu_desc.display_descriptor(
+            descriptor_histograms=desc.unflatten_descriptor(kps_coords[match_idx])
+        )
+
+        plt.show()
 
     # look at the distances of the good and bad matches
     print("Statistics about the distances of the good matches")
@@ -509,6 +491,7 @@ if __name__ == "__main__":
 
     # look at filtered keypoints on image
     if use_filt:
+
         # plot the filtered pixels on each subimage side by side
         fig, ax = plt.subplots(1, 2, figsize=(10, 5))
         for id_image in range(2):
@@ -519,44 +502,45 @@ if __name__ == "__main__":
                 c="r",
                 s=2,
             )
-            ax[id_image].set_title(f"Preiltered pixels in subimage {id_image}")
+            ax[id_image].set_title(f"Prefiltered pixels in subimage {id_image}")
         plt.show()
 
-    # Look at information about the curvatures and gradients of the good and bad keypoints
-    print(f"feat computation beginning for both images")
-    overall_features_ims = [
-        desc.compute_features_overall_abs(float_ims[id_image], border_size=border_size)
-        for id_image in range(2)
-    ]
+        # Look at information about the curvatures and gradients of the good and bad keypoints
+        print(f"feat computation beginning for both images")
+        overall_features_ims = [
+            desc.compute_features_overall_abs(
+                float_ims[id_image], border_size=border_size
+            )
+            for id_image in range(2)
+        ]
 
-    # look at the mean absolute curvatures
-    mean_abs_curvs_ims = [
-        cp_desc.compute_mean_abs_curv_arr(overall_features_ims[id_image][1])
-        for id_image in range(2)
-    ]
+        # look at the mean absolute curvatures
+        mean_abs_curvs_ims = [
+            cp_desc.compute_mean_abs_curv_arr(overall_features_ims[id_image][1])
+            for id_image in range(2)
+        ]
 
-    # start with good keypoints
-    y_kps = [kps_coords[id_image][:, 1] for id_image in range(2)]
-    x_kps = [kps_coords[id_image][:, 0] for id_image in range(2)]
+        # start with good keypoints
+        y_kps = [kps_coords[id_image][:, 1] for id_image in range(2)]
+        x_kps = [kps_coords[id_image][:, 0] for id_image in range(2)]
 
-    y_gd_kps = [y_kps[id_image][correct_matches_idxs] for id_image in range(2)]
-    x_gd_kps = [x_kps[id_image][correct_matches_idxs] for id_image in range(2)]
+        y_gd_kps = [y_kps[id_image][correct_matches_idxs] for id_image in range(2)]
+        x_gd_kps = [x_kps[id_image][correct_matches_idxs] for id_image in range(2)]
 
-    good_mean_abs_curvs = [
-        mean_abs_curvs_ims[id_image][y_gd_kps[id_image], x_gd_kps[id_image]]
-        for id_image in range(2)
-    ]
+        good_mean_abs_curvs = [
+            mean_abs_curvs_ims[id_image][y_gd_kps[id_image], x_gd_kps[id_image]]
+            for id_image in range(2)
+        ]
 
-    for id_image in range(2):
-        print(
-            f"Mean value of mean absolute curvature of the good keypoints in image {id_image}: {np.mean(good_mean_abs_curvs[id_image])}"
-        )
-        print(
-            f"Standard deviation of mean absolute curvature of the good keypoints in image {id_image}: {np.std(good_mean_abs_curvs[id_image])}"
-        )
+        for id_image in range(2):
+            print(
+                f"Mean value of mean absolute curvature of the good keypoints in image {id_image}: {np.mean(good_mean_abs_curvs[id_image])}"
+            )
+            print(
+                f"Standard deviation of mean absolute curvature of the good keypoints in image {id_image}: {np.std(good_mean_abs_curvs[id_image])}"
+            )
 
-    # look at mask of prefiltered pixels
-    if use_filt:
+        # look at mask of prefiltered pixels
 
         mask_arrays = [None, None]
 
@@ -584,9 +568,12 @@ if __name__ == "__main__":
             )
 
         # save the plot
-        plt.savefig(
-            f"{descrip_path}/{descrip_filename_prefixes[id_image]}_filtered_pixels.png"
+        save_fig_pkl(
+            fig,
+            path=descrip_path,
+            filename=f"{descrip_filename_prefixes[id_image]}_filtered_pixels",
         )
+
         plt.show()
 
         # check if coords of keypoints match with mask of prefiltered pixels
@@ -604,5 +591,3 @@ if __name__ == "__main__":
             print(
                 f"Percentage of keypoints found in the filtered pixels for image {id_image}: {found_kps / nb_mask_kps * 100.0}"
             )
-
-        # Look at
