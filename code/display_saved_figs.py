@@ -31,10 +31,18 @@ def display_pickled_figs(fig_paths_list, show_figs=True):
 
 
 if __name__ == "__main__":
-    fig_names = [
-        "rocks_2_10_deg_y_525_525_225_225_x_675_600_300_300_nbins_3_brad_2_nangbins_73_sig0_min_Random unfiltered by blender  matches_523_multi",
-        "rocks_2_10_deg_y_525_525_225_225_x_675_600_300_300_nbins_3_brad_2_nangbins_73_sig0_sift_min_Random unfiltered by blender sift matches_678_multi",
+    # find all pickle filenames in the directory containing "higher"
+    all_fig_names = [
+        f[:-4]
+        for f in os.listdir("filtered_keypoints")
+        if f.endswith(".pkl") and "higher" in f
     ]
-    fig_paths = [f"filtered_keypoints/{fig_name}.pkl" for fig_name in fig_names]
+
+    # fig_names = [
+    #     "rocks_2_7_deg_higher_distance_y_450_450_300_300_x_650_560_580_580_nbins_3_brad_2_nangbins_73_sig0_sift_min_Random good sift matches_997_multi",
+    #     "",
+    # ]
+
+    fig_paths = [f"filtered_keypoints/{fig_name}.pkl" for fig_name in all_fig_names[:5]]
 
     display_pickled_figs(fig_paths, show_figs=True)

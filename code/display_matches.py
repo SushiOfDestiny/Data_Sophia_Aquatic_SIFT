@@ -216,20 +216,27 @@ def display_distance_scatter(
     )
     plt.show()
 
+
 def display_distance_curvature_scatter(
-        good_matches, bad_matches, mean_abs_curv_values, y_gd_kps, x_gd_kps, y_bd_kps, x_bd_kps
+    good_matches,
+    bad_matches,
+    mean_abs_curv_values,
+    y_gd_kps,
+    x_gd_kps,
+    y_bd_kps,
+    x_bd_kps,
 ):
     plt.scatter(
         [match[0].distance for match in good_matches],
         mean_abs_curv_values[y_gd_kps, x_gd_kps],
-        marker='+',
-        color='b'
+        marker="+",
+        color="b",
     )
     plt.scatter(
         [match[0].distance for match in bad_matches],
         mean_abs_curv_values[y_bd_kps, x_bd_kps],
-        marker='+',
-        color='r'
+        marker="+",
+        color="r",
     )
 
     plt.xlabel("Distance between match descriptors")
@@ -297,18 +304,46 @@ if __name__ == "__main__":
     )
 
     # look at good matches percentage within the x first matches ordered by increasing distance
-    nb_minimal_matches = int(0.05 * y_lengths[0] * x_lengths[0])
+    # define how much match we keep depending on the size of the subimage 1
+    kept_matches_perc = 2
+    print(f"percentage of kept matches in the subimage 1: {kept_matches_perc}%")
+    nb_minimal_matches = int(kept_matches_perc / 100.0 * y_lengths[0] * x_lengths[0])
+    print(f"corresponding number of kept matches: {nb_minimal_matches}")
+
     minimal_matches_idx = np.argsort([match[0].distance for match in matches])[
         :nb_minimal_matches
     ]
-    nb_good_minimal_matches = len(
-        np.intersect1d(minimal_matches_idx, correct_matches_idxs)
-    )
+    minimal_matches = [matches[i] for i in minimal_matches_idx]
+
+    good_minimal_matches_idx = np.intersect1d(minimal_matches_idx, correct_matches_idxs)
+    good_minimal_matches = [matches[i] for i in good_minimal_matches_idx]
+    nb_good_minimal_matches = len(good_minimal_matches_idx)
+
     print(
         f"Number of good {cropped_sift_radical} matches within the {nb_minimal_matches} minimal matches: {nb_good_minimal_matches}"
     )
     print(
         f"Percentage of good {cropped_sift_radical} matches within the {nb_minimal_matches} minimal matches: {nb_good_minimal_matches / nb_minimal_matches * 100.0}"
+    )
+
+    # display some random matches among the minimal matches
+    # display random good matches
+    max_nb_matches_to_display = 250
+    nb_rd_minimal_matches_to_display = min(
+        len(minimal_matches), max_nb_matches_to_display
+    )
+
+    rd_minimal_idx = np.random.choice(
+        len(minimal_matches), nb_rd_minimal_matches_to_display
+    )
+    rd_minimal_matches = [minimal_matches[i] for i in rd_minimal_idx]
+    display_matches(
+        ims,
+        rd_minimal_matches,
+        kps_coords,
+        show_plot=True,
+        im_names=im_names,
+        plot_title_prefix=f"{nb_rd_minimal_matches_to_display} Random minimal {sift_radical[1:] if use_sift else ''} matches, among the top {kept_matches_perc}% of pixels in subimage 1",
     )
 
     # chosen_matches_idx = list(range(2))
@@ -526,6 +561,15 @@ if __name__ == "__main__":
                 s=2,
             )
             ax[id_image].set_title(f"Prefiltered pixels in subimage {id_image}")
+        # add title
+        plt.suptitle(
+            f"Prefiltered {cropped_sift_radical} pixels in {im_names[0]}, {im_names[1]}, with percentile {percentile} and {filt_type} filtering"
+        )
+
+        # save the plot
+        save_fig_pkl(
+            fig, "filtered_keypoints", f"{dist_filename_prefix}_prefiltered_pixels"
+        )
         plt.show()
 
         # Look at information about the curvatures and gradients of the good and bad keypoints
@@ -583,7 +627,7 @@ if __name__ == "__main__":
         # look at mask of prefiltered pixels
 
         mask_arrays = [None, None]
-        if filt_type == 'mean':
+        if filt_type is None or filt_type == "mean":
             for id_image in range(2):
 
                 mask_arrays[id_image], mean_abs_curvs, y_slice, x_slice = (
@@ -597,19 +641,18 @@ if __name__ == "__main__":
                         percentile,
                     )
                 )
-                # Scatter plot distances
-                display_distance_curvature_scatter(
-                    good_matches=good_matches,
-                    bad_matches=bad_matches,
-                    mean_abs_curv_values=mean_abs_curvs,
-                    y_gd_kps=y_gd_kps[id_image],
-                    x_gd_kps=x_gd_kps[id_image],
-                    y_bd_kps=y_bd_kps[id_image],
-                    x_bd_kps=x_bd_kps[id_image]
+                # # Scatter plot distances
+                # display_distance_curvature_scatter(
+                #     good_matches=good_matches,
+                #     bad_matches=bad_matches,
+                #     mean_abs_curv_values=mean_abs_curvs,
+                #     y_gd_kps=y_gd_kps[id_image],
+                #     x_gd_kps=x_gd_kps[id_image],
+                #     y_bd_kps=y_bd_kps[id_image],
+                #     x_bd_kps=x_bd_kps[id_image],
+                # )
 
-                )
-
-        elif filt_type == 'std':
+        elif filt_type == "std":
             for id_image in range(2):
                 mask_arrays[id_image], neighborhood_stds, y_slice, x_slice = (
                     cp_desc.filter_by_std_neighbor_curv(
@@ -620,41 +663,47 @@ if __name__ == "__main__":
                         x_starts[id_image],
                         x_lengths[id_image],
                         percentile,
-                        neighborhood_radius=neighborhood_radius
+                        neighborhood_radius=neighborhood_radius,
                     )
                 )
                 fig, axs = plt.subplots(1, 2, figsize=(20, 10))
-                axs[0].imshow(float_ims[id_image][y_starts[id_image]:y_starts[id_image]+y_lengths[id_image], x_starts[id_image]:x_starts[id_image]+x_lengths[id_image]], cmap='gray')
-                axs[1].imshow(neighborhood_stds, cmap='magma')
+                axs[0].imshow(
+                    float_ims[id_image][
+                        y_starts[id_image] : y_starts[id_image] + y_lengths[id_image],
+                        x_starts[id_image] : x_starts[id_image] + x_lengths[id_image],
+                    ],
+                    cmap="gray",
+                )
+                axs[1].imshow(neighborhood_stds, cmap="magma")
                 axs[0].set_title(
                     f"Colormap of filtered pixels by {filt_type} for image {id_image}"
                 )
 
                 save_fig_pkl(
                     fig,
-                    path=descrip_path,
-                    filename=f"{descrip_filename_prefixes[id_image]}_filter_colormap"
+                    path="filtered_keypoints",
+                    filename=f"{descrip_filename_prefixes[id_image]}_filter_colormap",
                 )
 
                 plt.show()
 
-        # # display the filtered pixels
-        # fig, axs = plt.subplots(1, 2, figsize=(20, 10))
-        # for id_image in range(2):
-        #     axs[id_image].imshow(float_ims[id_image], cmap="gray")
-        #     axs[id_image].imshow(mask_arrays[id_image], cmap="jet", alpha=0.5)
-        #     axs[id_image].set_title(
-        #         f"Filtered pixels by {filt_type} curvature in subimage {id_image}, with percentile {percentile}"
-        #     )
+        # display the filtered pixels
+        fig, axs = plt.subplots(1, 2, figsize=(20, 10))
+        for id_image in range(2):
+            axs[id_image].imshow(float_ims[id_image], cmap="gray")
+            axs[id_image].imshow(mask_arrays[id_image], cmap="jet", alpha=0.5)
+            axs[id_image].set_title(
+                f"Filtered {cropped_sift_radical} pixels by {filt_type} curvature in subimage {id_image}, with percentile {percentile}"
+            )
 
         # save the plot
-        # save_fig_pkl(
-        #     fig,
-        #     path=descrip_path,
-        #     filename=f"{descrip_filename_prefixes[id_image]}_filtered_pixels",
-        # )
+        save_fig_pkl(
+            fig,
+            path="filtered_keypoints",
+            filename=f"{dist_filename_prefix}_prefiltered_pixels_mask",
+        )
 
-        # plt.show()
+        plt.show()
 
         # check if coords of keypoints match with mask of prefiltered pixels
         for id_image in range(2):
