@@ -18,55 +18,163 @@ from filenames_creation import *
 
 import compute_desc_img as cp_desc
 
+import pickle
 
-def display_match(
+
+# def display_match(
+#     ims,
+#     dmatch,
+#     kps_coords,
+#     show_plot=False,
+#     save_path="filtered_keypoints",
+#     filename_prefix=None,
+#     dpi=800,
+#     epsilon=1,
+#     distance_type="min",
+#     im_names=None,
+# ):
+#     """
+#     Plot a match between the 2 images
+#     ims: list of 2 images, each being a numpy array
+#     dmatch: DMatch object
+#     kps_coords: list of 2 numpy arrays of shape (n, 2), each containing the coordinates of the keypoints of the image, coordinates are (x, y)
+#     show_plot: boolean, whether to display the plot or not
+#     save_path: string, path to the directory where the image should be saved
+#     filename_prefix: string, beginning of name of the file to save the image as
+#     dpi: int, resolution of the saved image in dots per inch
+#     """
+#     matched_kps_pos = (
+#         kps_coords[0][dmatch.queryIdx],
+#         kps_coords[1][dmatch.trainIdx],
+#     )
+
+#     fig, axs = plt.subplots(1, 2, figsize=(20, 10))
+
+#     for id_image in range(2):
+#         axs[id_image].imshow(ims[id_image], cmap="gray")
+#         axs[id_image].scatter(
+#             matched_kps_pos[id_image][0], matched_kps_pos[id_image][1], c="r", s=10
+#         )
+
+#     # add title
+#     comment_dist_type = "minimal for pixel1" if distance_type == "min" else ""
+#     title = f"Match between {im_names[0]} and {im_names[1]}, with distance {dmatch.distance:.2f} {comment_dist_type}, \n at coordinates {np.round(matched_kps_pos[0])} and {np.round(matched_kps_pos[1])}, \n with precision threshold {epsilon} pixels"
+#     plt.suptitle(title)
+
+#     if save_path is not None and filename_prefix is not None:
+#         filename_suffix = f"_{matched_kps_pos[0][0]}_{matched_kps_pos[0][1]}_{matched_kps_pos[1][0]}_{matched_kps_pos[1][1]}"
+#         if not os.path.exists(save_path):
+#             os.makedirs(save_path)
+#         plt.savefig(f"{save_path}/{filename_prefix}_{filename_suffix}.png", dpi=dpi)
+
+#     if show_plot:
+#         plt.show()
+
+
+def display_matches(
     ims,
-    dmatch,
+    match_list,
     kps_coords,
     show_plot=False,
     save_path="filtered_keypoints",
-    filename_prefix=None,
+    filename_prefix=dist_filename_prefix,
     dpi=800,
     epsilon=1,
     distance_type="min",
     im_names=None,
+    plot_title_prefix="Matches",
 ):
     """
-    Plot a match between the 2 images
+    Plot multiple matched keypoints on the 2 images
     ims: list of 2 images, each being a numpy array
-    dmatch: DMatch object
+    match_list: list of sift matches objects (pairs of dmatches)
     kps_coords: list of 2 numpy arrays of shape (n, 2), each containing the coordinates of the keypoints of the image, coordinates are (x, y)
     show_plot: boolean, whether to display the plot or not
     save_path: string, path to the directory where the image should be saved
     filename_prefix: string, beginning of name of the file to save the image as
     dpi: int, resolution of the saved image in dots per inch
     """
-    matched_kps_pos = (
-        kps_coords[0][dmatch.queryIdx],
-        kps_coords[1][dmatch.trainIdx],
-    )
+    matched_kps_pos = [
+        (
+            kps_coords[0][match[0].queryIdx],
+            kps_coords[1][match[0].trainIdx],
+        )
+        for match in match_list
+    ]
+
+    matches_colors = np.random.rand(len(match_list), 3)
 
     fig, axs = plt.subplots(1, 2, figsize=(20, 10))
 
     for id_image in range(2):
         axs[id_image].imshow(ims[id_image], cmap="gray")
-        axs[id_image].scatter(
-            matched_kps_pos[id_image][0], matched_kps_pos[id_image][1], c="r", s=10
-        )
+        for id_match in range(len(match_list)):
+            axs[id_image].scatter(
+                matched_kps_pos[id_match][id_image][0],
+                matched_kps_pos[id_match][id_image][1],
+                c=matches_colors[id_match],
+                s=10,
+            )
 
     # add title
-    comment_dist_type = "minimal for pixel1" if distance_type == "min" else ""
-    title = f"Match between {im_names[0]} and {im_names[1]}, with distance {dmatch.distance:.2f} {comment_dist_type}, \n at coordinates {np.round(matched_kps_pos[0])} and {np.round(matched_kps_pos[1])}, \n with precision threshold {epsilon} pixels"
+    title = f"{len(match_list)} {plot_title_prefix} between {im_names[0]} and {im_names[1]}, with precision threshold {epsilon} pixels"
     plt.suptitle(title)
 
     if save_path is not None and filename_prefix is not None:
-        filename_suffix = f"_{matched_kps_pos[0][0]}_{matched_kps_pos[0][1]}_{matched_kps_pos[1][0]}_{matched_kps_pos[1][1]}"
+        # add random number to identify the plot
+        rand_id = np.random.randint(1000)
+        filename_suffix = f"{plot_title_prefix}_{rand_id}"
         if not os.path.exists(save_path):
             os.makedirs(save_path)
-        plt.savefig(f"{save_path}/{filename_prefix}_{filename_suffix}.png", dpi=dpi)
+        # plt.savefig(f"{save_path}/{filename_prefix}_{filename_suffix}_multi.svg")
+
+        with open(
+            f"{save_path}/{filename_prefix}_{filename_suffix}_multi.pkl", "wb"
+        ) as f:
+            pickle.dump(fig, f)
 
     if show_plot:
         plt.show()
+
+
+# def display_matches2(
+#     ims,
+#     matches_idx_list,
+#     kps_coords,
+#     show_plot=False,
+#     save_path="None",
+#     filename_prefix=None,
+#     dpi=800,
+#     epsilon=1,
+#     distance_type="min",
+#     im_names=None,
+# ):
+#     """ """
+
+#     matches_colors = np.random.rand(len(matches_idx_list), 3)
+
+#     fig, axs = plt.subplots(1, 2, figsize=(20, 10))
+
+#     for id_image in range(2):
+#         axs[id_image].imshow(ims[id_image], cmap="gray")
+#         for idx in range(len(matches_idx_list)):
+#             axs[id_image].scatter(
+#                 kps_coords[id_image][matches_idx_list[idx], 0],
+#                 kps_coords[id_image][matches_idx_list[idx], 1],
+#                 c=matches_colors[idx],
+#                 s=10,
+#             )
+
+#     if save_path is not None and filename_prefix is not None:
+#         filename_suffix = f"_{matched_kps_pos[0][0]}_{matched_kps_pos[0][1]}_{matched_kps_pos[1][0]}_{matched_kps_pos[1][1]}"
+#         if not os.path.exists(save_path):
+#             os.makedirs(save_path)
+#         plt.savefig(
+#             f"{save_path}/{filename_prefix}_{filename_suffix}_multi.png", dpi=dpi
+#         )
+
+#     if show_plot:
+#         plt.show()
 
 
 def print_general_kp_matches_infos(
@@ -207,26 +315,35 @@ if __name__ == "__main__":
 
     # look at some matches
 
-    chosen_matches_idx = []
+    # display_matches2(
+    #     ims, correct_matches_idxs[:10], kps_coords, show_plot=True, im_names=im_names
+    # )
+
+    chosen_matches_idx = list(range(2))
     for match_idx in chosen_matches_idx:
-        # display 1 match, object here is not DMatch, but a couple of DMatch, as Sift returns
-        # we get here only the Dmatch
-        chosen_Dmatch = good_matches[match_idx][0]
 
-        # display the match
-        display_match(
-            ims,
-            chosen_Dmatch,
-            kps_coords,
-            show_plot=True,
-            # save_path=filtered_kp_path,  # comment or pass None to not save the image
-            filename_prefix=correct_match_filename_prefix,
-            dpi=800,
-            im_names=im_names,
-        )
+        break
 
-        # display topological properties
-        chosen_kps = [kps[0][chosen_Dmatch.queryIdx], kps[1][chosen_Dmatch.trainIdx]]
+        # option 1: display matches 1 by one
+
+        # # display 1 match, object here is not DMatch, but a couple of DMatch, as Sift returns
+        # # we get here only the Dmatch
+        # chosen_Dmatch = good_matches[match_idx][0]
+
+        # # display the match
+        # display_match(
+        #     ims,
+        #     chosen_Dmatch,
+        #     kps_coords,
+        #     show_plot=True,
+        #     # save_path=filtered_kp_path,  # comment or pass None to not save the image
+        #     filename_prefix=correct_match_filename_prefix,
+        #     dpi=800,
+        #     im_names=im_names,
+        # )
+
+        # # display topological properties
+        # chosen_kps = [kps[0][chosen_Dmatch.queryIdx], kps[1][chosen_Dmatch.trainIdx]]
         # vh.topological_visualization_pipeline(
         #     kps=chosen_kps,
         #     uint_ims=ims,
@@ -237,7 +354,7 @@ if __name__ == "__main__":
         #     show_plot=False,
         # )
 
-        # display the descriptor of the point in the 2 images
+        # # display the descriptor of the point in the 2 images
         # for id_image in range(2):
         #     visu_desc.display_descriptor(
         #         descriptor_histograms=desc.unflatten_descriptor(
@@ -249,90 +366,62 @@ if __name__ == "__main__":
         #         show_plot=False,
         #     )
 
-    # Look at information about the curvatures and gradients of the good and bad keypoints
-    print(f"feat computation beginning for both images")
-    overall_features_ims = [
-        desc.compute_features_overall_abs(float_ims[id_image], border_size=border_size)
-        for id_image in range(2)
-    ]
+        # option 2: display multiple matches on the same plot
 
-    # look at the mean absolute curvatures
-    mean_abs_curvs_ims = [
-        cp_desc.compute_mean_abs_curv_arr(overall_features_ims[id_image][1])
-        for id_image in range(2)
-    ]
+        # display_matches(
+        #     ims,
+        #     good_matches[match_idx : match_idx + 1],
+        #     kps_coords,
+        #     show_plot=True,
+        #     # save_path=filtered_kp_path,  # comment or pass None to not save the image
+        #     filename_prefix=None,
+        #     dpi=800,
+        #     im_names=im_names,
+        # )
 
-    # start with good keypoints
-    y_kps = [kps_coords[id_image][:, 1] for id_image in range(2)]
-    x_kps = [kps_coords[id_image][:, 0] for id_image in range(2)]
+    # display random good matches
+    nb_rd_matches_to_display = 10
+    rd_idx = np.random.choice(len(good_matches), nb_rd_matches_to_display)
+    rd_good_matches = [good_matches[i] for i in rd_idx]
+    display_matches(
+        ims,
+        rd_good_matches,
+        kps_coords,
+        show_plot=False,
+        im_names=im_names,
+        plot_title_prefix=f"Random good {sift_radical[1:] if use_sift else ''} matches",
+    )
 
-    y_gd_kps = [y_kps[id_image][correct_matches_idxs] for id_image in range(2)]
-    x_gd_kps = [x_kps[id_image][correct_matches_idxs] for id_image in range(2)]
+    # display random bad matches
+    nb_rd_matches_to_display2 = 10
+    rd_idx2 = np.random.choice(len(bad_matches), nb_rd_matches_to_display2)
+    rd_bad_matches = [bad_matches[i] for i in rd_idx2]
+    display_matches(
+        ims,
+        rd_bad_matches,
+        kps_coords,
+        show_plot=False,
+        im_names=im_names,
+        plot_title_prefix=f"Random bad {sift_radical[1:] if use_sift else ''} matches",
+    )
 
-    good_mean_abs_curvs = [
-        mean_abs_curvs_ims[id_image][y_gd_kps[id_image], x_gd_kps[id_image]]
-        for id_image in range(2)
-    ]
+    # display random unfiltered by blender matches
+    nb_rd_matches_to_display3 = 10
+    rd_idx3 = np.random.choice(len(matches), nb_rd_matches_to_display3)
+    rd_matches = [matches[i] for i in rd_idx3]
+    display_matches(
+        ims,
+        rd_matches,
+        kps_coords,
+        show_plot=False,
+        im_names=im_names,
+        plot_title_prefix=f"Random unfiltered by blender {sift_radical[1:] if use_sift else ''} matches",
+    )
 
-    for id_image in range(2):
-        print(
-            f"Mean value of mean absolute curvature of the good keypoints in image {id_image}: {np.mean(good_mean_abs_curvs[id_image])}"
-        )
-        print(
-            f"Standard deviation of mean absolute curvature of the good keypoints in image {id_image}: {np.std(good_mean_abs_curvs[id_image])}"
-        )
+    plt.show()
 
-    # look at mask of prefiltered pixels
-    if use_filt:
-
-        mask_arrays = [None, None]
-
-        for id_image in range(2):
-
-            mask_arrays[id_image], mean_abs_curvs, y_slice, x_slice = (
-                cp_desc.filter_by_mean_abs_curv(
-                    float_ims[id_image],
-                    overall_features_ims[id_image][1],
-                    y_starts[id_image],
-                    y_lengths[id_image],
-                    x_starts[id_image],
-                    x_lengths[id_image],
-                    percentile,
-                )
-            )
-
-        # display the filtered pixels
-        fig, axs = plt.subplots(1, 2, figsize=(20, 10))
-        for id_image in range(2):
-            axs[id_image].imshow(float_ims[id_image], cmap="gray")
-            axs[id_image].imshow(mask_arrays[id_image], cmap="jet", alpha=0.5)
-            axs[id_image].set_title(
-                f"Filtered pixels by mean curvature in subimage {id_image}, with percentile {percentile}"
-            )
-
-        # save the plot
-        plt.savefig(
-            f"{descrip_path}/{descrip_filename_prefixes[id_image]}_filtered_pixels.png"
-        )
-        plt.show()
-
-        # check if coords of keypoints match with mask of prefiltered pixels
-        for id_image in range(2):
-            nb_masked_kps = np.sum(mask_arrays[id_image] > 0)
-            found_kps = 0
-            for id_kp in range(len(kps_coords[id_image])):
-                x, y = kps_coords[id_image][id_kp]
-                if mask_arrays[id_image][y, x] > 0:
-                    found_kps += 1
-            print(
-                f"Number of keypoints found in the filtered pixels for image {id_image}: {found_kps}"
-            )
-            print(f"Number of masked keypoints for image {id_image}: {nb_masked_kps}")
-            print(
-                f"Percentage of keypoints found in the filtered pixels for image {id_image}: {found_kps / nb_masked_kps * 100.0}"
-            )
-
-        # Look at
+    # stop
+    sys.exit()
 
     # stop here
     sys.exit()
@@ -432,3 +521,88 @@ if __name__ == "__main__":
             )
             ax[id_image].set_title(f"Preiltered pixels in subimage {id_image}")
         plt.show()
+
+    # Look at information about the curvatures and gradients of the good and bad keypoints
+    print(f"feat computation beginning for both images")
+    overall_features_ims = [
+        desc.compute_features_overall_abs(float_ims[id_image], border_size=border_size)
+        for id_image in range(2)
+    ]
+
+    # look at the mean absolute curvatures
+    mean_abs_curvs_ims = [
+        cp_desc.compute_mean_abs_curv_arr(overall_features_ims[id_image][1])
+        for id_image in range(2)
+    ]
+
+    # start with good keypoints
+    y_kps = [kps_coords[id_image][:, 1] for id_image in range(2)]
+    x_kps = [kps_coords[id_image][:, 0] for id_image in range(2)]
+
+    y_gd_kps = [y_kps[id_image][correct_matches_idxs] for id_image in range(2)]
+    x_gd_kps = [x_kps[id_image][correct_matches_idxs] for id_image in range(2)]
+
+    good_mean_abs_curvs = [
+        mean_abs_curvs_ims[id_image][y_gd_kps[id_image], x_gd_kps[id_image]]
+        for id_image in range(2)
+    ]
+
+    for id_image in range(2):
+        print(
+            f"Mean value of mean absolute curvature of the good keypoints in image {id_image}: {np.mean(good_mean_abs_curvs[id_image])}"
+        )
+        print(
+            f"Standard deviation of mean absolute curvature of the good keypoints in image {id_image}: {np.std(good_mean_abs_curvs[id_image])}"
+        )
+
+    # look at mask of prefiltered pixels
+    if use_filt:
+
+        mask_arrays = [None, None]
+
+        for id_image in range(2):
+
+            mask_arrays[id_image], mean_abs_curvs, y_slice, x_slice = (
+                cp_desc.filter_by_mean_abs_curv(
+                    float_ims[id_image],
+                    overall_features_ims[id_image][1],
+                    y_starts[id_image],
+                    y_lengths[id_image],
+                    x_starts[id_image],
+                    x_lengths[id_image],
+                    percentile,
+                )
+            )
+
+        # display the filtered pixels
+        fig, axs = plt.subplots(1, 2, figsize=(20, 10))
+        for id_image in range(2):
+            axs[id_image].imshow(float_ims[id_image], cmap="gray")
+            axs[id_image].imshow(mask_arrays[id_image], cmap="jet", alpha=0.5)
+            axs[id_image].set_title(
+                f"Filtered pixels by mean curvature in subimage {id_image}, with percentile {percentile}"
+            )
+
+        # save the plot
+        plt.savefig(
+            f"{descrip_path}/{descrip_filename_prefixes[id_image]}_filtered_pixels.png"
+        )
+        plt.show()
+
+        # check if coords of keypoints match with mask of prefiltered pixels
+        for id_image in range(2):
+            nb_masked_kps = np.sum(mask_arrays[id_image] > 0)
+            found_kps = 0
+            for id_kp in range(len(kps_coords[id_image])):
+                x, y = kps_coords[id_image][id_kp]
+                if mask_arrays[id_image][y, x] > 0:
+                    found_kps += 1
+            print(
+                f"Number of keypoints found in the filtered pixels for image {id_image}: {found_kps}"
+            )
+            print(f"Number of masked keypoints for image {id_image}: {nb_masked_kps}")
+            print(
+                f"Percentage of keypoints found in the filtered pixels for image {id_image}: {found_kps / nb_masked_kps * 100.0}"
+            )
+
+        # Look at

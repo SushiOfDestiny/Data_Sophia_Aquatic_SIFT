@@ -31,14 +31,20 @@ blurred_imgs_filename = (
 
 
 # Create suffix for descriptor parameters
-descrip_suffix = f"_nbins_{nb_bins}_brad_{bin_radius}_nangbins_{nb_angular_bins}_sig{int(sigma)}{sift_radical}{filt_radical}"
+raw_descrip_suffix = (
+    f"_nbins_{nb_bins}_brad_{bin_radius}_nangbins_{nb_angular_bins}_sig{int(sigma)}"
+)
+descrip_suffix = f"{raw_descrip_suffix}{sift_radical}{filt_radical}"
 
 # Define path to save the descriptors and coordinates
 descrip_path = "computed_descriptors"
 # Create filename for the descriptors and coordinates
-descrip_filename_prefixes = [
-    f"{photo_name}_{im_names[id_image]}_y_{y_starts[id_image]}_{y_lengths[id_image]}_x_{x_starts[id_image]}_{x_lengths[id_image]}{descrip_suffix}"
+raw_descrip_prefixes = [
+    f"{photo_name}_{im_names[id_image]}_y_{y_starts[id_image]}_{y_lengths[id_image]}_x_{x_starts[id_image]}_{x_lengths[id_image]}"
     for id_image in range(2)
+]
+descrip_filename_prefixes = [
+    f"{raw_descrip_prefixes[id_image]}{descrip_suffix}" for id_image in range(2)
 ]
 descrip_filenames = descrip_filename_prefixes
 
@@ -51,7 +57,8 @@ kp_coords_filenames = [
 # Define path to save the distances and matches
 dist_path = "computed_distances"
 # Create filename for the distances and matches
-dist_filename_prefix = f"{photo_name}_y_{y_starts[0]}_{y_starts[1]}_{y_lengths[0]}_{y_lengths[1]}_x_{x_starts[0]}_{x_starts[1]}_{x_lengths[0]}_{x_lengths[1]}{descrip_suffix}{dist_type_suffix}"
+raw_dist_prefix = f"{photo_name}_y_{y_starts[0]}_{y_starts[1]}_{y_lengths[0]}_{y_lengths[1]}_x_{x_starts[0]}_{x_starts[1]}_{x_lengths[0]}_{x_lengths[1]}"
+dist_filename_prefix = f"{raw_dist_prefix}{descrip_suffix}{dist_type_suffix}"
 dist_filename = f"{dist_filename_prefix}_dists"
 
 
