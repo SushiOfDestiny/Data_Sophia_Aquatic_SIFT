@@ -44,3 +44,89 @@ Cropped images saved in ../data/blender/rocks_2
 2024-02-13 18:49:34,278 - Script imgs_preprocessing.py is done.
 
 2024-02-13 18:49:34,278 - Run the script compute_desc_img.py
+2024-02-13 19:51:21,867 - feat computation beginning for image 0: 2024-02-13 18:49:35.187912
+feat computation end for image 0 2024-02-13 18:49:48.741305
+feat compute time for image 0 0:00:13.553393
+shape of overall_features[0] of image 0 (1080, 1920, 2)
+filter pixel by mean absolute curvature percentile in subimage
+prefiltering by mean absolute curvature beginning for image 0 2024-02-13 18:49:35.187912
+prefiltering by mean absolute curvature end for image 0 2024-02-13 18:49:53.973128
+prefiltering by mean absolute curvature compute time for image 0 0:00:05.231785
+Min mean curvature: 0.0
+Max mean curvature: 0.0721103847026825
+Mean mean curvature: 0.009157434105873108
+Standard deviation of the mean curvatures: 0.010860128328204155
+Percentile 50%: 0.004480886273086071
+number of pixels in subimage: 280000
+number of filtered accepted pixels: 140000
+percentage of filtered accepted pixels: 50.0
+coords array shape: (140000, 2)
+desc computation beginning for image 0 2024-02-13 18:49:54.188604
+desc computation end for image 0 2024-02-13 19:20:45.026142
+desc compute time for image 0 0:30:50.837538
+Number of empty filtered descriptors 0.0
+feat computation beginning for image 1: 2024-02-13 19:20:46.337084
+feat computation end for image 1 2024-02-13 19:20:53.008429
+feat compute time for image 1 0:00:06.671345
+shape of overall_features[0] of image 1 (1080, 1920, 2)
+filter pixel by mean absolute curvature percentile in subimage
+prefiltering by mean absolute curvature beginning for image 1 2024-02-13 19:20:46.337084
+prefiltering by mean absolute curvature end for image 1 2024-02-13 19:20:58.192535
+prefiltering by mean absolute curvature compute time for image 1 0:00:05.184059
+Min mean curvature: 0.0
+Max mean curvature: 0.07923481613397598
+Mean mean curvature: 0.009403050877153873
+Standard deviation of the mean curvatures: 0.011106088757514954
+Percentile 50%: 0.0046101100742816925
+number of pixels in subimage: 280000
+number of filtered accepted pixels: 140000
+percentage of filtered accepted pixels: 50.0
+coords array shape: (140000, 2)
+desc computation beginning for image 1 2024-02-13 19:20:58.404513
+desc computation end for image 1 2024-02-13 19:51:20.000391
+desc compute time for image 1 0:30:21.595878
+Number of empty filtered descriptors 0.0
+
+2024-02-13 19:51:21,867 - Script compute_desc_img.py is done.
+
+2024-02-13 19:51:21,867 - Run the script compute_distances.py
+2024-02-13 20:33:59,878 - Start computing distances: 2024-02-13 19:51:23.233658
+End computing distances: 2024-02-13 20:33:59.612037
+Compute time: 0:42:36.378379
+Chosen distance type: min
+
+2024-02-13 20:33:59,878 - Script compute_distances.py is done.
+
+2024-02-13 20:33:59,878 - Run the script create_cv_objs.py
+2024-02-13 20:34:02,385 - finished creating opencv objects
+beginning saving opencv objects to file
+finished saving kp_pairs
+finished saving matches
+finished saving keypoints
+
+2024-02-13 20:34:02,385 - Script create_cv_objs.py is done.
+
+2024-02-13 20:34:02,385 - All scripts are done. Launch Blender or a display script.
+
+
+2024-02-13 20:34:06,889 - Start running the post blender pipeline
+2024-02-13 20:34:06,890 - Run the script display_matches.py
+2024-02-13 20:34:44,936 - number of pixels in image 0 280000
+number of  keypoints in image 0 140000
+percentage of  keypoints in image 0 50.0
+number of pixels in image 1 280000
+number of  keypoints in image 1 140000
+percentage of  keypoints in image 1 50.0
+number of unfiltered  matches 140000
+number of good  matches at a precision of None pixels:  0
+Percentage of good matches within matches: 0.0
+Percentage of good matches within pixels in subimage 1: 0.0
+feat computation beginning for both images
+Mean value of mean absolute curvature of the good keypoints in image 0: nan
+Standard deviation of mean absolute curvature of the good keypoints in image 0: nan
+Mean value of mean absolute curvature of the good keypoints in image 1: nan
+Standard deviation of mean absolute curvature of the good keypoints in image 1: nan
+
+2024-02-13 20:34:44,936 - Script display_matches.py is done.
+
+2024-02-13 20:34:44,936 - All scripts are done. The pipeline is finished.
