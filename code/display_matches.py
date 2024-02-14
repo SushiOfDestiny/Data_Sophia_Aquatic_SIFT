@@ -591,7 +591,7 @@ if __name__ == "__main__":
 
         # check if coords of keypoints match with mask of prefiltered pixels
         for id_image in range(2):
-            nb_masked_kps = np.sum(mask_arrays[id_image] > 0)
+            nb_mask_kps = np.sum(mask_arrays[id_image] > 0)
             found_kps = 0
             for id_kp in range(len(kps_coords[id_image])):
                 x, y = kps_coords[id_image][id_kp]
@@ -600,9 +600,9 @@ if __name__ == "__main__":
             print(
                 f"Number of keypoints found in the filtered pixels for image {id_image}: {found_kps}"
             )
-            print(f"Number of masked keypoints for image {id_image}: {nb_masked_kps}")
+            print(f"Number of mask keypoints for image {id_image}: {nb_mask_kps}")
             print(
-                f"Percentage of keypoints found in the filtered pixels for image {id_image}: {found_kps / nb_masked_kps * 100.0}"
+                f"Percentage of keypoints found in the filtered pixels for image {id_image}: {found_kps / nb_mask_kps * 100.0}"
             )
 
         # Look at

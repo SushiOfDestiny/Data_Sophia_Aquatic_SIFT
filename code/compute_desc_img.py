@@ -142,7 +142,7 @@ def filter_by_mean_abs_curv(
         mean_abs_curvs[y_slice, x_slice], percentile=percentile
     )
 
-    return masked_array, mean_abs_curvs, y_slice, x_slice
+    return mask_array, mean_abs_curvs, y_slice, x_slice
 
 def filter_by_std_neighbor_curv(
         float_im, eigvals, y_start, y_length, x_start, x_length, percentile, bin_radius
@@ -157,7 +157,7 @@ def filter_by_std_neighbor_curv(
     percentile: int, the percentile to use for filtering
 
     Returns:
-    - masked_array: numpy array of shape (h, w) containing the filtered pixel mask    
+    - mask_array: numpy array of shape (h, w) containing the filtered pixel mask    
     """
 
     y_slice = slice(y_start, y_start + y_length)
