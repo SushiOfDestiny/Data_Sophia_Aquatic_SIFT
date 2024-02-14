@@ -216,6 +216,26 @@ def display_distance_scatter(
     )
     plt.show()
 
+def display_distance_curvature_scatter(
+        good_matches, bad_matches, mean_abs_curv_values, y_gd_kps, x_gd_kps, y_bd_kps, x_bd_kps
+):
+    plt.scatter(
+        [match[0].distance for match in good_matches],
+        mean_abs_curv_values[y_gd_kps, x_gd_kps],
+        marker='+',
+        color='b'
+    )
+    plt.scatter(
+        [match[0].distance for match in bad_matches],
+        mean_abs_curv_values[y_bd_kps, x_bd_kps],
+        marker='+',
+        color='r'
+    )
+
+    plt.xlabel("Distance between match descriptors")
+    plt.ylabel("Mean curvature values")
+    plt.show()
+
 
 if __name__ == "__main__":
 
@@ -396,82 +416,82 @@ if __name__ == "__main__":
     # # stop here
     # sys.exit()
 
-    if not use_sift:
-        descs = [
-            np.load(
-                f"{descrip_path}/{descrip_filenames[id_image]}.npy",
-            )
-            for id_image in range(2)
-        ]
+    # if not use_sift:
+    #     descs = [
+    #         np.load(
+    #             f"{descrip_path}/{descrip_filenames[id_image]}.npy",
+    #         )
+    #         for id_image in range(2)
+    #     ]
 
-        # look at the average descriptors of the good matches
-        good_matches_kps = [
-            [kps_coords[0][match[0].queryIdx] for match in good_matches],
-            [kps_coords[1][match[0].trainIdx] for match in good_matches],
-        ]
-        good_matches_kps_idx = [
-            np.array(
-                [
-                    (kp[1] - y_starts[id_image]) * x_lengths[id_image]
-                    + (kp[0] - x_starts[id_image])
-                    for kp in good_matches_kps[id_image]
-                ]
-            )
-            for id_image in range(2)
-        ]
+    #     # look at the average descriptors of the good matches
+    #     good_matches_kps = [
+    #         [kps_coords[0][match[0].queryIdx] for match in good_matches],
+    #         [kps_coords[1][match[0].trainIdx] for match in good_matches],
+    #     ]
+    #     good_matches_kps_idx = [
+    #         np.array(
+    #             [
+    #                 (kp[1] - y_starts[id_image]) * x_lengths[id_image]
+    #                 + (kp[0] - x_starts[id_image])
+    #                 for kp in good_matches_kps[id_image]
+    #             ]
+    #         )
+    #         for id_image in range(2)
+    #     ]
 
-        good_descs_ims = [
-            descs[id_image][good_matches_kps_idx[id_image]] for id_image in range(2)
-        ]
-        avg_good_descs = [
-            np.mean(good_descs_ims[id_image], axis=0) for id_image in range(2)
-        ]
+    #     good_descs_ims = [
+    #         descs[id_image][good_matches_kps_idx[id_image]] for id_image in range(2)
+    #     ]
+    #     avg_good_descs = [
+    #         np.mean(good_descs_ims[id_image], axis=0) for id_image in range(2)
+    #     ]
 
-        good_descs_names = [
-            f"Averaged descriptor of good matches for {im_names[id_image]}\n with nb_bins={nb_bins}, bin_radius={bin_radius}, delta_angle={delta_angle} and sigma={sigma}"
-            for id_image in range(2)
-        ]
+    #     good_descs_names = [
+    #         f"Averaged descriptor of good matches for {im_names[id_image]}\n with nb_bins={nb_bins}, bin_radius={bin_radius}, delta_angle={delta_angle} and sigma={sigma}"
+    #         for id_image in range(2)
+    #     ]
 
-        # look at averaged bad descriptor
+    #     # look at averaged bad descriptor
 
-        bad_descs = [
-            descs[id_image][
-                np.setdiff1d(
-                    np.arange(np.shape(descs[id_image])[0]),
-                    good_matches_kps_idx[id_image],
-                )
-            ]
-            for id_image in range(2)
-        ]
+    #     bad_descs = [
+    #         descs[id_image][
+    #             np.setdiff1d(
+    #                 np.arange(np.shape(descs[id_image])[0]),
+    #                 good_matches_kps_idx[id_image],
+    #             )
+    #         ]
+    #         for id_image in range(2)
+    #     ]
 
-        avg_bad_descs = [np.mean(bad_descs[id_image], axis=0) for id_image in range(2)]
+    #     avg_bad_descs = [np.mean(bad_descs[id_image], axis=0) for id_image in range(2)]
 
-        bad_descs_names = [
-            f"Averaged descriptor of bad matches for {im_names[id_image]}\n with nb_bins={nb_bins}, bin_radius={bin_radius}, delta_angle={delta_angle} and sigma={sigma}"
-            for id_image in range(2)
-        ]
+    #     bad_descs_names = [
+    #         f"Averaged descriptor of bad matches for {im_names[id_image]}\n with nb_bins={nb_bins}, bin_radius={bin_radius}, delta_angle={delta_angle} and sigma={sigma}"
+    #         for id_image in range(2)
+    #     ]
 
-        avg_descs = [avg_good_descs, avg_bad_descs]
-        descs_names = [good_descs_names, bad_descs_names]
+    #     avg_descs = [avg_good_descs, avg_bad_descs]
+    #     descs_names = [good_descs_names, bad_descs_names]
 
-        # Look only at first eigenvalue
-        for id_desc in range(0):
-            for id_image in range(2):
-                visu_desc.display_descriptor(
-                    descriptor_histograms=desc.unflatten_descriptor(
-                        avg_descs[id_desc][id_image],
-                        nb_bins=nb_bins,
-                        nb_angular_bins=nb_angular_bins,
-                    ),
-                    descriptor_name=descs_names[id_desc][id_image],
-                    show_plot=False,
-                )
+    #     # Look only at first eigenvalue
+    #     for id_desc in range(0):
+    #         for id_image in range(2):
+    #             visu_desc.display_descriptor(
+    #                 descriptor_histograms=desc.unflatten_descriptor(
+    #                     avg_descs[id_desc][id_image],
+    #                     nb_bins=nb_bins,
+    #                     nb_angular_bins=nb_angular_bins,
+    #                 ),
+    #                 descriptor_name=descs_names[id_desc][id_image],
+    #                 show_plot=False,
+    #             )
 
-        visu_desc.display_descriptor(
-            descriptor_histograms=desc.unflatten_descriptor(kps_coords[match_idx])
-        )
+    #     visu_desc.display_descriptor(
+    #         descriptor_histograms=desc.unflatten_descriptor(kps_coords[match_idx])
+    #     )
 
-        plt.show()
+    #     plt.show()
 
     # look at the distances of the good and bad matches
     print("Statistics about the distances of the good matches")
@@ -479,13 +499,6 @@ if __name__ == "__main__":
 
     print("Statistics about the distances of the bad matches")
     print_distance_infos(bad_matches)
-
-    # # Scatter plot distances
-    # display_distance_scatter(
-    #     matches=matches,
-    #     good_matches_kps_idx=good_matches_kps_idx,
-    #     image_distances_filename_npy=f"{matches_path}/{image_distances_filename}.npy"
-    # )
 
     # look at filtered keypoints on image
     if use_filt:
@@ -541,38 +554,78 @@ if __name__ == "__main__":
         # look at mask of prefiltered pixels
 
         mask_arrays = [None, None]
+        if filt_type == 'mean':
+            for id_image in range(2):
 
-        for id_image in range(2):
-
-            mask_arrays[id_image], mean_abs_curvs, y_slice, x_slice = (
-                cp_desc.filter_by_mean_abs_curv(
-                    float_ims[id_image],
-                    overall_features_ims[id_image][1],
-                    y_starts[id_image],
-                    y_lengths[id_image],
-                    x_starts[id_image],
-                    x_lengths[id_image],
-                    percentile,
+                mask_arrays[id_image], mean_abs_curvs, y_slice, x_slice = (
+                    cp_desc.filter_by_mean_abs_curv(
+                        float_ims[id_image],
+                        overall_features_ims[id_image][1],
+                        y_starts[id_image],
+                        y_lengths[id_image],
+                        x_starts[id_image],
+                        x_lengths[id_image],
+                        percentile,
+                    )
                 )
-            )
+                # Scatter plot distances
+                display_distance_curvature_scatter(
+                    good_matches=good_matches,
+                    bad_matches=bad_matches,
+                    mean_abs_curv_values=mean_abs_curvs,
+                    y_gd_kps=y_gd_kps[id_image],
+                    x_gd_kps=x_gd_kps[id_image],
+                    y_bd_kps=y_bd_kps[id_image],
+                    x_bd_kps=x_bd_kps[id_image]
 
-        # display the filtered pixels
-        fig, axs = plt.subplots(1, 2, figsize=(20, 10))
-        for id_image in range(2):
-            axs[id_image].imshow(float_ims[id_image], cmap="gray")
-            axs[id_image].imshow(mask_arrays[id_image], cmap="jet", alpha=0.5)
-            axs[id_image].set_title(
-                f"Filtered pixels by mean curvature in subimage {id_image}, with percentile {percentile}"
-            )
+                )
+
+        elif filt_type == 'std':
+            for id_image in range(2):
+                mask_arrays[id_image], neighborhood_stds, y_slice, x_slice = (
+                    cp_desc.filter_by_std_neighbor_curv(
+                        float_ims[id_image],
+                        overall_features_ims[id_image][1],
+                        y_starts[id_image],
+                        y_lengths[id_image],
+                        x_starts[id_image],
+                        x_lengths[id_image],
+                        percentile,
+                        neighborhood_radius=neighborhood_radius
+                    )
+                )
+                fig, axs = plt.subplots(1, 2, figsize=(20, 10))
+                axs[0].imshow(float_ims[id_image][y_starts[id_image]:y_starts[id_image]+y_lengths[id_image], x_starts[id_image]:x_starts[id_image]+x_lengths[id_image]], cmap='gray')
+                axs[1].imshow(neighborhood_stds, cmap='magma')
+                axs[0].set_title(
+                    f"Colormap of filtered pixels by {filt_type} for image {id_image}"
+                )
+
+                save_fig_pkl(
+                    fig,
+                    path=descrip_path,
+                    filename=f"{descrip_filename_prefixes[id_image]}_filter_colormap"
+                )
+
+                plt.show()
+
+        # # display the filtered pixels
+        # fig, axs = plt.subplots(1, 2, figsize=(20, 10))
+        # for id_image in range(2):
+        #     axs[id_image].imshow(float_ims[id_image], cmap="gray")
+        #     axs[id_image].imshow(mask_arrays[id_image], cmap="jet", alpha=0.5)
+        #     axs[id_image].set_title(
+        #         f"Filtered pixels by {filt_type} curvature in subimage {id_image}, with percentile {percentile}"
+        #     )
 
         # save the plot
-        save_fig_pkl(
-            fig,
-            path=descrip_path,
-            filename=f"{descrip_filename_prefixes[id_image]}_filtered_pixels",
-        )
+        # save_fig_pkl(
+        #     fig,
+        #     path=descrip_path,
+        #     filename=f"{descrip_filename_prefixes[id_image]}_filtered_pixels",
+        # )
 
-        plt.show()
+        # plt.show()
 
         # check if coords of keypoints match with mask of prefiltered pixels
         for id_image in range(2):

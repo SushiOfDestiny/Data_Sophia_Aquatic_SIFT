@@ -145,7 +145,7 @@ def filter_by_mean_abs_curv(
     return mask_array, mean_abs_curvs, y_slice, x_slice
 
 def filter_by_std_neighbor_curv(
-        float_im, eigvals, y_start, y_length, x_start, x_length, percentile, bin_radius
+        float_im, eigvals, y_start, y_length, x_start, x_length, percentile, neighborhood_radius
 ):
     """
     Filter the pixels of an image by a given percentile of standard deviation absolute curvature in a neighborhood
@@ -164,18 +164,18 @@ def filter_by_std_neighbor_curv(
     x_slice = slice(x_start, x_start + x_length)
 
     eigval_means = np.mean(eigvals, axis=2) # compute mean of curvature values for each pixel
-
-    bins_std = np.zeros(shape=(y_length, x_length), dtype=np.float32)
-    for y in range(bin_radius, bins_std.shape[0]-bin_radius):
-        for x in range(bin_radius, bins_std.shape[1]-bin_radius):
-            bins_std[y, x] = np.std(eigval_means[y-bin_radius:y+bin_radius, x-bin_radius, x+bin_radius])
+    print(f"Eigval_means shape : {eigval_means}")
+    neighborhood_stds = np.zeros(shape=(y_length, x_length), dtype=np.float32)
+    for y in range(neighborhood_radius, neighborhood_stds.shape[0]-neighborhood_radius):
+        for x in range(neighborhood_radius, neighborhood_stds.shape[1]-neighborhood_radius):
+            neighborhood_stds[y, x] = np.std(eigval_means[y-neighborhood_radius:y+neighborhood_radius, x-neighborhood_radius: x+neighborhood_radius])
     
     # Compute percentile prefiltering mask
     mask = np.zeros(shape=float_im.shape[:2], dtype=bool)
-    threshold = np.percentile(bins_std, percentile)
-    mask[y_slice, x_slice] = bins_std > threshold
+    threshold = np.percentile(neighborhood_stds, percentile)
+    mask[y_slice, x_slice] = neighborhood_stds > threshold
     
-    return mask
+    return mask, neighborhood_stds, y_slice, x_slice
 
 
 # @njit(parallel=True)
@@ -360,42 +360,74 @@ if __name__ == "__main__":
             ] = 1
 
         else:
-            print("filter pixel by mean absolute curvature percentile in subimage")
-            print(
-                f"prefiltering by mean absolute curvature beginning for image {id_image}",
-                before,
-            )
-            before = datetime.now()
+            if filt_type == 'mean':
+                print("filter pixel by mean absolute curvature percentile in subimage")
+                print(
+                    f"prefiltering by mean absolute curvature beginning for image {id_image}",
+                    before,
+                )
+                before = datetime.now()
 
-            mask_array, mean_abs_curvs, y_slice, x_slice = filter_by_mean_abs_curv(
-                float_ims[id_image],
-                overall_features[1],
-                y_starts[id_image],
-                y_lengths[id_image],
-                x_starts[id_image],
-                x_lengths[id_image],
-                percentile,
-            )
+                mask_array, mean_abs_curvs, y_slice, x_slice = filter_by_mean_abs_curv(
+                    float_ims[id_image],
+                    overall_features[1],
+                    y_starts[id_image],
+                    y_lengths[id_image],
+                    x_starts[id_image],
+                    x_lengths[id_image],
+                    percentile,
+                )
 
-            after = datetime.now()
-            print(
-                f"prefiltering by mean absolute curvature end for image {id_image}",
-                after,
-            )
-            print(
-                f"prefiltering by mean absolute curvature compute time for image {id_image}",
-                after - before,
-            )
+                after = datetime.now()
+                print(
+                    f"prefiltering by mean absolute curvature end for image {id_image}",
+                    after,
+                )
+                print(
+                    f"prefiltering by mean absolute curvature compute time for image {id_image}",
+                    after - before,
+                )
 
-            print_info_curvatures(
-                mask_array,
-                mean_abs_curvs,
-                y_slice,
-                x_slice,
-                y_lengths[id_image],
-                x_lengths[id_image],
-                percentile,
-            )
+                print_info_curvatures(
+                    mask_array,
+                    mean_abs_curvs,
+                    y_slice,
+                    x_slice,
+                    y_lengths[id_image],
+                    x_lengths[id_image],
+                    percentile,
+                )
+
+            elif filt_type == 'std':
+                print('filter pixel by std curvature values percentile in subimage')
+                print(f"prefiltering by std curvature values beginning for image {id_image}", before)
+                before = datetime.now()
+
+                mask_array, neighborhood_stds, y_slice, x_slice = filter_by_std_neighbor_curv(
+                    float_ims[id_image],
+                    overall_features[1],
+                    y_starts[id_image],
+                    y_lengths[id_image],
+                    x_starts[id_image],
+                    x_lengths[id_image],
+                    percentile,
+                    neighborhood_radius=neighborhood_radius
+                )
+
+                after = datetime.now()
+                print(
+                    f"prefiltering by std curvature end for image {id_image}",
+                    after,
+                )
+                print(
+                    f"prefiltering by std curvature compute time for image {id_image}",
+                    after - before,
+                )
+                
+            else:
+                raise ValueError(f"filtering type {filt_type} does not exist. Possible types : 'mean' or 'std'")
+            
+
 
         # compute coordinates of prefiltered pixels
         kp_coords = compute_non_null_coords(mask_array)
