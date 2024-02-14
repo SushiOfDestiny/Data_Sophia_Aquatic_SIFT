@@ -289,65 +289,65 @@ if __name__ == "__main__":
         f"Percentage of good {cropped_sift_radical} matches within the {nb_minimal_matches} minimal matches: {nb_good_minimal_matches / nb_minimal_matches * 100.0}"
     )
 
-    chosen_matches_idx = list(range(2))
-    for match_idx in chosen_matches_idx:
+    # chosen_matches_idx = list(range(2))
+    # for match_idx in chosen_matches_idx:
 
-        break
+    #     break
 
-        # option 1: display matches 1 by one
+    # option 1: display matches 1 by one
 
-        # # display 1 match, object here is not DMatch, but a couple of DMatch, as Sift returns
-        # # we get here only the Dmatch
-        # chosen_Dmatch = good_matches[match_idx][0]
+    # # display 1 match, object here is not DMatch, but a couple of DMatch, as Sift returns
+    # # we get here only the Dmatch
+    # chosen_Dmatch = good_matches[match_idx][0]
 
-        # # display the match
-        # display_match(
-        #     ims,
-        #     chosen_Dmatch,
-        #     kps_coords,
-        #     show_plot=True,
-        #     # save_path=filtered_kp_path,  # comment or pass None to not save the image
-        #     filename_prefix=correct_match_filename_prefix,
-        #     dpi=800,
-        #     im_names=im_names,
-        # )
+    # # display the match
+    # display_match(
+    #     ims,
+    #     chosen_Dmatch,
+    #     kps_coords,
+    #     show_plot=True,
+    #     # save_path=filtered_kp_path,  # comment or pass None to not save the image
+    #     filename_prefix=correct_match_filename_prefix,
+    #     dpi=800,
+    #     im_names=im_names,
+    # )
 
-        # # display topological properties
-        # chosen_kps = [kps[0][chosen_Dmatch.queryIdx], kps[1][chosen_Dmatch.trainIdx]]
-        # vh.topological_visualization_pipeline(
-        #     kps=chosen_kps,
-        #     uint_ims=ims,
-        #     float_ims=float_ims,
-        #     zoom_radius=20,
-        #     show_directions=False,
-        #     show_gradients=False,
-        #     show_plot=False,
-        # )
+    # # display topological properties
+    # chosen_kps = [kps[0][chosen_Dmatch.queryIdx], kps[1][chosen_Dmatch.trainIdx]]
+    # vh.topological_visualization_pipeline(
+    #     kps=chosen_kps,
+    #     uint_ims=ims,
+    #     float_ims=float_ims,
+    #     zoom_radius=20,
+    #     show_directions=False,
+    #     show_gradients=False,
+    #     show_plot=False,
+    # )
 
-        # # display the descriptor of the point in the 2 images
-        # for id_image in range(2):
-        #     visu_desc.display_descriptor(
-        #         descriptor_histograms=desc.unflatten_descriptor(
-        #             descs[id_image][chosen_Dmatch.queryIdx],
-        #             nb_bins=nb_bins,
-        #             nb_angular_bins=nb_angular_bins,
-        #         ),
-        #         descriptor_name=f"Descriptor of the match {match_idx} in {im_names[id_image]}",
-        #         show_plot=False,
-        #     )
+    # # display the descriptor of the point in the 2 images
+    # for id_image in range(2):
+    #     visu_desc.display_descriptor(
+    #         descriptor_histograms=desc.unflatten_descriptor(
+    #             descs[id_image][chosen_Dmatch.queryIdx],
+    #             nb_bins=nb_bins,
+    #             nb_angular_bins=nb_angular_bins,
+    #         ),
+    #         descriptor_name=f"Descriptor of the match {match_idx} in {im_names[id_image]}",
+    #         show_plot=False,
+    #     )
 
-        # option 2: display multiple matches on the same plot
+    # option 2: display multiple matches on the same plot
 
-        # display_matches(
-        #     ims,
-        #     good_matches[match_idx : match_idx + 1],
-        #     kps_coords,
-        #     show_plot=True,
-        #     # save_path=filtered_kp_path,  # comment or pass None to not save the image
-        #     filename_prefix=None,
-        #     dpi=800,
-        #     im_names=im_names,
-        # )
+    # display_matches(
+    #     ims,
+    #     good_matches[match_idx : match_idx + 1],
+    #     kps_coords,
+    #     show_plot=True,
+    #     # save_path=filtered_kp_path,  # comment or pass None to not save the image
+    #     filename_prefix=None,
+    #     dpi=800,
+    #     im_names=im_names,
+    # )
 
     # display random good matches
     max_nb_matches_to_display = 250
@@ -392,6 +392,13 @@ if __name__ == "__main__":
     )
 
     plt.show()
+
+    # look at the distances of the good and bad matches
+    print("Statistics about the distances of the good matches")
+    print_distance_infos(good_matches)
+
+    print("Statistics about the distances of the bad matches")
+    print_distance_infos(bad_matches)
 
     # # stop
     # sys.exit()
@@ -475,13 +482,6 @@ if __name__ == "__main__":
         )
 
         plt.show()
-
-    # look at the distances of the good and bad matches
-    print("Statistics about the distances of the good matches")
-    print_distance_infos(good_matches)
-
-    print("Statistics about the distances of the bad matches")
-    print_distance_infos(bad_matches)
 
     # # Scatter plot distances
     # display_distance_scatter(

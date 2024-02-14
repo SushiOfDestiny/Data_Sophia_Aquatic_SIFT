@@ -135,3 +135,49 @@ Percentage of good  matches within the 8700 minimal matches: 68.57471264367815
 2024-02-14 13:52:01,616 - All scripts are done. The pipeline is finished.
 2024-02-14 13:52:13,986 - Start running the post blender pipeline
 2024-02-14 13:52:13,986 - Run the script display_matches.py
+2024-02-14 13:55:32,364 - Start running the post blender pipeline
+2024-02-14 13:55:32,364 - Run the script display_matches.py
+2024-02-14 14:03:32,759 - number of pixels in image 0 174000
+number of  keypoints in image 0 69600
+percentage of  keypoints in subimage 0 40.0
+number of pixels in image 1 174000
+number of  keypoints in image 1 69600
+percentage of  keypoints in subimage 1 40.0
+number of blender unfiltered  matches 69600
+number of good  matches at a precision of None pixels:  17110
+Percentage of good  matches within matches: 24.583333333333332
+Percentage of good  matches within pixels in subimage 1: 9.833333333333332
+Number of good  matches within the 8700 minimal matches: 5966
+Percentage of good  matches within the 8700 minimal matches: 68.57471264367815
+
+2024-02-14 14:03:32,760 - Script display_matches.py is done.
+
+2024-02-14 14:03:32,761 - All scripts are done. The pipeline is finished.
+2024-02-14 14:06:56,467 - Start running the post blender pipeline
+2024-02-14 14:06:56,467 - Run the script display_matches.py
+2024-02-14 14:07:12,897 - number of pixels in image 0 174000
+number of  keypoints in image 0 69600
+percentage of  keypoints in subimage 0 40.0
+number of pixels in image 1 174000
+number of  keypoints in image 1 69600
+percentage of  keypoints in subimage 1 40.0
+number of blender unfiltered  matches 69600
+number of good  matches at a precision of None pixels:  17110
+Percentage of good  matches within matches: 24.583333333333332
+Percentage of good  matches within pixels in subimage 1: 9.833333333333332
+Number of good  matches within the 8700 minimal matches: 5966
+Percentage of good  matches within the 8700 minimal matches: 68.57471264367815
+Statistics about the distances of the good matches
+Minimal distance of  matches: 10.182843208312988
+Maximal distance of  matches: 33.68654251098633
+Mean distance of  matches: 20.81904555270018
+Standard deviation of the distances of  matches: 1.9911940803169799
+Statistics about the distances of the bad matches
+Minimal distance of  matches: 14.105473518371582
+Maximal distance of  matches: 44.49974822998047
+Mean distance of  matches: 23.2405294766447
+Standard deviation of the distances of  matches: 2.7203537532972355
+
+2024-02-14 14:07:12,897 - Script display_matches.py is done.
+
+2024-02-14 14:07:12,897 - All scripts are done. The pipeline is finished.
