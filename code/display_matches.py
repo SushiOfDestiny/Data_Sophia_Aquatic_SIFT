@@ -350,9 +350,9 @@ if __name__ == "__main__":
         # )
 
     # display random good matches
-    nb_rd_matches_to_display = 10
-    rd_idx = np.random.choice(len(good_matches), nb_rd_matches_to_display)
-    rd_good_matches = [good_matches[i] for i in rd_idx]
+    nb_rd_good_matches_to_display = len(good_matches)
+    rd_good_idx = np.random.choice(len(good_matches), nb_rd_good_matches_to_display)
+    rd_good_matches = [good_matches[i] for i in rd_good_idx]
     display_matches(
         ims,
         rd_good_matches,
@@ -363,9 +363,9 @@ if __name__ == "__main__":
     )
 
     # display random bad matches
-    nb_rd_matches_to_display2 = 10
-    rd_idx2 = np.random.choice(len(bad_matches), nb_rd_matches_to_display2)
-    rd_bad_matches = [bad_matches[i] for i in rd_idx2]
+    nb_rd_bad_matches_to_display = len(bad_matches)
+    rd_bad_idx = np.random.choice(len(bad_matches), nb_rd_bad_matches_to_display)
+    rd_bad_matches = [bad_matches[i] for i in rd_bad_idx]
     display_matches(
         ims,
         rd_bad_matches,
@@ -376,12 +376,12 @@ if __name__ == "__main__":
     )
 
     # display random unfiltered by blender matches
-    nb_rd_matches_to_display3 = 10
-    rd_idx3 = np.random.choice(len(matches), nb_rd_matches_to_display3)
-    rd_matches = [matches[i] for i in rd_idx3]
+    nb_rd_unfiltered_matches_to_display = 10
+    rd_idx_unfiltered = np.random.choice(len(matches), nb_rd_unfiltered_matches_to_display)
+    rd_matches_unfiltered = [matches[i] for i in rd_idx_unfiltered]
     display_matches(
         ims,
-        rd_matches,
+        rd_matches_unfiltered,
         kps_coords,
         show_plot=False,
         im_names=im_names,
