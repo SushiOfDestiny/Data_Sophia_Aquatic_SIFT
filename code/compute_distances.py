@@ -123,7 +123,45 @@ class BestBinFirst:
         return self.tree.query(descriptor, k=k, eps=eps)
 
 
-# def find_best_matche_BBF()
+def find_best_match_BBF(desc1, descs2_list):
+    """
+    Find the best match of desc1 in descs2 using Best Bin First
+    """
+    # create BBF tree
+    bbf = BestBinFirst(descs2_list)
+    # query the tree
+    dist, idx = bbf.query(desc1, k=1)
+    return dist, idx
+
+
+def match_keypoints_BBF(subimage_descriptors):
+    """
+    Find for each keypoint in image 1 the keypoints in image 2 of minimal descriptor distance to it, using Best Bin First algorithm.
+    subimage_descriptors: list of 2 arrays of descriptors, each for 1 image, each containing as much element as prefiltered keypoints, and each element is a flattened descriptor
+    """
+    # initialize null array of distances_matches
+    nb_matches = len(subimage_descriptors[0])
+    distances_matches = np.zeros((nb_matches,), dtype=np.float32)
+    idx1_matches = np.zeros((nb_matches,), dtype=np.int32)
+    idx2_matches = np.zeros((nb_matches,), dtype=np.int32)
+
+    # create BBF Tree of descriptors of image 2
+    # maybe it is necessary to convert it into a python list instead of an numpy array
+    bbf = BestBinFirst(subimage_descriptors[1])
+
+    for idx_pixel_im1 in range(len(subimage_descriptors[0])):
+
+        descrip_pixel_im1 = subimage_descriptors[0][idx_pixel_im1]
+
+        # query the tree
+        best_dist, idx_pixel_im2 = bbf.query(descrip_pixel_im1, k=1)
+
+        # store minimum distance and index
+        distances_matches[idx_pixel_im1] = best_dist
+        idx1_matches[idx_pixel_im1] = idx_pixel_im1
+        idx2_matches[idx_pixel_im1] = idx_pixel_im2
+
+    return distances_matches, idx1_matches, idx2_matches
 
 
 def compute_and_save_distances(
@@ -143,8 +181,13 @@ def compute_and_save_distances(
             compute_distances_matches_pairs(subimage_descriptors, y_lengths, x_lengths)
         )
     elif distance_type == "min":
+        # distances_matches, idx_im1_matches, idx_im2_matches = (
+        #     compute_minimal_distances_matches_pairs(
+        #         subimage_descriptors, y_lengths, x_lengths
+        #     )
+        # )
         distances_matches, idx_im1_matches, idx_im2_matches = (
-            compute_minimal_distances_matches_pairs(
+            match_keypoints_BBF(
                 subimage_descriptors, y_lengths, x_lengths
             )
         )
