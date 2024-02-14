@@ -283,6 +283,8 @@ if __name__ == "__main__":
     correct_matches_idxs = np.load(
         f"{matches_path}/{correct_matches_idxs_filename}.npy"
     )
+    # create indices of bad matches
+    incorrect_matches_idxs = np.setdiff1d(np.arange(len(matches)), correct_matches_idxs)
 
     # filter good matches and bad matches according to blender
     good_matches, bad_matches = compute_good_and_bad_matches(
@@ -309,68 +311,69 @@ if __name__ == "__main__":
         f"Percentage of good {cropped_sift_radical} matches within the {nb_minimal_matches} minimal matches: {nb_good_minimal_matches / nb_minimal_matches * 100.0}"
     )
 
-    chosen_matches_idx = list(range(2))
-    for match_idx in chosen_matches_idx:
+    # chosen_matches_idx = list(range(2))
+    # for match_idx in chosen_matches_idx:
 
-        break
+    #     break
 
-        # option 1: display matches 1 by one
+    # option 1: display matches 1 by one
 
-        # # display 1 match, object here is not DMatch, but a couple of DMatch, as Sift returns
-        # # we get here only the Dmatch
-        # chosen_Dmatch = good_matches[match_idx][0]
+    # # display 1 match, object here is not DMatch, but a couple of DMatch, as Sift returns
+    # # we get here only the Dmatch
+    # chosen_Dmatch = good_matches[match_idx][0]
 
-        # # display the match
-        # display_match(
-        #     ims,
-        #     chosen_Dmatch,
-        #     kps_coords,
-        #     show_plot=True,
-        #     # save_path=filtered_kp_path,  # comment or pass None to not save the image
-        #     filename_prefix=correct_match_filename_prefix,
-        #     dpi=800,
-        #     im_names=im_names,
-        # )
+    # # display the match
+    # display_match(
+    #     ims,
+    #     chosen_Dmatch,
+    #     kps_coords,
+    #     show_plot=True,
+    #     # save_path=filtered_kp_path,  # comment or pass None to not save the image
+    #     filename_prefix=correct_match_filename_prefix,
+    #     dpi=800,
+    #     im_names=im_names,
+    # )
 
-        # # display topological properties
-        # chosen_kps = [kps[0][chosen_Dmatch.queryIdx], kps[1][chosen_Dmatch.trainIdx]]
-        # vh.topological_visualization_pipeline(
-        #     kps=chosen_kps,
-        #     uint_ims=ims,
-        #     float_ims=float_ims,
-        #     zoom_radius=20,
-        #     show_directions=False,
-        #     show_gradients=False,
-        #     show_plot=False,
-        # )
+    # # display topological properties
+    # chosen_kps = [kps[0][chosen_Dmatch.queryIdx], kps[1][chosen_Dmatch.trainIdx]]
+    # vh.topological_visualization_pipeline(
+    #     kps=chosen_kps,
+    #     uint_ims=ims,
+    #     float_ims=float_ims,
+    #     zoom_radius=20,
+    #     show_directions=False,
+    #     show_gradients=False,
+    #     show_plot=False,
+    # )
 
-        # # display the descriptor of the point in the 2 images
-        # for id_image in range(2):
-        #     visu_desc.display_descriptor(
-        #         descriptor_histograms=desc.unflatten_descriptor(
-        #             descs[id_image][chosen_Dmatch.queryIdx],
-        #             nb_bins=nb_bins,
-        #             nb_angular_bins=nb_angular_bins,
-        #         ),
-        #         descriptor_name=f"Descriptor of the match {match_idx} in {im_names[id_image]}",
-        #         show_plot=False,
-        #     )
+    # # display the descriptor of the point in the 2 images
+    # for id_image in range(2):
+    #     visu_desc.display_descriptor(
+    #         descriptor_histograms=desc.unflatten_descriptor(
+    #             descs[id_image][chosen_Dmatch.queryIdx],
+    #             nb_bins=nb_bins,
+    #             nb_angular_bins=nb_angular_bins,
+    #         ),
+    #         descriptor_name=f"Descriptor of the match {match_idx} in {im_names[id_image]}",
+    #         show_plot=False,
+    #     )
 
-        # option 2: display multiple matches on the same plot
+    # option 2: display multiple matches on the same plot
 
-        # display_matches(
-        #     ims,
-        #     good_matches[match_idx : match_idx + 1],
-        #     kps_coords,
-        #     show_plot=True,
-        #     # save_path=filtered_kp_path,  # comment or pass None to not save the image
-        #     filename_prefix=None,
-        #     dpi=800,
-        #     im_names=im_names,
-        # )
+    # display_matches(
+    #     ims,
+    #     good_matches[match_idx : match_idx + 1],
+    #     kps_coords,
+    #     show_plot=True,
+    #     # save_path=filtered_kp_path,  # comment or pass None to not save the image
+    #     filename_prefix=None,
+    #     dpi=800,
+    #     im_names=im_names,
+    # )
 
     # display random good matches
-    nb_rd_good_matches_to_display = len(good_matches)
+    max_nb_matches_to_display = 250
+    nb_rd_good_matches_to_display = min(len(good_matches), max_nb_matches_to_display)
     rd_good_idx = np.random.choice(len(good_matches), nb_rd_good_matches_to_display)
     rd_good_matches = [good_matches[i] for i in rd_good_idx]
     display_matches(
@@ -383,7 +386,7 @@ if __name__ == "__main__":
     )
 
     # display random bad matches
-    nb_rd_bad_matches_to_display = len(bad_matches)
+    nb_rd_bad_matches_to_display = min(len(bad_matches), max_nb_matches_to_display)
     rd_bad_idx = np.random.choice(len(bad_matches), nb_rd_bad_matches_to_display)
     rd_bad_matches = [bad_matches[i] for i in rd_bad_idx]
     display_matches(
@@ -396,8 +399,10 @@ if __name__ == "__main__":
     )
 
     # display random unfiltered by blender matches
-    nb_rd_unfiltered_matches_to_display = 10
-    rd_idx_unfiltered = np.random.choice(len(matches), nb_rd_unfiltered_matches_to_display)
+    nb_rd_unfiltered_matches_to_display = min(len(matches), max_nb_matches_to_display)
+    rd_idx_unfiltered = np.random.choice(
+        len(matches), nb_rd_unfiltered_matches_to_display
+    )
     rd_matches_unfiltered = [matches[i] for i in rd_idx_unfiltered]
     display_matches(
         ims,
@@ -409,6 +414,13 @@ if __name__ == "__main__":
     )
 
     plt.show()
+
+    # look at the distances of the good and bad matches
+    print("Statistics about the distances of the good matches")
+    print_distance_infos(good_matches)
+
+    print("Statistics about the distances of the bad matches")
+    print_distance_infos(bad_matches)
 
     # # stop
     # sys.exit()
@@ -493,12 +505,12 @@ if __name__ == "__main__":
 
     #     plt.show()
 
-    # look at the distances of the good and bad matches
-    print("Statistics about the distances of the good matches")
-    print_distance_infos(good_matches)
-
-    print("Statistics about the distances of the bad matches")
-    print_distance_infos(bad_matches)
+    # # Scatter plot distances
+    # display_distance_scatter(
+    #     matches=matches,
+    #     good_matches_kps_idx=good_matches_kps_idx,
+    #     image_distances_filename_npy=f"{matches_path}/{image_distances_filename}.npy"
+    # )
 
     # look at filtered keypoints on image
     if use_filt:
@@ -531,10 +543,10 @@ if __name__ == "__main__":
             for id_image in range(2)
         ]
 
-        # start with good keypoints
         y_kps = [kps_coords[id_image][:, 1] for id_image in range(2)]
         x_kps = [kps_coords[id_image][:, 0] for id_image in range(2)]
 
+        # start with good keypoints
         y_gd_kps = [y_kps[id_image][correct_matches_idxs] for id_image in range(2)]
         x_gd_kps = [x_kps[id_image][correct_matches_idxs] for id_image in range(2)]
 
@@ -549,6 +561,23 @@ if __name__ == "__main__":
             )
             print(
                 f"Standard deviation of mean absolute curvature of the good keypoints in image {id_image}: {np.std(good_mean_abs_curvs[id_image])}"
+            )
+
+        # look at bad matches
+        y_bd_kps = [y_kps[id_image][incorrect_matches_idxs] for id_image in range(2)]
+        x_bd_kps = [x_kps[id_image][incorrect_matches_idxs] for id_image in range(2)]
+
+        bad_mean_abs_curvs = [
+            mean_abs_curvs_ims[id_image][y_bd_kps[id_image], x_bd_kps[id_image]]
+            for id_image in range(2)
+        ]
+
+        for id_image in range(2):
+            print(
+                f"Mean value of mean absolute curvature of the bad keypoints in image {id_image}: {np.mean(bad_mean_abs_curvs[id_image])}"
+            )
+            print(
+                f"Standard deviation of mean absolute curvature of the bad keypoints in image {id_image}: {np.std(bad_mean_abs_curvs[id_image])}"
             )
 
         # look at mask of prefiltered pixels

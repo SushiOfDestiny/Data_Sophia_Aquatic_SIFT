@@ -16,3 +16,21 @@ Percentage of good  matches within the 3375 minimal matches: 0.0
 2024-02-14 11:15:39,291 - Script display_matches.py is done.
 
 2024-02-14 11:15:39,291 - All scripts are done. The pipeline is finished.
+2024-02-14 11:39:21,212 - Start running the post blender pipeline
+2024-02-14 11:39:21,212 - Run the script display_matches.py
+2024-02-14 11:39:23,567 - number of pixels in image 0 67500
+number of  keypoints in image 0 33750
+percentage of  keypoints in subimage 0 50.0
+number of pixels in image 1 67500
+number of  keypoints in image 1 33750
+percentage of  keypoints in subimage 1 50.0
+number of blender unfiltered  matches 33750
+number of good  matches at a precision of None pixels:  29
+Percentage of good  matches within matches: 0.08592592592592593
+Percentage of good  matches within pixels in subimage 1: 0.04296296296296297
+Number of good  matches within the 3375 minimal matches: 0
+Percentage of good  matches within the 3375 minimal matches: 0.0
+
+2024-02-14 11:39:23,567 - Script display_matches.py is done.
+
+2024-02-14 11:39:23,567 - All scripts are done. The pipeline is finished.
