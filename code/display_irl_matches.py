@@ -29,19 +29,22 @@ if __name__ == "__main__":
         )
         for id_image in range(2)
     ]
-    float_ims = np.load(f"{blurred_imgs_path}.npy")
+    loat_ims = np.load(f"{blurred_imgs_filename}.npy")
+
+    # load cropped float images
+    cropped_float_ims = [
+        np.load(
+            f"{original_imgs_path_prefix}/{cropped_float_ims_filenames[id_image]}.npy"
+        )
+        for id_image in range(2)
+    ]
+
 
     # load all computed objects
 
     # load unfiltered keypoints coordinates
     kps_coords = [
         np.load(f"{descrip_path}/{kp_coords_filenames[id_image]}.npy")
-        for id_image in range(2)
-    ]
-    descs = [
-        np.load(
-            f"{descrip_path}/{descrip_filenames[id_image]}.npy",
-        )
         for id_image in range(2)
     ]
 
@@ -52,45 +55,14 @@ if __name__ == "__main__":
     ]
     matches = load_matches(f"{matches_path}/{matches_filename}.txt")
 
-    # sort matches by distance
-    sorted_matches = sorted(matches, key=lambda x: x[0].distance)
 
-    # look at some matches
-    chosen_matches_idx = [0, 1]
-    for match_idx in chosen_matches_idx:
-        # display 1 match, object here is not DMatch, but a couple of DMatch, as Sift returns
-        # we get here only the Dmatch
-        chosen_Dmatch = sorted_matches[match_idx][0]
 
-        # display the match
-        dm.display_match(
-            ims,
-            chosen_Dmatch,
-            kps_coords,
-            show_plot=False,
-            # save_path=filtered_kp_path,  # comment or pass None to not save the image
-            filename_prefix=correct_match_filename_prefix,
-            dpi=800,
-            im_names=im_names,
-        )
-
-        # # display topological properties
-        # chosen_kps = [kps[0][chosen_Dmatch.queryIdx], kps[1][chosen_Dmatch.trainIdx]]
-        # vh.topological_visualization_pipeline(
-        #     kps=chosen_kps,
-        #     uint_ims=ims,
-        #     float_ims=float_ims,
-        #     zoom_radius=20,
-        #     show_directions=False,
-        #     show_gradients=False,
-        #     show_plot=False,
-        # )
-
-    # Look at the averaged descriptor
     matches_kps = [
         [kps_coords[0][match[0].queryIdx] for match in matches],
         [kps_coords[1][match[0].trainIdx] for match in matches],
     ]
+
+
     matches_kps_idx = [
         np.array(
             [
@@ -102,23 +74,56 @@ if __name__ == "__main__":
         for id_image in range(2)
     ]
 
-    descs_ims = [descs[id_image][matches_kps_idx[id_image]] for id_image in range(2)]
-    avg_descs = [np.mean(descs_ims[id_image], axis=0) for id_image in range(2)]
-
-    descs_names = [
-        f"Averaged descriptor of matches for {im_names[id_image]}\n with nb_bins={nb_bins}, bin_radius={bin_radius}, delta_angle={delta_angle} and sigma={sigma}"
-        for id_image in range(2)
-    ]
-
-    # for id_image in range(2):
-    #     visu_desc.display_descriptor(
-    #         descriptor_histograms=unflatten_descriptor(avg_descs[id_image]),
-    #         descriptor_name=descs_names[id_image],
-    #         show_plot=False,
-    #     )
-
-    plt.show()
 
     # look at statistics about the distances of the matches
     print("Statistics about the distances of the matches")
     dm.print_distance_infos(matches)
+
+    # display random matches
+    max_nb_matches_to_display = 250
+    nb_rd_unfiltered_matches_to_display = min(len(matches), max_nb_matches_to_display)
+    rd_idx_unfiltered = np.random.choice(
+        len(matches), nb_rd_unfiltered_matches_to_display
+    )
+    rd_matches_unfiltered = [matches[i] for i in rd_idx_unfiltered]
+    dm.display_matches(
+        ims,
+        rd_matches_unfiltered,
+        kps_coords,
+        show_plot=False,
+        im_names=im_names,
+        plot_title_prefix=f"Random unfiltered by blender {sift_radical[1:] if use_sift else ''} matches",
+    )
+
+    plt.show()
+
+
+    if not use_sift:
+        # Load descriptors
+        descs = [
+            np.load(
+                f"{descrip_path}/{descrip_filenames[id_image]}.npy",
+            )
+            for id_image in range(2)
+        ]
+
+        descs_ims = [descs[id_image][matches_kps_idx[id_image]] for id_image in range(2)]
+        
+        # Look at the averaged descriptor
+        avg_descs = [np.mean(descs_ims[id_image], axis=0) for id_image in range(2)]
+
+        descs_names = [
+            f"Averaged descriptor of matches for {im_names[id_image]}\n with nb_bins={nb_bins}, bin_radius={bin_radius}, delta_angle={delta_angle} and sigma={sigma}"
+            for id_image in range(2)
+        ]
+
+        # for id_image in range(2):
+        #     visu_desc.display_descriptor(
+        #         descriptor_histograms=unflatten_descriptor(avg_descs[id_image]),
+        #         descriptor_name=descs_names[id_image],
+        #         show_plot=False,
+        #     )
+
+        plt.show()
+
+    

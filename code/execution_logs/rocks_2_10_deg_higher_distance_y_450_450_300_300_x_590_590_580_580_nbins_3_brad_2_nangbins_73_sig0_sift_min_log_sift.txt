@@ -77,3 +77,94 @@ Percentage of good sift matches within the 8700 minimal matches: 35.988505747126
 2024-02-14 11:54:24,852 - Script display_matches.py is done.
 
 2024-02-14 11:54:24,852 - All scripts are done. The pipeline is finished.
+2024-02-14 13:55:55,784 - Start running the pipeline
+2024-02-14 13:55:55,785 - All infos are saved in execution_logs/rocks_2_10_deg_higher_distance_y_450_450_300_300_x_590_590_580_580_nbins_3_brad_2_nangbins_73_sig0_sift_min_log_sift 
+
+2024-02-14 13:55:55,785 - Run the script print_pipe_hparams.py
+2024-02-14 13:55:55,805 - SIFTsigma = 0.5
+bin_radius = 2
+blender_filename = rocks_2_10_deg_higher_distance
+blur_sigma = 1.0
+border_size = 1
+contrastThreshold = 0.0
+delta_angle = 5.0
+distanceThreshold = 1000000000.0
+distance_type = min
+edgeThreshold = 0.0
+epsilon = None
+im_ext = png
+im_name1 = rocks_2_10_deg_higher_distance_left
+im_name2 = rocks_2_10_deg_higher_distance_right
+im_names = ('rocks_2_10_deg_higher_distance_left', 'rocks_2_10_deg_higher_distance_right')
+img_folder = blender/rocks_2
+method_post = lowe
+nb_angular_bins = 73
+nb_bins = 3
+neigh_radius = 9
+normalization_mode = global
+percentile = 60
+photo_name = rocks_2_10_deg_higher_distance
+relative_path = ../data
+sigma = 0
+use_filt = False
+use_sift = True
+x_lengths = [580, 580]
+x_starts = [590, 590]
+y_lengths = [300, 300]
+y_starts = [450, 450]
+
+2024-02-14 13:55:55,805 - Script print_pipe_hparams.py is done.
+
+2024-02-14 13:55:55,805 - Run the script imgs_preprocessing.py
+2024-02-14 13:56:00,933 - shapes of images (1080, 1920) (1080, 1920)
+Blurred images saved in ../data/blender/rocks_2
+Cropped images saved in ../data/blender/rocks_2
+
+2024-02-14 13:56:00,933 - Script imgs_preprocessing.py is done.
+
+2024-02-14 13:56:00,933 - Run the script compute_sift_kps.py
+2024-02-14 13:56:05,208 - SIFT parameters: 
+contrastThreshold: 0.0
+edgeThreshold: 0.0
+SIFTsigma: 0.5
+distanceThreshold: 1000000000.0
+finished saving translated sift kp coords
+finished saving translated sift kp_pairs
+finished saving sift matches
+finished saving translated sift keypoints
+
+2024-02-14 13:56:05,209 - Script compute_sift_kps.py is done.
+
+2024-02-14 13:56:05,209 - All scripts are done. Launch Blender or a display script.
+
+
+2024-02-14 13:56:07,303 - Start running the post blender pipeline
+2024-02-14 13:56:07,304 - Run the script display_matches.py
+2024-02-14 13:59:00,013 - Start running the post blender pipeline
+2024-02-14 13:59:00,013 - Run the script display_matches.py
+2024-02-14 13:59:11,734 - number of pixels in image 0 174000
+number of sift keypoints in image 0 31794
+percentage of sift keypoints in subimage 0 18.272413793103446
+number of pixels in image 1 174000
+number of sift keypoints in image 1 32228
+percentage of sift keypoints in subimage 1 18.52183908045977
+number of blender unfiltered sift matches 29563
+number of good sift matches at a precision of None pixels:  6170
+Percentage of good sift matches within matches: 20.870682948279946
+Percentage of good sift matches within pixels in subimage 1: 3.545977011494253
+Number of good sift matches within the 8700 minimal matches: 3131
+Percentage of good sift matches within the 8700 minimal matches: 35.98850574712644
+Statistics about the distances of the good matches
+Minimal distance of sift matches: 23.280893325805664
+Maximal distance of sift matches: 366.19256591796875
+Mean distance of sift matches: 181.05122927877466
+Standard deviation of the distances of sift matches: 61.99158622365555
+Statistics about the distances of the bad matches
+Minimal distance of sift matches: 0.0
+Maximal distance of sift matches: 403.0322570800781
+Mean distance of sift matches: 226.35809544942043
+Standard deviation of the distances of sift matches: 102.32301359470924
+
+2024-02-14 13:59:11,735 - Script display_matches.py is done.
+
+2024-02-14 13:59:11,735 - All scripts are done. The pipeline is finished.

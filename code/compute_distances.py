@@ -20,7 +20,7 @@ from computation_pipeline_hyper_params import *
 from filenames_creation import *
 
 from scipy.spatial import KDTree
-
+True
 # Goal: load descriptors arrays, each for 1 image, flatten them and compute the distances between them
 # first use bruteforce matching
 
@@ -122,7 +122,7 @@ class BestBinFirst:
     def query(self, descriptor, k=1, eps=0):
         return self.tree.query(descriptor, k=k, eps=eps)
 
-
+@njit
 def find_best_match_BBF(desc1, descs2_list):
     """
     Find the best match of desc1 in descs2 using Best Bin First
@@ -133,7 +133,7 @@ def find_best_match_BBF(desc1, descs2_list):
     dist, idx = bbf.query(desc1, k=1)
     return dist, idx
 
-
+@njit(parallel=True)
 def match_keypoints_BBF(subimage_descriptors):
     """
     Find for each keypoint in image 1 the keypoints in image 2 of minimal descriptor distance to it, using Best Bin First algorithm.
@@ -149,7 +149,7 @@ def match_keypoints_BBF(subimage_descriptors):
     # maybe it is necessary to convert it into a python list instead of an numpy array
     bbf = BestBinFirst(subimage_descriptors[1])
 
-    for idx_pixel_im1 in range(len(subimage_descriptors[0])):
+    for idx_pixel_im1 in numba.prange(len(subimage_descriptors[0])):
 
         descrip_pixel_im1 = subimage_descriptors[0][idx_pixel_im1]
 
@@ -183,16 +183,16 @@ def compute_and_save_distances(
         #     compute_distances_matches_pairs(subimage_descriptors, y_lengths, x_lengths)
         # )
     elif distance_type == "min":
-        # distances_matches, idx_im1_matches, idx_im2_matches = (
-        #     compute_minimal_distances_matches_pairs(
-        #         subimage_descriptors, y_lengths, x_lengths
-        #     )
-        # )
         distances_matches, idx_im1_matches, idx_im2_matches = (
-            match_keypoints_BBF(
-                subimage_descriptors
+            compute_minimal_distances_matches_pairs(
+                subimage_descriptors, y_lengths, x_lengths
             )
         )
+        # distances_matches, idx_im1_matches, idx_im2_matches = (
+        #     match_keypoints_BBF(
+        #         subimage_descriptors
+        #     )
+        # )
     else:
         raise ValueError("Invalid distance_type. Expected 'all' or 'min'.")
 
