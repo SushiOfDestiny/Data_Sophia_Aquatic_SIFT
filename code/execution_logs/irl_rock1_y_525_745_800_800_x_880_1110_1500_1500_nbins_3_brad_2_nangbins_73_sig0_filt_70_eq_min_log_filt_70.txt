@@ -1,0 +1,43 @@
+2024-02-15 16:26:57,189 - Start running the post blender pipeline
+2024-02-15 16:26:57,189 - Run the script print_pipe_hparams.py
+2024-02-15 16:26:57,207 - SIFTsigma = 1.6
+adapt_hist_eq = True
+bin_radius = 2
+blur_sigma = 0
+border_size = 1
+contrastThreshold = 0.04
+delta_angle = 5.0
+distanceThreshold = 0.75
+distance_type = min
+edgeThreshold = 10.0
+epsilon = None
+im_ext = jpeg
+im_name1 = scene_l_1_u
+im_name2 = scene_r_1_u
+im_names = ('scene_l_1_u', 'scene_r_1_u')
+img_folder = irl/scene_zipped
+method_post = lowe
+nb_angular_bins = 73
+nb_bins = 3
+neigh_radius = 9
+normalization_mode = global
+percentile = 70
+photo_name = irl_rock1
+pixel_distance_postfilt = True
+pixel_distance_threshold = 500
+relative_path = ../data
+sigma = 0
+use_filt = True
+use_sift = False
+x_lengths = [1500, 1500]
+x_starts = [880, 1110]
+y_lengths = [800, 800]
+y_starts = [525, 745]
+
+2024-02-15 16:26:57,207 - Script print_pipe_hparams.py is done.
+
+2024-02-15 16:26:57,207 - Run the script display_irl_matches.py
+2024-02-15 16:26:58,334 - 
+2024-02-15 16:26:58,334 - Script display_irl_matches.py is done.
+
+2024-02-15 16:26:58,335 - All scripts are done. The pipeline is finished.

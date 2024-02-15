@@ -22,6 +22,7 @@ import descriptor as desc
 from matplotlib.ticker import PercentFormatter
 
 import compute_desc_img as cp_desc
+from display_matches import filter_pixel_distance_matches
 
 
 if __name__ == "__main__":
@@ -84,6 +85,18 @@ if __name__ == "__main__":
     # look at statistics about the distances of the matches
     print("Statistics about the distances of the matches")
     dm.print_distance_infos(matches)
+    if pixel_distance_postfilt:
+        print('\n')
+        print("Pixel distance postfiltering start")
+        pixel_distance_filtered_matches = filter_pixel_distance_matches(matches, threshold=pixel_distance_threshold, kps=kps)
+        print(f"Percentage of matches kept after pixel distance postfiltering with threhold {pixel_distance_threshold} = {len(pixel_distance_filtered_matches)/len(matches)}")
+        matches = pixel_distance_filtered_matches
+        print("Pixel distance postfiltering end")
+        print('\n')
+
+    print("New distance info after pixel distance postfiltering")
+    dm.print_distance_infos(matches)
+
 
     # Sort matches by distance
     perc_matches_to_keep = int(np.round(5 / 100 * y_lengths[0] * x_lengths[0]))
