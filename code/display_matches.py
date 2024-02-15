@@ -701,6 +701,16 @@ if __name__ == "__main__":
             )
 
         # look at mask of prefiltered pixels
+        
+        
+        for id_image in range(2):
+            plt.figure()
+            plt.hist(x=mean_abs_curvs_ims[id_image].flatten(), bins=100, weights=np.ones(mean_abs_curvs_ims[id_image].size)/mean_abs_curvs_ims[id_image].size)
+            plt.gca().yaxis.set_major_formatter(PercentFormatter(1))
+            plt.xlabel("Courbure absolue moyenne")
+            plt.ylabel("Pourcentage")
+            plt.title(f"Image {im_names[id_image]} histogram")
+        plt.show()
 
         mask_arrays = [None, None]
         if filt_type is None or filt_type == "mean":

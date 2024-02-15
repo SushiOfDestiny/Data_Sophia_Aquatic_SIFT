@@ -17,11 +17,16 @@ from computation_pipeline_hyper_params import *
 from filenames_creation import *
 
 import display_matches as dm
+import compute_desc_img as cp_desc
+import descriptor as desc
+from matplotlib.ticker import PercentFormatter
 
 import compute_desc_img as cp_desc
 
 
 if __name__ == "__main__":
+
+    plot_hist = False
 
     # load images
     ims = [
@@ -114,6 +119,22 @@ if __name__ == "__main__":
             f"Averaged descriptor of matches for {im_names[id_image]}\n with nb_bins={nb_bins}, bin_radius={bin_radius}, delta_angle={delta_angle} and sigma={sigma}"
             for id_image in range(2)
         ]
+
+        if plot_hist:
+            overall_features_ims = [
+                desc.compute_features_overall_abs(
+                    float_ims[id_image], border_size=border_size
+                )
+            for id_image in range(2)
+            ]
+            for id_image in range(2):
+                mean_abs_curvs = cp_desc.compute_mean_abs_curv_arr(overall_features_ims[id_image][1])
+                plt.figure()
+                hist = plt.hist(x=mean_abs_curvs, nbins=100, weights=np.ones(mean_abs_curvs)/len(mean_abs_curvs))
+                plt.gca().yaxis.set_major_formatter(PercentFormatter(1))
+                plt.xlabel("Moyenne des valeurs absolues des courbures")
+                plt.ylabel("Pourcentage")
+
 
         # for id_image in range(2):
         #     visu_desc.display_descriptor(
