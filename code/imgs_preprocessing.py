@@ -19,7 +19,11 @@ from computation_pipeline_hyper_params import *
 
 from filenames_creation import *
 
-import skimage
+from skimage.filters import threshold_otsu
+from skimage.morphology import binary_erosion, black_tophat, white_tophat, disk
+
+from skimage import exposure, img_as_ubyte
+
 
 if __name__ == "__main__":
 
@@ -32,6 +36,24 @@ if __name__ == "__main__":
     ]
     print("shapes of images", ims[0].shape, ims[1].shape)
 
+    # ensure that the images are uint8
+    ims = [img_as_ubyte(image) for image in ims]
+
+    # Apply histogram equalization
+    if adapt_hist_eq is not None and adapt_hist_eq == True:
+        ims = [exposure.equalize_adapthist(image, clip_limit=0.01) for image in ims]
+
+    # Apply threshold and binary erosion
+    # Calculate Otsu's threshold
+    # lower_thresholds = [1.1 * threshold_otsu(images) for images in ims]
+    # # Apply the lower threshold to create a binary image
+    # ims = [ims[id_image] > lower_thresholds[id_image] for id_image in range(2)]
+    # ims = [binary_erosion(ims[id_image]) for id_image in range(2)]
+    # # Apply white top-hat transformation
+    # ims = [white_tophat(ims[id_image], disk(5)) for id_image in range(2)]
+    # # Apply black top-hat transformation
+    # ims = [black_tophat(ims[id_image], disk(5)) for id_image in range(2)]
+
     # fig, axs = plt.subplots(1, 2, figsize=(20, 10))
     # for id_image in range(2):
     #     axs[id_image].imshow(ims[id_image], cmap="gray")
@@ -40,10 +62,6 @@ if __name__ == "__main__":
 
     # compute float32 versions for calculations
     float_ims = [vh.convert_uint8_to_float32(ims[i]) for i in range(2)]
-
-    # eventually apply binary erosion
-    if use_erode is not None and use_erode is True:
-        float_ims = [skimage.morphology.binary_erosion(float_ims[id_image]) for id_image in range(2)]
 
     # blur images, unless blur_sigma is 0.
     if blur_sigma > 0.1:
