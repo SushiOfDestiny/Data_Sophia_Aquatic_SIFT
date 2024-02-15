@@ -43,3 +43,81 @@ Cropped images saved in ../data/irl/scene_zipped
 2024-02-14 16:30:13,675 - Script imgs_preprocessing.py is done.
 
 2024-02-14 16:30:13,675 - Run the script compute_desc_img.py
+2024-02-15 01:45:16,231 - feat computation beginning for image 0: 2024-02-14 16:30:14.607643
+feat computation end for image 0 2024-02-14 16:30:40.294811
+feat compute time for image 0 0:00:25.687168
+shape of overall_features[0] of image 0 (2000, 3000, 2)
+filter pixel by mean absolute curvature percentile in subimage
+prefiltering by mean absolute curvature beginning for image 0 2024-02-14 16:30:14.607643
+prefiltering by mean absolute curvature end for image 0 2024-02-14 16:30:56.181663
+prefiltering by mean absolute curvature compute time for image 0 0:00:15.886813
+Min mean curvature: 0.0
+Max mean curvature: 0.2882353365421295
+Mean mean curvature: 0.010275556705892086
+Standard deviation of the mean curvatures: 0.01767774112522602
+Percentile 70%: 0.01960785686969757
+number of pixels in subimage: 1200000
+number of filtered accepted pixels: 360375
+percentage of filtered accepted pixels: 30.03125
+coords array shape: (360375, 2)
+desc computation beginning for image 0 2024-02-14 16:30:56.764231
+desc computation end for image 0 2024-02-14 21:07:10.178882
+desc compute time for image 0 4:36:13.414651
+Number of empty filtered descriptors 0.0
+feat computation beginning for image 1: 2024-02-14 21:07:13.623000
+feat computation end for image 1 2024-02-14 21:07:32.059182
+feat compute time for image 1 0:00:18.436182
+shape of overall_features[0] of image 1 (2000, 3000, 2)
+filter pixel by mean absolute curvature percentile in subimage
+prefiltering by mean absolute curvature beginning for image 1 2024-02-14 21:07:13.623000
+prefiltering by mean absolute curvature end for image 1 2024-02-14 21:07:47.830936
+prefiltering by mean absolute curvature compute time for image 1 0:00:15.771705
+Min mean curvature: 0.0
+Max mean curvature: 0.3137255311012268
+Mean mean curvature: 0.01044214703142643
+Standard deviation of the mean curvatures: 0.017998695373535156
+Percentile 70%: 0.019607901573181152
+number of pixels in subimage: 1200000
+number of filtered accepted pixels: 360966
+percentage of filtered accepted pixels: 30.0805
+coords array shape: (360966, 2)
+desc computation beginning for image 1 2024-02-14 21:07:48.409567
+desc computation end for image 1 2024-02-15 01:45:12.229553
+desc compute time for image 1 4:37:23.819986
+Number of empty filtered descriptors 0.0
+
+2024-02-15 01:45:16,231 - Script compute_desc_img.py is done.
+
+2024-02-15 01:45:16,231 - Run the script compute_distances.py
+2024-02-15 06:55:50,136 - Start computing distances: 2024-02-15 01:45:19.004040
+End computing distances: 2024-02-15 06:55:49.836626
+Compute time: 5:10:30.832586
+Chosen distance type: min
+
+2024-02-15 06:55:50,136 - Script compute_distances.py is done.
+
+2024-02-15 06:55:50,136 - Run the script create_cv_objs.py
+2024-02-15 06:55:55,219 - finished creating opencv objects
+beginning saving opencv objects to file
+finished saving kp_pairs
+finished saving matches
+finished saving keypoints
+
+2024-02-15 06:55:55,219 - Script create_cv_objs.py is done.
+
+2024-02-15 06:55:55,220 - All scripts are done. Launch Blender or a display script.
+
+
+2024-02-15 06:55:55,241 - Folder computed_descriptors already exists
+Folder computed_distances already exists
+Folder computed_matches already exists
+Folder filtered_keypoints already exists
+Folder execution_logs already exists
+
+2024-02-15 06:55:55,241 - Skip the Blender part
+2024-02-15 08:55:19,493 - Statistics about the distances of the matches
+Minimal distance of  matches: 17.355195999145508
+Maximal distance of  matches: 44.672035217285156
+Mean distance of  matches: 21.51150713658804
+Standard deviation of the distances of  matches: 1.927069344558082
+
