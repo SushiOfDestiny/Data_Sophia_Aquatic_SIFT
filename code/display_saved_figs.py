@@ -39,12 +39,9 @@ if __name__ == "__main__":
     ]
 
     fig_names = [
-        "irl_rock1_y_525_745_800_800_x_880_1110_1500_1500_nbins_3_brad_2_nangbins_73_sig0_filt_70_min_Random unfiltered by blender  matches_402_multi",
-        "irl_rock1_y_770_975_200_200_x_1310_1404_200_200_nbins_3_brad_2_nangbins_73_sig0_filt_70_min_Random unfiltered by blender  matches_607_multi",
-        "irl_rock1_y_770_975_200_200_x_1310_1404_200_200_nbins_3_brad_2_nangbins_73_sig0_filt_70_eq_min_Random unfiltered by blender  matches_397_multi",
-        "irl_rock1_y_980_1200_200_200_x_1400_1500_200_200_nbins_3_brad_2_nangbins_73_sig0_filt_50_eq_min_Random unfiltered by blender  matches_178_multi",
         # "rocks_2_10_deg_higher_distance_y_450_450_300_300_x_590_590_580_580_nbins_3_brad_2_nangbins_73_sig0_filt_60_min_Random minimal  matches, top 2% of pixels in subimage 1_99_multi",
         # "rocks_2_10_deg_higher_distance_y_450_450_300_300_x_590_590_580_580_nbins_3_brad_2_nangbins_73_sig0_sift_min_250 Random minimal sift matches, among the top 3% of pixels in subimage 1_215_multi",
+        # "rocks_2_7_deg_higher_distance_y_450_450_300_300_x_650_560_580_580_nbins_3_brad_2_nangbins_73_sig0_filt_70_min_Random good  matches_192_multi",
         # "rocks_2_7_deg_higher_distance_y_450_450_300_300_x_650_560_580_580_nbins_3_brad_2_nangbins_73_sig0_filt_70_min_prefiltered_pixels",
         # "rocks_2_7_deg_higher_distance_y_450_450_300_300_x_650_560_580_580_nbins_3_brad_2_nangbins_73_sig0_filt_70_min_prefiltered_pixels_mask",
         # "rocks_2_7_deg_higher_distance_y_450_450_300_300_x_650_560_580_580_nbins_3_brad_2_nangbins_73_sig0_filt_70_min_250 Random minimal  matches, among the top 2% of pixels in subimage 1_338_multi",
