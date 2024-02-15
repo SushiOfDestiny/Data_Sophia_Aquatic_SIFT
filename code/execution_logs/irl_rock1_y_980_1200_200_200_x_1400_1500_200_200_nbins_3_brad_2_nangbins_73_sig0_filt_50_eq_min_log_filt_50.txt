@@ -123,3 +123,51 @@ Maximal distance of  matches: 30.643552780151367
 Mean distance of  matches: 24.893256220324286
 Standard deviation of the distances of  matches: 1.9676511889554889
 
+2024-02-15 14:28:46,299 - Start running the post blender pipeline
+2024-02-15 14:28:46,299 - Run the script print_pipe_hparams.py
+2024-02-15 14:28:46,318 - SIFTsigma = 1.6
+adapt_hist_eq = True
+bin_radius = 2
+blur_sigma = 0
+border_size = 1
+contrastThreshold = 0.04
+delta_angle = 5.0
+distanceThreshold = 0.75
+distance_type = min
+edgeThreshold = 10.0
+epsilon = None
+filt_type = mean
+im_ext = jpeg
+im_name1 = scene_l_1_u
+im_name2 = scene_r_1_u
+im_names = ('scene_l_1_u', 'scene_r_1_u')
+img_folder = irl/scene_zipped
+method_post = lowe
+nb_angular_bins = 73
+nb_bins = 3
+neigh_radius = 9
+normalization_mode = global
+percentile = 50
+photo_name = irl_rock1
+relative_path = ../data
+sigma = 0
+use_filt = True
+use_sift = False
+x_lengths = [200, 200]
+x_starts = [1400, 1500]
+y_lengths = [200, 200]
+y_starts = [980, 1200]
+
+2024-02-15 14:28:46,318 - Script print_pipe_hparams.py is done.
+
+2024-02-15 14:28:46,318 - Run the script display_irl_matches.py
+2024-02-15 14:29:36,624 - number of computed matches: 29
+Statistics about the distances of the matches
+Minimal distance of  matches:  21.99
+Maximal distance of  matches:  30.64
+Mean distance of  matches:  24.89
+Standard deviation of the distances of  matches:  1.97
+
+2024-02-15 14:29:36,624 - Script display_irl_matches.py is done.
+
+2024-02-15 14:29:36,625 - All scripts are done. The pipeline is finished.
