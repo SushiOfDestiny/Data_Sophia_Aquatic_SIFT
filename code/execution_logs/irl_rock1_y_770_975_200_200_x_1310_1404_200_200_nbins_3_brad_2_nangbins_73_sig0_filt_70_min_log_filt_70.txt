@@ -1,0 +1,258 @@
+2024-02-15 09:20:37,223 - Start running the pipeline
+2024-02-15 09:20:37,224 - All infos are saved in execution_logs/irl_rock1_y_770_975_200_200_x_1310_1404_200_200_nbins_3_brad_2_nangbins_73_sig0_filt_70_min_log_filt_70 
+
+2024-02-15 09:20:37,224 - Run the script print_pipe_hparams.py
+2024-02-15 09:20:37,246 - SIFTsigma = 1.6
+bin_radius = 2
+blur_sigma = 0
+border_size = 1
+contrastThreshold = 0.04
+delta_angle = 5.0
+distanceThreshold = 0.75
+distance_type = min
+edgeThreshold = 10.0
+epsilon = None
+im_ext = jpeg
+im_name1 = scene_l_1_u
+im_name2 = scene_r_1_u
+im_names = ('scene_l_1_u', 'scene_r_1_u')
+img_folder = irl/scene_zipped
+method_post = lowe
+nb_angular_bins = 73
+nb_bins = 3
+neigh_radius = 9
+normalization_mode = global
+percentile = 70
+photo_name = irl_rock1
+relative_path = ../data
+sigma = 0
+use_filt = True
+use_sift = False
+x_lengths = [200, 200]
+x_starts = [1310, 1404]
+y_lengths = [200, 200]
+y_starts = [770, 975]
+
+2024-02-15 09:20:37,246 - Script print_pipe_hparams.py is done.
+
+2024-02-15 09:20:37,246 - Run the script imgs_preprocessing.py
+2024-02-15 09:20:42,621 - shapes of images (2000, 3000) (2000, 3000)
+Blurred images saved in ../data/irl/scene_zipped
+Cropped images saved in ../data/irl/scene_zipped
+
+2024-02-15 09:20:42,621 - Script imgs_preprocessing.py is done.
+
+2024-02-15 09:20:42,621 - Run the script compute_desc_img.py
+2024-02-15 09:21:09,298 - feat computation beginning for image 0: 2024-02-15 09:20:43.585955
+feat computation end for image 0 2024-02-15 09:21:08.969966
+feat compute time for image 0 0:00:25.384011
+shape of overall_features[0] of image 0 (2000, 3000, 2)
+
+2024-02-15 09:21:09,298 - Script compute_desc_img.py is done.
+
+2024-02-15 09:21:09,298 - Run the script compute_distances.py
+2024-02-15 09:21:10,355 - 
+2024-02-15 09:21:10,355 - Script compute_distances.py is done.
+
+2024-02-15 09:21:10,355 - Run the script create_cv_objs.py
+2024-02-15 09:21:11,436 - 
+2024-02-15 09:21:11,436 - Script create_cv_objs.py is done.
+
+2024-02-15 09:21:11,436 - All scripts are done. Launch Blender or a display script.
+
+
+2024-02-15 09:21:45,860 - Start running the pipeline
+2024-02-15 09:21:45,860 - All infos are saved in execution_logs/irl_rock1_y_770_975_200_200_x_1310_1404_200_200_nbins_3_brad_2_nangbins_73_sig0_filt_70_min_log_filt_70 
+
+2024-02-15 09:21:45,861 - Run the script print_pipe_hparams.py
+2024-02-15 09:21:45,875 - SIFTsigma = 1.6
+bin_radius = 2
+blur_sigma = 0
+border_size = 1
+contrastThreshold = 0.04
+delta_angle = 5.0
+distanceThreshold = 0.75
+distance_type = min
+edgeThreshold = 10.0
+epsilon = None
+im_ext = jpeg
+im_name1 = scene_l_1_u
+im_name2 = scene_r_1_u
+im_names = ('scene_l_1_u', 'scene_r_1_u')
+img_folder = irl/scene_zipped
+method_post = lowe
+nb_angular_bins = 73
+nb_bins = 3
+neigh_radius = 9
+normalization_mode = global
+percentile = 70
+photo_name = irl_rock1
+relative_path = ../data
+sigma = 0
+use_filt = True
+use_sift = False
+x_lengths = [200, 200]
+x_starts = [1310, 1404]
+y_lengths = [200, 200]
+y_starts = [770, 975]
+
+2024-02-15 09:21:45,875 - Script print_pipe_hparams.py is done.
+
+2024-02-15 09:21:45,875 - Run the script imgs_preprocessing.py
+2024-02-15 09:21:49,570 - shapes of images (2000, 3000) (2000, 3000)
+Blurred images saved in ../data/irl/scene_zipped
+Cropped images saved in ../data/irl/scene_zipped
+
+2024-02-15 09:21:49,570 - Script imgs_preprocessing.py is done.
+
+2024-02-15 09:21:49,570 - Run the script compute_desc_img.py
+2024-02-15 09:22:16,803 - feat computation beginning for image 0: 2024-02-15 09:21:50.517801
+feat computation end for image 0 2024-02-15 09:22:16.472489
+feat compute time for image 0 0:00:25.954688
+shape of overall_features[0] of image 0 (2000, 3000, 2)
+
+2024-02-15 09:22:16,803 - Script compute_desc_img.py is done.
+
+2024-02-15 09:22:16,804 - Run the script compute_distances.py
+2024-02-15 09:22:17,855 - 
+2024-02-15 09:22:17,855 - Script compute_distances.py is done.
+
+2024-02-15 09:22:17,855 - Run the script create_cv_objs.py
+2024-02-15 09:22:18,934 - 
+2024-02-15 09:22:18,934 - Script create_cv_objs.py is done.
+
+2024-02-15 09:22:18,934 - All scripts are done. Launch Blender or a display script.
+
+
+2024-02-15 09:22:18,951 - Folder computed_descriptors already exists
+Folder computed_distances already exists
+Folder computed_matches already exists
+Folder filtered_keypoints already exists
+Folder execution_logs already exists
+
+2024-02-15 09:22:18,951 - Skip the Blender part
+2024-02-15 09:22:20,125 - 
+2024-02-15 09:24:01,193 - Start running the pipeline
+2024-02-15 09:24:01,193 - All infos are saved in execution_logs/irl_rock1_y_770_975_200_200_x_1310_1404_200_200_nbins_3_brad_2_nangbins_73_sig0_filt_70_min_log_filt_70 
+
+2024-02-15 09:24:01,193 - Run the script print_pipe_hparams.py
+2024-02-15 09:24:01,210 - SIFTsigma = 1.6
+bin_radius = 2
+blur_sigma = 0
+border_size = 1
+contrastThreshold = 0.04
+delta_angle = 5.0
+distanceThreshold = 0.75
+distance_type = min
+edgeThreshold = 10.0
+epsilon = None
+filt_type = mean
+im_ext = jpeg
+im_name1 = scene_l_1_u
+im_name2 = scene_r_1_u
+im_names = ('scene_l_1_u', 'scene_r_1_u')
+img_folder = irl/scene_zipped
+method_post = lowe
+nb_angular_bins = 73
+nb_bins = 3
+neigh_radius = 9
+normalization_mode = global
+percentile = 70
+photo_name = irl_rock1
+relative_path = ../data
+sigma = 0
+use_filt = True
+use_sift = False
+x_lengths = [200, 200]
+x_starts = [1310, 1404]
+y_lengths = [200, 200]
+y_starts = [770, 975]
+
+2024-02-15 09:24:01,210 - Script print_pipe_hparams.py is done.
+
+2024-02-15 09:24:01,210 - Run the script imgs_preprocessing.py
+2024-02-15 09:24:06,016 - shapes of images (2000, 3000) (2000, 3000)
+Blurred images saved in ../data/irl/scene_zipped
+Cropped images saved in ../data/irl/scene_zipped
+
+2024-02-15 09:24:06,016 - Script imgs_preprocessing.py is done.
+
+2024-02-15 09:24:06,016 - Run the script compute_desc_img.py
+2024-02-15 09:44:08,752 - feat computation beginning for image 0: 2024-02-15 09:24:06.949502
+feat computation end for image 0 2024-02-15 09:24:32.171634
+feat compute time for image 0 0:00:25.222132
+shape of overall_features[0] of image 0 (2000, 3000, 2)
+filter pixel by mean absolute curvature percentile in subimage
+prefiltering by mean absolute curvature beginning for image 0 2024-02-15 09:24:06.949502
+prefiltering by mean absolute curvature end for image 0 2024-02-15 09:24:47.594703
+prefiltering by mean absolute curvature compute time for image 0 0:00:15.423030
+Min mean curvature: 0.0
+Max mean curvature: 0.28235292434692383
+Mean mean curvature: 0.01256373431533575
+Standard deviation of the mean curvatures: 0.020614299923181534
+Percentile 70%: 0.027450978755950928
+number of pixels in subimage: 40000
+number of filtered accepted pixels: 12216
+percentage of filtered accepted pixels: 30.54
+coords array shape: (12216, 2)
+desc computation beginning for image 0 2024-02-15 09:24:47.636423
+desc computation end for image 0 2024-02-15 09:34:19.330781
+desc compute time for image 0 0:09:31.694358
+Number of empty filtered descriptors 0.0
+feat computation beginning for image 1: 2024-02-15 09:34:19.468600
+feat computation end for image 1 2024-02-15 09:34:38.536605
+feat compute time for image 1 0:00:19.068005
+shape of overall_features[0] of image 1 (2000, 3000, 2)
+filter pixel by mean absolute curvature percentile in subimage
+prefiltering by mean absolute curvature beginning for image 1 2024-02-15 09:34:19.468600
+prefiltering by mean absolute curvature end for image 1 2024-02-15 09:34:54.611956
+prefiltering by mean absolute curvature compute time for image 1 0:00:16.075295
+Min mean curvature: 0.0
+Max mean curvature: 0.1745208203792572
+Mean mean curvature: 0.013460027985274792
+Standard deviation of the mean curvatures: 0.022349173203110695
+Percentile 70%: 0.029411762952804565
+number of pixels in subimage: 40000
+number of filtered accepted pixels: 12055
+percentage of filtered accepted pixels: 30.1375
+coords array shape: (12055, 2)
+desc computation beginning for image 1 2024-02-15 09:34:54.652255
+desc computation end for image 1 2024-02-15 09:44:08.247891
+desc compute time for image 1 0:09:13.595636
+Number of empty filtered descriptors 0.0
+
+2024-02-15 09:44:08,752 - Script compute_desc_img.py is done.
+
+2024-02-15 09:44:08,752 - Run the script compute_distances.py
+2024-02-15 09:44:36,542 - Start computing distances: 2024-02-15 09:44:09.704337
+End computing distances: 2024-02-15 09:44:36.279947
+Compute time: 0:00:26.575610
+Chosen distance type: min
+
+2024-02-15 09:44:36,542 - Script compute_distances.py is done.
+
+2024-02-15 09:44:36,542 - Run the script create_cv_objs.py
+2024-02-15 09:44:37,735 - finished creating opencv objects
+beginning saving opencv objects to file
+finished saving kp_pairs
+finished saving matches
+finished saving keypoints
+
+2024-02-15 09:44:37,736 - Script create_cv_objs.py is done.
+
+2024-02-15 09:44:37,736 - All scripts are done. Launch Blender or a display script.
+
+
+2024-02-15 09:44:37,753 - Folder computed_descriptors already exists
+Folder computed_distances already exists
+Folder computed_matches already exists
+Folder filtered_keypoints already exists
+Folder execution_logs already exists
+
+2024-02-15 09:44:37,753 - Skip the Blender part
+2024-02-15 09:48:28,796 - Statistics about the distances of the matches
+Minimal distance of  matches: 17.62647247314453
+Maximal distance of  matches: 27.773435592651367
+Mean distance of  matches: 21.395737677207553
+Standard deviation of the distances of  matches: 1.0375466448874917
+
