@@ -26,7 +26,7 @@ import compute_desc_img as cp_desc
 
 if __name__ == "__main__":
 
-    plot_hist = False
+    plot_hist = True
 
     # load images
     ims = [
@@ -77,21 +77,28 @@ if __name__ == "__main__":
         for id_image in range(2)
     ]
 
+    # print some statistics about the matches
+    print(f"number of computed matches: {len(matches)}")
+
+
     # look at statistics about the distances of the matches
     print("Statistics about the distances of the matches")
     dm.print_distance_infos(matches)
 
     # Sort matches by distance
-    minimal_matches_idx = np.argsort([match[0].distance for match in matches])
+    perc_matches_to_keep = int(np.round(5 / 100 * y_lengths[0] * x_lengths[0]))
+    nb_min_matches = min(perc_matches_to_keep, len(matches))
+    print(f"number of kept matches: {nb_min_matches} (<=2% of the number of pixels in the first image)")
+    minimal_matches_idx = np.argsort([match[0].distance for match in matches])[:nb_min_matches]
     minimal_matches = [matches[i] for i in minimal_matches_idx]
 
     # display random minimal matches
-    max_nb_matches_to_display = len(matches)
-    nb_rd_unfiltered_matches_to_display = min(
+    max_nb_matches_to_display = 3000
+    nb_matches_to_display = min(
         len(minimal_matches), max_nb_matches_to_display
     )
     rd_idx_unfiltered = np.random.choice(
-        len(matches), nb_rd_unfiltered_matches_to_display
+        len(matches), nb_matches_to_display
     )
     rd_matches_unfiltered = [matches[i] for i in rd_idx_unfiltered]
     dm.display_matches(
@@ -100,10 +107,24 @@ if __name__ == "__main__":
         kps_coords,
         show_plot=False,
         im_names=im_names,
-        plot_title_prefix=f"Random minimal unfiltered by blender {sift_radical[1:] if use_sift else ''} matches",
+        plot_title_prefix=f"{nb_matches_to_display} Random minimal unfiltered by blender {sift_radical[1:] if use_sift else ''} matches",
+    )
+
+
+    # display minimal matches
+    dm.display_matches(
+        ims,
+        minimal_matches[:nb_matches_to_display],
+        kps_coords,
+        show_plot=False,
+        im_names=im_names,
+        plot_title_prefix=f"Top {nb_matches_to_display} minimal unfiltered by blender {sift_radical[1:] if use_sift else ''} matches",
     )
 
     plt.show()
+
+
+    sys.exit()
 
     if not use_sift:
 
@@ -167,6 +188,14 @@ if __name__ == "__main__":
             ]
 
             # look at mask of prefiltered pixels
+            if plot_hist:
+                if filt_type is None or filt_type == "mean":
+                    for id_image in range(2):
+                        plt.figure()
+                        hist = plt.hist(x=[mean_abs_curvs_ims[id_image].flatten()], bins=100, weights=[np.ones(mean_abs_curvs_ims[id_image].size)/mean_abs_curvs_ims[id_image].size])
+                        plt.gca().yaxis.set_major_formatter(PercentFormatter(1))
+                        plt.xlabel("Moyenne des valeurs absolues des courbures")
+                        plt.ylabel("Pourcentage")
 
             mask_arrays = [None, None]
             if filt_type is None or filt_type == "mean":
