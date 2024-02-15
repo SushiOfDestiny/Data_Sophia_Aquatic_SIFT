@@ -16,6 +16,7 @@ if __name__ == "__main__":
     # ]
 
     scripts = [
+        "print_pipe_hparams.py",
         f"display{irl_radical}_matches.py",
     ]
 

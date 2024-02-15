@@ -108,3 +108,175 @@ Percentage of good  matches within the 8700 minimal matches: 65.77011494252874
 2024-02-14 15:25:16,537 - Script display_matches.py is done.
 
 2024-02-14 15:25:16,537 - All scripts are done. The pipeline is finished.
+2024-02-14 17:08:54,834 - Start running the post blender pipeline
+2024-02-14 17:08:54,834 - Run the script display_matches.py
+2024-02-14 17:10:22,700 - number of pixels in image 0 174000
+number of  keypoints in image 0 52200
+percentage of  keypoints in subimage 0 30.0
+number of pixels in image 1 174000
+number of  keypoints in image 1 52200
+percentage of  keypoints in subimage 1 30.0
+number of blender unfiltered  matches 52200
+number of good  matches at a precision of None pixels:  12647
+Percentage of good  matches within matches: 24.227969348659002
+Percentage of good  matches within pixels in subimage 1: 7.268390804597701
+Number of good  matches within the 8700 minimal matches: 5722
+Percentage of good  matches within the 8700 minimal matches: 65.77011494252874
+Statistics about the distances of the good matches
+Minimal distance of  matches: 11.973733901977539
+Maximal distance of  matches: 32.44606399536133
+Mean distance of  matches: 20.793607854688556
+Standard deviation of the distances of  matches: 2.0313970267483397
+Statistics about the distances of the bad matches
+Minimal distance of  matches: 12.345102310180664
+Maximal distance of  matches: 43.46220016479492
+Mean distance of  matches: 23.2789065830687
+Standard deviation of the distances of  matches: 2.7491642332354993
+feat computation beginning for both images
+Mean value of mean absolute curvature of the good keypoints in image 0: 0.02360147051513195
+Standard deviation of mean absolute curvature of the good keypoints in image 0: 0.007357866503298283
+Mean value of mean absolute curvature of the good keypoints in image 1: 0.023521922528743744
+Standard deviation of mean absolute curvature of the good keypoints in image 1: 0.007413970772176981
+Mean value of mean absolute curvature of the bad keypoints in image 0: 0.023103633895516396
+Standard deviation of mean absolute curvature of the bad keypoints in image 0: 0.007716624066233635
+Mean value of mean absolute curvature of the bad keypoints in image 1: 0.023828493431210518
+Standard deviation of mean absolute curvature of the bad keypoints in image 1: 0.007745540235191584
+Number of keypoints found in the filtered pixels for image 0: 52200
+Number of mask keypoints for image 0: 52200
+Percentage of keypoints found in the filtered pixels for image 0: 100.0
+Number of keypoints found in the filtered pixels for image 1: 52200
+Number of mask keypoints for image 1: 52200
+Percentage of keypoints found in the filtered pixels for image 1: 100.0
+
+2024-02-14 17:10:22,704 - Script display_matches.py is done.
+
+2024-02-14 17:10:22,704 - All scripts are done. The pipeline is finished.
+2024-02-14 17:19:30,731 - Start running the post blender pipeline
+2024-02-14 17:19:30,731 - Run the script display_matches.py
+2024-02-14 17:21:08,009 - number of pixels in image 0 174000
+number of  keypoints in image 0 52200
+percentage of  keypoints in subimage 0 30.0
+number of pixels in image 1 174000
+number of  keypoints in image 1 52200
+percentage of  keypoints in subimage 1 30.0
+number of blender unfiltered  matches 52200
+number of good  matches at a precision of None pixels:  12647
+Percentage of good  matches within matches: 24.227969348659002
+Percentage of good  matches within pixels in subimage 1: 7.268390804597701
+Number of good  matches within the 8700 minimal matches: 5722
+Percentage of good  matches within the 8700 minimal matches: 65.77011494252874
+Statistics about the distances of the good matches
+Minimal distance of  matches: 11.973733901977539
+Maximal distance of  matches: 32.44606399536133
+Mean distance of  matches: 20.793607854688556
+Standard deviation of the distances of  matches: 2.0313970267483397
+Statistics about the distances of the bad matches
+Minimal distance of  matches: 12.345102310180664
+Maximal distance of  matches: 43.46220016479492
+Mean distance of  matches: 23.2789065830687
+Standard deviation of the distances of  matches: 2.7491642332354993
+feat computation beginning for both images
+Mean value of mean absolute curvature of the good keypoints in image 0: 0.02360147051513195
+Standard deviation of mean absolute curvature of the good keypoints in image 0: 0.007357866503298283
+Mean value of mean absolute curvature of the good keypoints in image 1: 0.023521922528743744
+Standard deviation of mean absolute curvature of the good keypoints in image 1: 0.007413970772176981
+Mean value of mean absolute curvature of the bad keypoints in image 0: 0.023103633895516396
+Standard deviation of mean absolute curvature of the bad keypoints in image 0: 0.007716624066233635
+Mean value of mean absolute curvature of the bad keypoints in image 1: 0.023828493431210518
+Standard deviation of mean absolute curvature of the bad keypoints in image 1: 0.007745540235191584
+Number of keypoints found in the filtered pixels for image 0: 52200
+Number of mask keypoints for image 0: 52200
+Percentage of keypoints found in the filtered pixels for image 0: 100.0
+Number of keypoints found in the filtered pixels for image 1: 52200
+Number of mask keypoints for image 1: 52200
+Percentage of keypoints found in the filtered pixels for image 1: 100.0
+
+2024-02-14 17:21:08,014 - Script display_matches.py is done.
+
+2024-02-14 17:21:08,014 - All scripts are done. The pipeline is finished.
+2024-02-14 17:23:09,342 - Start running the post blender pipeline
+2024-02-14 17:23:09,342 - Run the script display_matches.py
+2024-02-14 17:24:57,018 - number of pixels in image 0 174000
+number of  keypoints in image 0 52200
+percentage of  keypoints in subimage 0 30.0
+number of pixels in image 1 174000
+number of  keypoints in image 1 52200
+percentage of  keypoints in subimage 1 30.0
+number of blender unfiltered  matches 52200
+number of good  matches at a precision of None pixels:  12647
+Percentage of good  matches within matches: 24.227969348659002
+Percentage of good  matches within pixels in subimage 1: 7.268390804597701
+Number of good  matches within the 8700 minimal matches: 5722
+Percentage of good  matches within the 8700 minimal matches: 65.77011494252874
+Statistics about the distances of the good matches
+Minimal distance of  matches: 11.973733901977539
+Maximal distance of  matches: 32.44606399536133
+Mean distance of  matches: 20.793607854688556
+Standard deviation of the distances of  matches: 2.0313970267483397
+Statistics about the distances of the bad matches
+Minimal distance of  matches: 12.345102310180664
+Maximal distance of  matches: 43.46220016479492
+Mean distance of  matches: 23.2789065830687
+Standard deviation of the distances of  matches: 2.7491642332354993
+feat computation beginning for both images
+Mean value of mean absolute curvature of the good keypoints in image 0: 0.02360147051513195
+Standard deviation of mean absolute curvature of the good keypoints in image 0: 0.007357866503298283
+Mean value of mean absolute curvature of the good keypoints in image 1: 0.023521922528743744
+Standard deviation of mean absolute curvature of the good keypoints in image 1: 0.007413970772176981
+Mean value of mean absolute curvature of the bad keypoints in image 0: 0.023103633895516396
+Standard deviation of mean absolute curvature of the bad keypoints in image 0: 0.007716624066233635
+Mean value of mean absolute curvature of the bad keypoints in image 1: 0.023828493431210518
+Standard deviation of mean absolute curvature of the bad keypoints in image 1: 0.007745540235191584
+Number of keypoints found in the filtered pixels for image 0: 52200
+Number of mask keypoints for image 0: 52200
+Percentage of keypoints found in the filtered pixels for image 0: 100.0
+Number of keypoints found in the filtered pixels for image 1: 52200
+Number of mask keypoints for image 1: 52200
+Percentage of keypoints found in the filtered pixels for image 1: 100.0
+
+2024-02-14 17:24:57,022 - Script display_matches.py is done.
+
+2024-02-14 17:24:57,022 - All scripts are done. The pipeline is finished.
+2024-02-14 18:15:58,167 - Start running the post blender pipeline
+2024-02-14 18:15:58,168 - Run the script display_matches.py
+2024-02-14 18:18:44,304 - number of pixels in image 0 174000
+number of  keypoints in image 0 52200
+percentage of  keypoints in subimage 0 30.0
+number of pixels in image 1 174000
+number of  keypoints in image 1 52200
+percentage of  keypoints in subimage 1 30.0
+number of blender unfiltered  matches 52200
+number of good  matches at a precision of None pixels:  12647
+Percentage of good  matches within matches: 24.227969348659002
+Percentage of good  matches within pixels in subimage 1: 7.268390804597701
+Number of good  matches within the 3480 minimal matches: 2532
+Percentage of good  matches within the 3480 minimal matches: 72.75862068965517
+Statistics about the distances of the good matches
+Minimal distance of  matches: 11.973733901977539
+Maximal distance of  matches: 32.44606399536133
+Mean distance of  matches: 20.793607854688556
+Standard deviation of the distances of  matches: 2.0313970267483397
+Statistics about the distances of the bad matches
+Minimal distance of  matches: 12.345102310180664
+Maximal distance of  matches: 43.46220016479492
+Mean distance of  matches: 23.2789065830687
+Standard deviation of the distances of  matches: 2.7491642332354993
+feat computation beginning for both images
+Mean value of mean absolute curvature of the good keypoints in image 0: 0.02360147051513195
+Standard deviation of mean absolute curvature of the good keypoints in image 0: 0.007357866503298283
+Mean value of mean absolute curvature of the good keypoints in image 1: 0.023521922528743744
+Standard deviation of mean absolute curvature of the good keypoints in image 1: 0.007413970772176981
+Mean value of mean absolute curvature of the bad keypoints in image 0: 0.023103633895516396
+Standard deviation of mean absolute curvature of the bad keypoints in image 0: 0.007716624066233635
+Mean value of mean absolute curvature of the bad keypoints in image 1: 0.023828493431210518
+Standard deviation of mean absolute curvature of the bad keypoints in image 1: 0.007745540235191584
+Number of keypoints found in the filtered pixels for image 0: 52200
+Number of mask keypoints for image 0: 52200
+Percentage of keypoints found in the filtered pixels for image 0: 100.0
+Number of keypoints found in the filtered pixels for image 1: 52200
+Number of mask keypoints for image 1: 52200
+Percentage of keypoints found in the filtered pixels for image 1: 100.0
+
+2024-02-14 18:18:44,304 - Script display_matches.py is done.
+
+2024-02-14 18:18:44,304 - All scripts are done. The pipeline is finished.

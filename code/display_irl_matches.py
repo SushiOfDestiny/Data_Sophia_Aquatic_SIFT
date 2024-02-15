@@ -5,7 +5,7 @@ import sys
 import cv2 as cv
 import numpy as np
 import matplotlib.pyplot as plt
-from descriptor import unflatten_descriptor
+import descriptor as desc
 import visu_hessian as vh
 import visu_descriptor as visu_desc
 
@@ -18,6 +18,8 @@ from filenames_creation import *
 
 import display_matches as dm
 
+import compute_desc_img as cp_desc
+
 
 if __name__ == "__main__":
 
@@ -29,7 +31,7 @@ if __name__ == "__main__":
         )
         for id_image in range(2)
     ]
-    loat_ims = np.load(f"{blurred_imgs_filename}.npy")
+    float_ims = np.load(f"{blurred_imgs_filename}.npy")
 
     # load cropped float images
     cropped_float_ims = [
@@ -38,7 +40,6 @@ if __name__ == "__main__":
         )
         for id_image in range(2)
     ]
-
 
     # load all computed objects
 
@@ -55,13 +56,10 @@ if __name__ == "__main__":
     ]
     matches = load_matches(f"{matches_path}/{matches_filename}.txt")
 
-
-
     matches_kps = [
         [kps_coords[0][match[0].queryIdx] for match in matches],
         [kps_coords[1][match[0].trainIdx] for match in matches],
     ]
-
 
     matches_kps_idx = [
         np.array(
@@ -73,7 +71,6 @@ if __name__ == "__main__":
         )
         for id_image in range(2)
     ]
-
 
     # look at statistics about the distances of the matches
     print("Statistics about the distances of the matches")
@@ -97,7 +94,6 @@ if __name__ == "__main__":
 
     plt.show()
 
-
     if not use_sift:
         # Load descriptors
         descs = [
@@ -107,8 +103,10 @@ if __name__ == "__main__":
             for id_image in range(2)
         ]
 
-        descs_ims = [descs[id_image][matches_kps_idx[id_image]] for id_image in range(2)]
-        
+        descs_ims = [
+            descs[id_image][matches_kps_idx[id_image]] for id_image in range(2)
+        ]
+
         # Look at the averaged descriptor
         avg_descs = [np.mean(descs_ims[id_image], axis=0) for id_image in range(2)]
 
@@ -119,11 +117,111 @@ if __name__ == "__main__":
 
         # for id_image in range(2):
         #     visu_desc.display_descriptor(
-        #         descriptor_histograms=unflatten_descriptor(avg_descs[id_image]),
+        #         descriptor_histograms=desc.unflatten_descriptor(avg_descs[id_image]),
         #         descriptor_name=descs_names[id_image],
         #         show_plot=False,
         #     )
 
         plt.show()
 
-    
+        if use_filt:
+            # plot the filtered pixels on each subimage side by side
+            fig, ax = plt.subplots(1, 2, figsize=(10, 5))
+            for id_image in range(2):
+                ax[id_image].imshow(float_ims[id_image], cmap="gray")
+                ax[id_image].scatter(
+                    kps_coords[id_image][:, 0],
+                    kps_coords[id_image][:, 1],
+                    c="r",
+                    s=2,
+                )
+                ax[id_image].set_title(f"Prefiltered pixels in subimage {id_image}")
+            plt.show()
+
+            # Look at information about the curvatures and gradients of the good and bad keypoints
+            print(f"feat computation beginning for both images")
+            overall_features_ims = [
+                desc.compute_features_overall_abs(
+                    float_ims[id_image], border_size=border_size
+                )
+                for id_image in range(2)
+            ]
+
+            # look at the mean absolute curvatures
+            mean_abs_curvs_ims = [
+                cp_desc.compute_mean_abs_curv_arr(overall_features_ims[id_image][1])
+                for id_image in range(2)
+            ]
+
+            # look at mask of prefiltered pixels
+
+            mask_arrays = [None, None]
+            if filt_type is None or filt_type == "mean":
+                for id_image in range(2):
+
+                    mask_arrays[id_image], mean_abs_curvs, y_slice, x_slice = (
+                        cp_desc.filter_by_mean_abs_curv(
+                            float_ims[id_image],
+                            overall_features_ims[id_image][1],
+                            y_starts[id_image],
+                            y_lengths[id_image],
+                            x_starts[id_image],
+                            x_lengths[id_image],
+                            percentile,
+                        )
+                    )
+
+            elif filt_type == "std":
+                for id_image in range(2):
+                    mask_arrays[id_image], neighborhood_stds, y_slice, x_slice = (
+                        cp_desc.filter_by_std_neighbor_curv(
+                            float_ims[id_image],
+                            overall_features_ims[id_image][1],
+                            y_starts[id_image],
+                            y_lengths[id_image],
+                            x_starts[id_image],
+                            x_lengths[id_image],
+                            percentile,
+                            neighborhood_radius=neighborhood_radius,
+                        )
+                    )
+                    fig, axs = plt.subplots(1, 2, figsize=(20, 10))
+                    axs[0].imshow(
+                        float_ims[id_image][
+                            y_starts[id_image] : y_starts[id_image]
+                            + y_lengths[id_image],
+                            x_starts[id_image] : x_starts[id_image]
+                            + x_lengths[id_image],
+                        ],
+                        cmap="gray",
+                    )
+                    axs[1].imshow(neighborhood_stds, cmap="magma")
+                    axs[0].set_title(
+                        f"Colormap of filtered pixels by {filt_type} for image {id_image}"
+                    )
+
+                    dm.save_fig_pkl(
+                        fig,
+                        path=descrip_path,
+                        filename=f"{descrip_filename_prefixes[id_image]}_filter_colormap",
+                    )
+
+                    plt.show()
+
+            # display the filtered pixels
+            fig, axs = plt.subplots(1, 2, figsize=(20, 10))
+            for id_image in range(2):
+                axs[id_image].imshow(float_ims[id_image], cmap="gray")
+                axs[id_image].imshow(mask_arrays[id_image], cmap="jet", alpha=0.5)
+                axs[id_image].set_title(
+                    f"Filtered pixels by {filt_type} curvature in subimage {id_image}, with percentile {percentile}"
+                )
+
+            # save the plot
+            dm.save_fig_pkl(
+                fig,
+                path=descrip_path,
+                filename=f"{descrip_filename_prefixes[id_image]}_filtered_pixels",
+            )
+
+            plt.show()

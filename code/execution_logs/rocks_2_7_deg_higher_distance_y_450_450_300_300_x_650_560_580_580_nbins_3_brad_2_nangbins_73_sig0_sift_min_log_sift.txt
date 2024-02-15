@@ -176,3 +176,59 @@ Standard deviation of the distances of sift matches: 91.31178722113019
 2024-02-14 14:17:23,729 - Script display_matches.py is done.
 
 2024-02-14 14:17:23,729 - All scripts are done. The pipeline is finished.
+2024-02-14 17:27:03,503 - Start running the post blender pipeline
+2024-02-14 17:27:03,503 - Run the script display_matches.py
+2024-02-14 17:27:20,456 - number of pixels in image 0 174000
+number of sift keypoints in image 0 4150
+percentage of sift keypoints in subimage 0 2.3850574712643677
+number of pixels in image 1 174000
+number of sift keypoints in image 1 4194
+percentage of sift keypoints in subimage 1 2.410344827586207
+number of blender unfiltered sift matches 4150
+number of good sift matches at a precision of None pixels:  1547
+Percentage of good sift matches within matches: 37.27710843373494
+Percentage of good sift matches within pixels in subimage 1: 0.889080459770115
+Number of good sift matches within the 8700 minimal matches: 1547
+Percentage of good sift matches within the 8700 minimal matches: 17.781609195402297
+Statistics about the distances of the good matches
+Minimal distance of sift matches: 15.55634880065918
+Maximal distance of sift matches: 349.3865966796875
+Mean distance of sift matches: 128.21716304401775
+Standard deviation of the distances of sift matches: 60.28425194724842
+Statistics about the distances of the bad matches
+Minimal distance of sift matches: 29.546573638916016
+Maximal distance of sift matches: 488.5181579589844
+Mean distance of sift matches: 245.09360653191771
+Standard deviation of the distances of sift matches: 91.31178722113019
+
+2024-02-14 17:27:20,464 - Script display_matches.py is done.
+
+2024-02-14 17:27:20,464 - All scripts are done. The pipeline is finished.
+2024-02-14 18:15:06,946 - Start running the post blender pipeline
+2024-02-14 18:15:06,946 - Run the script display_matches.py
+2024-02-14 18:15:21,526 - number of pixels in image 0 174000
+number of sift keypoints in image 0 4150
+percentage of sift keypoints in subimage 0 2.3850574712643677
+number of pixels in image 1 174000
+number of sift keypoints in image 1 4194
+percentage of sift keypoints in subimage 1 2.410344827586207
+number of blender unfiltered sift matches 4150
+number of good sift matches at a precision of None pixels:  1547
+Percentage of good sift matches within matches: 37.27710843373494
+Percentage of good sift matches within pixels in subimage 1: 0.889080459770115
+Number of good sift matches within the 3480 minimal matches: 1542
+Percentage of good sift matches within the 3480 minimal matches: 44.310344827586206
+Statistics about the distances of the good matches
+Minimal distance of sift matches: 15.55634880065918
+Maximal distance of sift matches: 349.3865966796875
+Mean distance of sift matches: 128.21716304401775
+Standard deviation of the distances of sift matches: 60.28425194724842
+Statistics about the distances of the bad matches
+Minimal distance of sift matches: 29.546573638916016
+Maximal distance of sift matches: 488.5181579589844
+Mean distance of sift matches: 245.09360653191771
+Standard deviation of the distances of sift matches: 91.31178722113019
+
+2024-02-14 18:15:21,526 - Script display_matches.py is done.
+
+2024-02-14 18:15:21,526 - All scripts are done. The pipeline is finished.
