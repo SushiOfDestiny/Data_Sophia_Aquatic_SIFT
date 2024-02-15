@@ -202,11 +202,11 @@ def compute_good_and_bad_matches(matches, good_matches_kps_idx):
     bad_matches = [matches[i] for i in bad_matches_idx]
     return good_matches, bad_matches
 
-def filter_pixel_distance_matches(matches, threshold):
+def filter_pixel_distance_matches(matches, threshold, kps):
     return [
         match for match in matches 
-        if np.sqrt((match.queryIdx.pt[0]-match.trainIdx.pt[0])**2  
-                   + (match.queryIdx.pt[1]-match.trainIdx.pt[1])**2) < threshold
+        if np.sqrt((kps[0][match[0].queryIdx].pt[0]-kps[1][match[0].trainIdx].pt[0])**2  
+                   + (kps[0][match[0].queryIdx].pt[1]-kps[1][match[0].trainIdx].pt[1])**2) < threshold
     ]
 
 
