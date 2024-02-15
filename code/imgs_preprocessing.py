@@ -19,6 +19,8 @@ from computation_pipeline_hyper_params import *
 
 from filenames_creation import *
 
+import skimage
+
 if __name__ == "__main__":
 
     # Load images
@@ -38,6 +40,10 @@ if __name__ == "__main__":
 
     # compute float32 versions for calculations
     float_ims = [vh.convert_uint8_to_float32(ims[i]) for i in range(2)]
+
+    # eventually apply binary erosion
+    if use_erode is not None and use_erode is True:
+        float_ims = [skimage.morphology.binary_erosion(float_ims[id_image]) for id_image in range(2)]
 
     # blur images, unless blur_sigma is 0.
     if blur_sigma > 0.1:
