@@ -202,6 +202,13 @@ def compute_good_and_bad_matches(matches, good_matches_kps_idx):
     bad_matches = [matches[i] for i in bad_matches_idx]
     return good_matches, bad_matches
 
+def filter_pixel_distance_matches(matches, threshold):
+    return [
+        match for match in matches 
+        if np.sqrt((match.queryIdx.pt[0]-match.trainIdx.pt[0])**2  
+                   + (match.queryIdx.pt[1]-match.trainIdx.pt[1])**2) < threshold
+    ]
+
 
 def display_distance_scatter(
     matches, good_matches_kps_idx, image_distances_filename_npy
@@ -377,6 +384,14 @@ if __name__ == "__main__":
         y_lengths, x_lengths, kps, matches, good_matches, epsilon
     )
 
+    if pixel_distance_postfilt:
+        print('\n')
+        print("Pixel distance postfiltering start")
+        pixel_distance_filtered_matches = filter_pixel_distance_matches(matches, threshold=pixel_distance_threshold)
+        print(f"Percentage of matches kept after pixel distance postfiltering with threhold {pixel_distance_threshold} = {len(pixel_distance_filtered_matches)/len(matches)}")
+        matches = pixel_distance_filtered_matches
+        print("Pixel distance postfiltering end")
+        print('\n')
     # look at good matches percentage within the x first matches ordered by increasing distance
     # define how much match we keep depending on the size of the subimage 1
     kept_matches_perc = 2
