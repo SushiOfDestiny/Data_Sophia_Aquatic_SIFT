@@ -26,7 +26,7 @@ import compute_desc_img as cp_desc
 
 if __name__ == "__main__":
 
-    plot_hist = False
+    plot_hist = True
 
     # load images
     ims = [
@@ -108,32 +108,17 @@ if __name__ == "__main__":
             for id_image in range(2)
         ]
 
-        descs_ims = [
-            descs[id_image][matches_kps_idx[id_image]] for id_image in range(2)
-        ]
-
+        # descs_ims = [
+            # descs[id_image][matches_kps_idx[id_image]] for id_image in range(2)
+        # ]
+# 
         # Look at the averaged descriptor
-        avg_descs = [np.mean(descs_ims[id_image], axis=0) for id_image in range(2)]
-
-        descs_names = [
-            f"Averaged descriptor of matches for {im_names[id_image]}\n with nb_bins={nb_bins}, bin_radius={bin_radius}, delta_angle={delta_angle} and sigma={sigma}"
-            for id_image in range(2)
-        ]
-
-        if plot_hist:
-            overall_features_ims = [
-                desc.compute_features_overall_abs(
-                    float_ims[id_image], border_size=border_size
-                )
-            for id_image in range(2)
-            ]
-            for id_image in range(2):
-                mean_abs_curvs = cp_desc.compute_mean_abs_curv_arr(overall_features_ims[id_image][1])
-                plt.figure()
-                hist = plt.hist(x=mean_abs_curvs, nbins=100, weights=np.ones(mean_abs_curvs)/len(mean_abs_curvs))
-                plt.gca().yaxis.set_major_formatter(PercentFormatter(1))
-                plt.xlabel("Moyenne des valeurs absolues des courbures")
-                plt.ylabel("Pourcentage")
+        # avg_descs = [np.mean(descs_ims[id_image], axis=0) for id_image in range(2)]
+# 
+        # descs_names = [
+            # f"Averaged descriptor of matches for {im_names[id_image]}\n with nb_bins={nb_bins}, bin_radius={bin_radius}, delta_angle={delta_angle} and sigma={sigma}"
+            # for id_image in range(2)
+        # ]
 
 
         # for id_image in range(2):
@@ -175,6 +160,14 @@ if __name__ == "__main__":
             ]
 
             # look at mask of prefiltered pixels
+            if plot_hist:
+                if filt_type is None or filt_type == "mean":
+                    for id_image in range(2):
+                        plt.figure()
+                        hist = plt.hist(x=[mean_abs_curvs_ims[id_image].flatten()], bins=100, weights=[np.ones(mean_abs_curvs_ims[id_image].size)/mean_abs_curvs_ims[id_image].size])
+                        plt.gca().yaxis.set_major_formatter(PercentFormatter(1))
+                        plt.xlabel("Moyenne des valeurs absolues des courbures")
+                        plt.ylabel("Pourcentage")
 
             mask_arrays = [None, None]
             if filt_type is None or filt_type == "mean":
