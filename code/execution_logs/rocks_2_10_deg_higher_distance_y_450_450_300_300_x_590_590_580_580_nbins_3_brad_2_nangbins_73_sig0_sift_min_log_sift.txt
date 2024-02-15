@@ -684,3 +684,70 @@ Standard deviation of the distances of sift matches: 45.561735583017274
 2024-02-14 19:15:53,593 - Script display_matches.py is done.
 
 2024-02-14 19:15:53,593 - All scripts are done. The pipeline is finished.
+2024-02-15 13:11:39,096 - Start running the post blender pipeline
+2024-02-15 13:11:39,097 - Run the script print_pipe_hparams.py
+2024-02-15 13:11:39,166 - SIFTsigma = 1.6
+adapt_hist_eq = False
+bin_radius = 2
+blender_filename = rocks_2_10_deg_higher_distance
+blur_sigma = 1.0
+border_size = 1
+contrastThreshold = 0.04
+delta_angle = 5.0
+distanceThreshold = 0.75
+distance_type = min
+edgeThreshold = 10
+epsilon = None
+filt_type = mean
+im_ext = png
+im_name1 = rocks_2_10_deg_higher_distance_left
+im_name2 = rocks_2_10_deg_higher_distance_right
+im_names = ('rocks_2_10_deg_higher_distance_left', 'rocks_2_10_deg_higher_distance_right')
+img_folder = blender/rocks_2
+method_post = lowe
+nb_angular_bins = 73
+nb_bins = 3
+neigh_radius = 9
+normalization_mode = global
+percentile = 60
+photo_name = rocks_2_10_deg_higher_distance
+relative_path = ../data
+sigma = 0
+use_filt = False
+use_sift = True
+x_lengths = [580, 580]
+x_starts = [590, 590]
+y_lengths = [300, 300]
+y_starts = [450, 450]
+
+2024-02-15 13:11:39,166 - Script print_pipe_hparams.py is done.
+
+2024-02-15 13:11:39,166 - Run the script display_matches.py
+2024-02-15 13:12:27,969 - number of pixels in image 0 174000
+number of sift keypoints in image 0 9264
+percentage of sift keypoints in subimage 0:  5.32%
+number of pixels in image 1 174000
+number of sift keypoints in image 1 9319
+percentage of sift keypoints in subimage 1:  5.36%
+number of blender unfiltered sift matches 3977
+number of good sift matches at a precision of None pixels:  2619
+Percentage of good sift matches within matches:  65.85%
+Percentage of good sift matches within pixels in subimage 1:  1.51%
+percentage of kept matches in the subimage 1: 2%
+corresponding number of kept matches: 3480
+Number of good sift matches within the 3480 minimal matches: 2322
+Percentage of good sift matches within the 3480 minimal matches:  66.72%
+Statistics about the distances of the good matches
+Minimal distance of sift matches:  24.23
+Maximal distance of sift matches:  272.89
+Mean distance of sift matches:  133.30
+Standard deviation of the distances of sift matches:  46.68
+Statistics about the distances of the bad matches
+Minimal distance of sift matches:  36.89
+Maximal distance of sift matches:  261.76
+Mean distance of sift matches:  142.55
+Standard deviation of the distances of sift matches:  45.56
+
+2024-02-15 13:12:27,972 - Script display_matches.py is done.
+
+2024-02-15 13:12:27,972 - All scripts are done. The pipeline is finished.

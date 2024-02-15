@@ -36,11 +36,11 @@ if __name__ == "__main__":
     ]
     print("shapes of images", ims[0].shape, ims[1].shape)
 
-    # ensure that the images are uint8
-    ims = [img_as_ubyte(image) for image in ims]
 
     # Apply histogram equalization
     if adapt_hist_eq is not None and adapt_hist_eq == True:
+        # ensure that the images are uint8
+        ims = [img_as_ubyte(image) for image in ims]
         ims = [exposure.equalize_adapthist(image, clip_limit=0.01) for image in ims]
 
     # Apply threshold and binary erosion

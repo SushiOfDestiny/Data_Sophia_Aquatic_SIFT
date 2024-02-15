@@ -81,9 +81,15 @@ if __name__ == "__main__":
     print("Statistics about the distances of the matches")
     dm.print_distance_infos(matches)
 
-    # display random matches
-    max_nb_matches_to_display = 250
-    nb_rd_unfiltered_matches_to_display = min(len(matches), max_nb_matches_to_display)
+    # Sort matches by distance
+    minimal_matches_idx = np.argsort([match[0].distance for match in matches])
+    minimal_matches = [matches[i] for i in minimal_matches_idx]
+
+    # display random minimal matches
+    max_nb_matches_to_display = len(matches)
+    nb_rd_unfiltered_matches_to_display = min(
+        len(minimal_matches), max_nb_matches_to_display
+    )
     rd_idx_unfiltered = np.random.choice(
         len(matches), nb_rd_unfiltered_matches_to_display
     )
@@ -94,32 +100,33 @@ if __name__ == "__main__":
         kps_coords,
         show_plot=False,
         im_names=im_names,
-        plot_title_prefix=f"Random unfiltered by blender {sift_radical[1:] if use_sift else ''} matches",
+        plot_title_prefix=f"Random minimal unfiltered by blender {sift_radical[1:] if use_sift else ''} matches",
     )
 
     plt.show()
 
     if not use_sift:
-        # Load descriptors
-        descs = [
-            np.load(
-                f"{descrip_path}/{descrip_filenames[id_image]}.npy",
-            )
-            for id_image in range(2)
-        ]
 
-        # descs_ims = [
-            # descs[id_image][matches_kps_idx[id_image]] for id_image in range(2)
-        # ]
-# 
-        # Look at the averaged descriptor
-        # avg_descs = [np.mean(descs_ims[id_image], axis=0) for id_image in range(2)]
-# 
-        # descs_names = [
-            # f"Averaged descriptor of matches for {im_names[id_image]}\n with nb_bins={nb_bins}, bin_radius={bin_radius}, delta_angle={delta_angle} and sigma={sigma}"
-            # for id_image in range(2)
-        # ]
-
+        if plot_hist:
+            overall_features_ims = [
+                desc.compute_features_overall_abs(
+                    float_ims[id_image], border_size=border_size
+                )
+                for id_image in range(2)
+            ]
+            for id_image in range(2):
+                mean_abs_curvs = cp_desc.compute_mean_abs_curv_arr(
+                    overall_features_ims[id_image][1]
+                )
+                plt.figure()
+                hist = plt.hist(
+                    x=mean_abs_curvs,
+                    nbins=100,
+                    weights=np.ones(mean_abs_curvs) / len(mean_abs_curvs),
+                )
+                plt.gca().yaxis.set_major_formatter(PercentFormatter(1))
+                plt.xlabel("Moyenne des valeurs absolues des courbures")
+                plt.ylabel("Pourcentage")
 
         # for id_image in range(2):
         #     visu_desc.display_descriptor(
@@ -239,3 +246,23 @@ if __name__ == "__main__":
             )
 
             plt.show()
+
+            # Load descriptors
+            descs = [
+                np.load(
+                    f"{descrip_path}/{descrip_filenames[id_image]}.npy",
+                )
+                for id_image in range(2)
+            ]
+
+            descs_ims = [
+                descs[id_image][matches_kps_idx[id_image]] for id_image in range(2)
+            ]
+
+            # Look at the averaged descriptor
+            avg_descs = [np.mean(descs_ims[id_image], axis=0) for id_image in range(2)]
+
+            descs_names = [
+                f"Averaged descriptor of matches for {im_names[id_image]}\n with nb_bins={nb_bins}, bin_radius={bin_radius}, delta_angle={delta_angle} and sigma={sigma}"
+                for id_image in range(2)
+            ]

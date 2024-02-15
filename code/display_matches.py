@@ -481,8 +481,10 @@ if __name__ == "__main__":
     # )
 
     # display random good matches
-    max_nb_matches_to_display = 10
-    nb_rd_good_matches_to_display = min(len(good_matches), max_nb_matches_to_display)
+    max_good_nb_matches_to_display = 10
+    nb_rd_good_matches_to_display = min(
+        len(good_matches), max_good_nb_matches_to_display
+    )
     rd_good_idx = np.random.choice(len(good_matches), nb_rd_good_matches_to_display)
     rd_good_matches = [good_matches[i] for i in rd_good_idx]
     display_matches(
@@ -675,10 +677,10 @@ if __name__ == "__main__":
 
         for id_image in range(2):
             print(
-                f"Mean value of mean absolute curvature of the good keypoints in image {id_image}: {np.mean(good_mean_abs_curvs[id_image])}"
+                f"Mean value of mean absolute curvature of the good keypoints in image {id_image}: {np.mean(good_mean_abs_curvs[id_image]): .2f}"
             )
             print(
-                f"Standard deviation of mean absolute curvature of the good keypoints in image {id_image}: {np.std(good_mean_abs_curvs[id_image])}"
+                f"Standard deviation of mean absolute curvature of the good keypoints in image {id_image}: {np.std(good_mean_abs_curvs[id_image]): .2f}"
             )
 
         # look at bad matches
@@ -692,10 +694,10 @@ if __name__ == "__main__":
 
         for id_image in range(2):
             print(
-                f"Mean value of mean absolute curvature of the bad keypoints in image {id_image}: {np.mean(bad_mean_abs_curvs[id_image])}"
+                f"Mean value of mean absolute curvature of the bad keypoints in image {id_image}: {np.mean(bad_mean_abs_curvs[id_image]): .2f}"
             )
             print(
-                f"Standard deviation of mean absolute curvature of the bad keypoints in image {id_image}: {np.std(bad_mean_abs_curvs[id_image])}"
+                f"Standard deviation of mean absolute curvature of the bad keypoints in image {id_image}: {np.std(bad_mean_abs_curvs[id_image]): .2f}"
             )
 
         # look at mask of prefiltered pixels
