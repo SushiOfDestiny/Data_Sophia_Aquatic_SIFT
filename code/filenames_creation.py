@@ -22,6 +22,9 @@ dist_type_suffix = "" if distance_type == "all" else "_min"
 # Create filename radical for irl images
 irl_radical = "_irl" if img_folder[:3] == "irl" else ""
 
+# Create radical for adaptative hist
+hist_radical="_eq" if (adapt_hist_eq is not None and adapt_hist_eq is True) else ""
+
 
 # Create filename where to load the original images
 original_imgs_path_prefix = f"{relative_path}/{img_folder}"
@@ -36,7 +39,7 @@ blurred_imgs_filename = (
 raw_descrip_suffix = (
     f"_nbins_{nb_bins}_brad_{bin_radius}_nangbins_{nb_angular_bins}_sig{int(sigma)}"
 )
-descrip_suffix = f"{raw_descrip_suffix}{sift_radical}{filt_radical}"
+descrip_suffix = f"{raw_descrip_suffix}{sift_radical}{filt_radical}{hist_radical}"
 
 # Define path to save the descriptors and coordinates
 descrip_path = "computed_descriptors"
