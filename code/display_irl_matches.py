@@ -22,7 +22,7 @@ import descriptor as desc
 from matplotlib.ticker import PercentFormatter
 
 import compute_desc_img as cp_desc
-from display_matches import filter_pixel_distance_matches
+from display_matches import filter_pixel_distance_matches, display_curvature_histogram
 
 
 if __name__ == "__main__":
@@ -137,30 +137,9 @@ if __name__ == "__main__":
     plt.show()
 
 
-    sys.exit()
+    # sys.exit()
 
     if not use_sift:
-
-        if plot_hist:
-            overall_features_ims = [
-                desc.compute_features_overall_abs(
-                    float_ims[id_image], border_size=border_size
-                )
-                for id_image in range(2)
-            ]
-            for id_image in range(2):
-                mean_abs_curvs = cp_desc.compute_mean_abs_curv_arr(
-                    overall_features_ims[id_image][1]
-                )
-                plt.figure()
-                hist = plt.hist(
-                    x=mean_abs_curvs,
-                    nbins=100,
-                    weights=np.ones(mean_abs_curvs) / len(mean_abs_curvs),
-                )
-                plt.gca().yaxis.set_major_formatter(PercentFormatter(1))
-                plt.xlabel("Moyenne des valeurs absolues des courbures")
-                plt.ylabel("Pourcentage")
 
         # for id_image in range(2):
         #     visu_desc.display_descriptor(
@@ -204,11 +183,7 @@ if __name__ == "__main__":
             if plot_hist:
                 if filt_type is None or filt_type == "mean":
                     for id_image in range(2):
-                        plt.figure()
-                        hist = plt.hist(x=[mean_abs_curvs_ims[id_image].flatten()], bins=100, weights=[np.ones(mean_abs_curvs_ims[id_image].size)/mean_abs_curvs_ims[id_image].size])
-                        plt.gca().yaxis.set_major_formatter(PercentFormatter(1))
-                        plt.xlabel("Moyenne des valeurs absolues des courbures")
-                        plt.ylabel("Pourcentage")
+                        display_curvature_histogram(mean_abs_curvs_ims=mean_abs_curvs_ims, id_image=id_image)
 
             mask_arrays = [None, None]
             if filt_type is None or filt_type == "mean":

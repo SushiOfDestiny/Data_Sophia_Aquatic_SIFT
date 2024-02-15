@@ -256,33 +256,46 @@ def display_distance_curvature_scatter(
 
 
 def get_histogram_good_bad_other(
-    good_kps_mean_abs_curvs, bad_kps_mean_abs_curvs, other_kps_mean_abs_curvs, nbins
+    good_kps_mean_abs_curvs, bad_kps_mean_abs_curvs, other_kps_mean_abs_curvs, nbins, category_percentages=True
 ):
     """Arguments:
     -"""
-    print(np.min(good_kps_mean_abs_curvs))
-    print(np.max(good_kps_mean_abs_curvs))
-    print(np.min(bad_kps_mean_abs_curvs))
-    print(np.max(bad_kps_mean_abs_curvs))
-    print(np.min(other_kps_mean_abs_curvs))
-    print(np.max(other_kps_mean_abs_curvs))
 
     fig = plt.figure()
-    plt.hist(
-        x=[good_kps_mean_abs_curvs, bad_kps_mean_abs_curvs, other_kps_mean_abs_curvs],
-        bins=nbins,
-        stacked=False,
-        weights=[
-            np.ones(len(good_kps_mean_abs_curvs)) / len(good_kps_mean_abs_curvs),
-            np.ones(len(bad_kps_mean_abs_curvs)) / len(bad_kps_mean_abs_curvs),
-            np.ones(len(other_kps_mean_abs_curvs)) / len(other_kps_mean_abs_curvs),
-        ],
-        label=["good keypoints", "bad keypoints", "prefiltered keypoints"],
-    )
-    plt.xlabel("Courbure absolue moyenne")
-    plt.ylabel("Pourcentage dans la catégorie")
-    plt.gca().yaxis.set_major_formatter(PercentFormatter(1))
-    plt.title(f"{im_names[id_image]} histogram")
+    if category_percentages:
+        plt.hist(
+            x=[good_kps_mean_abs_curvs, bad_kps_mean_abs_curvs, other_kps_mean_abs_curvs],
+            bins=nbins,
+            stacked=False,
+            weights=[
+                np.ones(len(good_kps_mean_abs_curvs)) / len(good_kps_mean_abs_curvs),
+                np.ones(len(bad_kps_mean_abs_curvs)) / len(bad_kps_mean_abs_curvs),
+                np.ones(len(other_kps_mean_abs_curvs)) / len(other_kps_mean_abs_curvs),
+            ],
+            label=["good keypoints", "bad keypoints", "prefiltered keypoints"],
+        )
+        plt.xlabel("Courbure absolue moyenne")
+        plt.ylabel("Pourcentage dans la catégorie")
+        plt.gca().yaxis.set_major_formatter(PercentFormatter(1))
+        plt.title(f"{im_names[id_image]} histogram")
+    else:
+        nb_points = len(good_kps_mean_abs_curvs) + len(bad_kps_mean_abs_curvs) + len(other_kps_mean_abs_curvs)
+        plt.hist(
+            x=[good_kps_mean_abs_curvs, bad_kps_mean_abs_curvs, other_kps_mean_abs_curvs],
+            bins=nbins,
+            stacked=False,
+            weights=[
+                np.ones(len(good_kps_mean_abs_curvs)) / nb_points,
+                np.ones(len(bad_kps_mean_abs_curvs)) / nb_points,
+                np.ones(len(other_kps_mean_abs_curvs)) / nb_points,
+            ],
+            label=["good keypoints", "bad keypoints", "prefiltered keypoints"],
+        )
+        plt.xlabel("Courbure absolue moyenne")
+        plt.ylabel("Pourcentage")
+        plt.gca().yaxis.set_major_formatter(PercentFormatter(1))
+        plt.title(f"{im_names[id_image]} histogram")
+    plt.legend()
     return fig
 
 
@@ -295,6 +308,7 @@ def get_histogram(
     id_image,
     mask_filtered_points,
     nbins,
+    category_percentages=True,
 ):
     other_mask = (
         np.ones(float_ims[id_image].shape[:2], dtype=bool) - mask_filtered_points
@@ -322,7 +336,22 @@ def get_histogram(
         bad_kps_mean_abs_curvs=bad_kps_mean_abs_curvs,
         other_kps_mean_abs_curvs=other_kps_mean_abs_curvs,
         nbins=nbins,
+        category_percentages=category_percentages
     )
+
+def display_curvature_histogram(mean_abs_curvs_ims, id_image):
+    for id_image in range(2):
+        y_slice = slice(y_starts[id_image], y_starts[id_image] + y_lengths[id_image])
+        x_slice = slice(x_starts[id_image], x_starts[id_image] + x_lengths[id_image])
+        nb_points = mean_abs_curvs_ims[id_image][y_slice, x_slice].size
+
+        plt.figure()
+        plt.hist(x=mean_abs_curvs_ims[id_image][y_slice, x_slice].flatten(), bins=100, weights=np.ones(nb_points)/nb_points)
+        plt.gca().yaxis.set_major_formatter(PercentFormatter(1))
+        plt.xlabel("Courbure absolue moyenne")
+        plt.ylabel("Pourcentage")
+        plt.title(f"Image {im_names[id_image]} histogram")
+    plt.show()
 
 
 if __name__ == "__main__":
@@ -640,7 +669,7 @@ if __name__ == "__main__":
 
     # look at filtered keypoints on image
     if use_filt:
-
+        
         # plot the filtered pixels on each subimage side by side
         fig, ax = plt.subplots(1, 2, figsize=(10, 5))
         for id_image in range(2):
@@ -677,6 +706,12 @@ if __name__ == "__main__":
             cp_desc.compute_mean_abs_curv_arr(overall_features_ims[id_image][1])
             for id_image in range(2)
         ]
+
+        for id_image in range(2):
+            display_curvature_histogram(
+                mean_abs_curvs_ims=mean_abs_curvs_ims, 
+                id_image=id_image
+            )
 
         y_kps = [kps_coords[id_image][:, 1] for id_image in range(2)]
         x_kps = [kps_coords[id_image][:, 0] for id_image in range(2)]
@@ -717,15 +752,6 @@ if __name__ == "__main__":
 
         # look at mask of prefiltered pixels
         
-        
-        for id_image in range(2):
-            plt.figure()
-            plt.hist(x=mean_abs_curvs_ims[id_image].flatten(), bins=100, weights=np.ones(mean_abs_curvs_ims[id_image].size)/mean_abs_curvs_ims[id_image].size)
-            plt.gca().yaxis.set_major_formatter(PercentFormatter(1))
-            plt.xlabel("Courbure absolue moyenne")
-            plt.ylabel("Pourcentage")
-            plt.title(f"Image {im_names[id_image]} histogram")
-        plt.show()
 
         mask_arrays = [None, None]
         if filt_type is None or filt_type == "mean":
@@ -742,6 +768,16 @@ if __name__ == "__main__":
                         percentile,
                     )
                 )
+                
+                hist = get_histogram(
+                    mean_abs_curvs_img=mean_abs_curvs_ims[id_image], 
+                    y_gd_kps=y_gd_kps[id_image], x_gd_kps=x_gd_kps[id_image], y_bd_kps=y_bd_kps[id_image], x_bd_kps=x_bd_kps[id_image], 
+                    id_image=id_image, 
+                    mask_filtered_points=mask_arrays[id_image], 
+                    nbins=100,
+                    category_percentages=False)
+                plt.show()
+
                 # # Scatter plot distances
                 # display_distance_curvature_scatter(
                 #     good_matches=good_matches,
