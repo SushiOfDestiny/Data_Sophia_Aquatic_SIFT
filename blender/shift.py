@@ -49,6 +49,10 @@ def img_m_to_img_px(x_m, y_m, cam, scene):
 
     return (x_m/px_size_u + res_u_px/2, -(y_m/px_size_v - res_v_px/2))
 
+def img_px_to_world_m(x_px, y_px, cam, scene):
+    x_m, y_m = img_px_to_img_m(x_px, y_px, cam, scene)
+    return get_world_from_img_co(x_m, y_m, cam)
+
 def get_world_from_img_co(x, y, cam):
     '''Returns world coordinates from image meter coordinates'''
     D = cam.data.lens / cam.data.sensor_width
