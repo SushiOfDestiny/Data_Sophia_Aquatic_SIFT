@@ -158,8 +158,7 @@ def print_general_kp_matches_infos(
             len(kps[id_image]),
         )
         print(
-            f"percentage of {cropped_sift_radical} keypoints in subimage {id_image}",
-            len(kps[id_image]) / (y_lengths[id_image] * x_lengths[id_image]) * 100.0,
+            f"percentage of {cropped_sift_radical} keypoints in subimage {id_image}: {len(kps[id_image]) / (y_lengths[id_image] * x_lengths[id_image]) * 100.0: .2f}%"
         )
     print(f"number of blender unfiltered {cropped_sift_radical} matches", len(matches))
     print(
@@ -167,10 +166,10 @@ def print_general_kp_matches_infos(
         len(good_matches),
     )
     print(
-        f"Percentage of good {cropped_sift_radical} matches within matches: {len(good_matches) / len(matches) * 100.0}"
+        f"Percentage of good {cropped_sift_radical} matches within matches: {len(good_matches) / len(matches) * 100.0: .2f}%"
     )
     print(
-        f"Percentage of good {cropped_sift_radical} matches within pixels in subimage 1: {len(good_matches) / (y_lengths[0] * x_lengths[0]) * 100.0}"
+        f"Percentage of good {cropped_sift_radical} matches within pixels in subimage 1: {len(good_matches) / (y_lengths[0] * x_lengths[0]) * 100.0: .2f}%"
     )
 
 
@@ -181,11 +180,15 @@ def print_distance_infos(matches_list):
     print the minimal, maximal and mean distances and standard deviation of the distances
     """
     distances = np.array([match[0].distance for match in matches_list])
-    print(f"Minimal distance of {cropped_sift_radical} matches: {np.min(distances)}")
-    print(f"Maximal distance of {cropped_sift_radical} matches: {np.max(distances)}")
-    print(f"Mean distance of {cropped_sift_radical} matches: {np.mean(distances)}")
     print(
-        f"Standard deviation of the distances of {cropped_sift_radical} matches: {np.std(distances)}"
+        f"Minimal distance of {cropped_sift_radical} matches: {np.min(distances): .2f}"
+    )
+    print(
+        f"Maximal distance of {cropped_sift_radical} matches: {np.max(distances): .2f}"
+    )
+    print(f"Mean distance of {cropped_sift_radical} matches: {np.mean(distances): .2f}")
+    print(
+        f"Standard deviation of the distances of {cropped_sift_radical} matches: {np.std(distances): .2f}"
     )
 
 
@@ -376,7 +379,7 @@ if __name__ == "__main__":
 
     # look at good matches percentage within the x first matches ordered by increasing distance
     # define how much match we keep depending on the size of the subimage 1
-    kept_matches_perc = 3
+    kept_matches_perc = 2
     print(f"percentage of kept matches in the subimage 1: {kept_matches_perc}%")
     nb_minimal_matches = int(kept_matches_perc / 100.0 * y_lengths[0] * x_lengths[0])
     print(f"corresponding number of kept matches: {nb_minimal_matches}")
@@ -394,7 +397,7 @@ if __name__ == "__main__":
         f"Number of good {cropped_sift_radical} matches within the {nb_minimal_matches} minimal matches: {nb_good_minimal_matches}"
     )
     print(
-        f"Percentage of good {cropped_sift_radical} matches within the {nb_minimal_matches} minimal matches: {nb_good_minimal_matches / nb_minimal_matches * 100.0}"
+        f"Percentage of good {cropped_sift_radical} matches within the {nb_minimal_matches} minimal matches: {nb_good_minimal_matches / nb_minimal_matches * 100.0: .2f}%"
     )
 
     # display some random matches among the minimal matches

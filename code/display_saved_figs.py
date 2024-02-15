@@ -42,6 +42,7 @@ if __name__ == "__main__":
         "irl_rock1_y_525_745_800_800_x_880_1110_1500_1500_nbins_3_brad_2_nangbins_73_sig0_filt_70_min_Random unfiltered by blender  matches_402_multi",
         "rocks_2_10_deg_higher_distance_y_450_450_300_300_x_590_590_580_580_nbins_3_brad_2_nangbins_73_sig0_filt_60_min_Random minimal  matches, top 2% of pixels in subimage 1_99_multi",
         "rocks_2_10_deg_higher_distance_y_450_450_300_300_x_590_590_580_580_nbins_3_brad_2_nangbins_73_sig0_sift_min_250 Random minimal sift matches, among the top 3% of pixels in subimage 1_215_multi",
+        "rocks_2_7_deg_higher_distance_y_450_450_300_300_x_650_560_580_580_nbins_3_brad_2_nangbins_73_sig0_filt_70_min_prefiltered_pixels",
     ]
 
     fig_paths = [f"filtered_keypoints/{fig_name}.pkl" for fig_name in fig_names]
