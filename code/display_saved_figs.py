@@ -32,17 +32,18 @@ def display_pickled_figs(fig_paths_list, show_figs=True):
 
 if __name__ == "__main__":
     # find all pickle filenames in the directory containing "higher"
-    all_fig_names = [
+    fig_names = [
         f[:-4]
         for f in os.listdir("filtered_keypoints")
-        if f.endswith(".pkl") and "higher" in f
+        if f.endswith(".pkl") and ("higher" in f or "irl_rock1" in f)
     ]
 
-    # fig_names = [
-    #     "rocks_2_7_deg_higher_distance_y_450_450_300_300_x_650_560_580_580_nbins_3_brad_2_nangbins_73_sig0_sift_min_Random good sift matches_997_multi",
-    #     "",
-    # ]
+    fig_names = [
+        "irl_rock1_y_525_745_800_800_x_880_1110_1500_1500_nbins_3_brad_2_nangbins_73_sig0_filt_70_min_Random unfiltered by blender  matches_402_multi",
+        "rocks_2_10_deg_higher_distance_y_450_450_300_300_x_590_590_580_580_nbins_3_brad_2_nangbins_73_sig0_filt_60_min_Random minimal  matches, top 2% of pixels in subimage 1_99_multi",
+        "rocks_2_10_deg_higher_distance_y_450_450_300_300_x_590_590_580_580_nbins_3_brad_2_nangbins_73_sig0_sift_min_250 Random minimal sift matches, among the top 3% of pixels in subimage 1_215_multi",
+    ]
 
-    fig_paths = [f"filtered_keypoints/{fig_name}.pkl" for fig_name in all_fig_names[:5]]
+    fig_paths = [f"filtered_keypoints/{fig_name}.pkl" for fig_name in fig_names]
 
     display_pickled_figs(fig_paths, show_figs=True)
