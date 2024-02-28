@@ -751,3 +751,355 @@ Standard deviation of the distances of sift matches:  45.56
 2024-02-15 13:12:27,972 - Script display_matches.py is done.
 
 2024-02-15 13:12:27,972 - All scripts are done. The pipeline is finished.
+2024-02-15 23:38:27,074 - Start running the pipeline
+2024-02-15 23:38:27,086 - All infos are saved in execution_logs/rocks_2_10_deg_higher_distance_y_450_450_300_300_x_590_590_580_580_nbins_3_brad_2_nangbins_73_sig0_sift_min_log_sift 
+
+2024-02-15 23:38:27,086 - Run the script print_pipe_hparams.py
+2024-02-15 23:38:27,173 - SIFTsigma = 1.6
+adapt_hist_eq = False
+bin_radius = 2
+blender_filename = rocks_2_10_deg_higher_distance
+blur_sigma = 1.0
+border_size = 1
+contrastThreshold = 0.04
+delta_angle = 5.0
+distanceThreshold = 0.75
+distance_type = min
+edgeThreshold = 10
+epsilon = None
+filt_type = mean
+im_ext = png
+im_name1 = rocks_2_10_deg_higher_distance_left
+im_name2 = rocks_2_10_deg_higher_distance_right
+im_names = ('rocks_2_10_deg_higher_distance_left', 'rocks_2_10_deg_higher_distance_right')
+img_folder = blender/rocks_2
+method_post = lowe
+nb_angular_bins = 73
+nb_bins = 3
+neigh_radius = 9
+normalization_mode = global
+percentile = 60
+photo_name = rocks_2_10_deg_higher_distance
+relative_path = ../data
+sigma = 0
+use_filt = False
+use_sift = True
+x_lengths = [580, 580]
+x_starts = [590, 590]
+y_lengths = [300, 300]
+y_starts = [450, 450]
+
+2024-02-15 23:38:27,173 - Script print_pipe_hparams.py is done.
+
+2024-02-15 23:38:27,173 - Run the script imgs_preprocessing.py
+2024-02-15 23:38:37,602 - shapes of images (1080, 1920) (1080, 1920)
+Blurred images saved in ../data/blender/rocks_2
+Cropped images saved in ../data/blender/rocks_2
+
+2024-02-15 23:38:37,602 - Script imgs_preprocessing.py is done.
+
+2024-02-15 23:38:37,602 - Run the script compute_sift_kps.py
+2024-02-15 23:38:38,810 - SIFT parameters: 
+contrastThreshold: 0.04
+edgeThreshold: 10
+SIFTsigma: 1.6
+distanceThreshold: 0.75
+finished saving translated sift kp coords
+finished saving translated sift kp_pairs
+finished saving sift matches
+finished saving translated sift keypoints
+
+2024-02-15 23:38:38,810 - Script compute_sift_kps.py is done.
+
+2024-02-15 23:38:38,810 - All scripts are done. Launch Blender or a display script.
+
+
+2024-02-15 23:38:58,999 - Start running the post blender pipeline
+2024-02-15 23:38:58,999 - Run the script print_pipe_hparams.py
+2024-02-15 23:38:59,078 - SIFTsigma = 1.6
+adapt_hist_eq = False
+bin_radius = 2
+blender_filename = rocks_2_10_deg_higher_distance
+blur_sigma = 1.0
+border_size = 1
+contrastThreshold = 0.04
+delta_angle = 5.0
+distanceThreshold = 0.75
+distance_type = min
+edgeThreshold = 10
+epsilon = None
+filt_type = mean
+im_ext = png
+im_name1 = rocks_2_10_deg_higher_distance_left
+im_name2 = rocks_2_10_deg_higher_distance_right
+im_names = ('rocks_2_10_deg_higher_distance_left', 'rocks_2_10_deg_higher_distance_right')
+img_folder = blender/rocks_2
+method_post = lowe
+nb_angular_bins = 73
+nb_bins = 3
+neigh_radius = 9
+normalization_mode = global
+percentile = 60
+photo_name = rocks_2_10_deg_higher_distance
+relative_path = ../data
+sigma = 0
+use_filt = False
+use_sift = True
+x_lengths = [580, 580]
+x_starts = [590, 590]
+y_lengths = [300, 300]
+y_starts = [450, 450]
+
+2024-02-15 23:38:59,078 - Script print_pipe_hparams.py is done.
+
+2024-02-15 23:38:59,078 - Run the script display_matches.py
+2024-02-15 23:39:01,090 - number of pixels in image 0 174000
+number of sift keypoints in image 0 1591
+percentage of sift keypoints in subimage 0:  0.91%
+number of pixels in image 1 174000
+number of sift keypoints in image 1 1771
+percentage of sift keypoints in subimage 1:  1.02%
+number of blender unfiltered sift matches 931
+number of good sift matches at a precision of None pixels:  613
+Percentage of good sift matches within matches:  65.84%
+Percentage of good sift matches within pixels in subimage 1:  0.35%
+
+2024-02-15 23:39:01,090 - Script display_matches.py is done.
+
+2024-02-15 23:39:01,090 - All scripts are done. The pipeline is finished.
+2024-02-15 23:42:34,986 - Start running the pipeline
+2024-02-15 23:42:34,986 - All infos are saved in execution_logs/rocks_2_10_deg_higher_distance_y_450_450_300_300_x_590_590_580_580_nbins_3_brad_2_nangbins_73_sig0_sift_min_log_sift 
+
+2024-02-15 23:42:34,987 - Run the script print_pipe_hparams.py
+2024-02-15 23:42:35,048 - SIFTsigma = 0.5
+adapt_hist_eq = False
+bin_radius = 2
+blender_filename = rocks_2_10_deg_higher_distance
+blur_sigma = 1.0
+border_size = 1
+contrastThreshold = 0.0
+delta_angle = 5.0
+distanceThreshold = 1000000000.0
+distance_type = min
+edgeThreshold = 0.0
+epsilon = None
+filt_type = mean
+im_ext = png
+im_name1 = rocks_2_10_deg_higher_distance_left
+im_name2 = rocks_2_10_deg_higher_distance_right
+im_names = ('rocks_2_10_deg_higher_distance_left', 'rocks_2_10_deg_higher_distance_right')
+img_folder = blender/rocks_2
+method_post = lowe
+nb_angular_bins = 73
+nb_bins = 3
+neigh_radius = 9
+normalization_mode = global
+percentile = 60
+photo_name = rocks_2_10_deg_higher_distance
+pixel_distance_postfilt = False
+relative_path = ../data
+sigma = 0
+use_filt = False
+use_sift = True
+x_lengths = [580, 580]
+x_starts = [590, 590]
+y_lengths = [300, 300]
+y_starts = [450, 450]
+
+2024-02-15 23:42:35,048 - Script print_pipe_hparams.py is done.
+
+2024-02-15 23:42:35,048 - Run the script imgs_preprocessing.py
+2024-02-15 23:42:40,228 - shapes of images (1080, 1920) (1080, 1920)
+Blurred images saved in ../data/blender/rocks_2
+Cropped images saved in ../data/blender/rocks_2
+
+2024-02-15 23:42:40,228 - Script imgs_preprocessing.py is done.
+
+2024-02-15 23:42:40,228 - Run the script compute_sift_kps.py
+2024-02-15 23:42:54,199 - SIFT parameters: 
+contrastThreshold: 0.0
+edgeThreshold: 0.0
+SIFTsigma: 0.5
+distanceThreshold: 1000000000.0
+finished saving translated sift kp coords
+finished saving translated sift kp_pairs
+finished saving sift matches
+finished saving translated sift keypoints
+
+2024-02-15 23:42:54,199 - Script compute_sift_kps.py is done.
+
+2024-02-15 23:42:54,199 - All scripts are done. Launch Blender or a display script.
+
+
+2024-02-15 23:42:57,508 - Start running the post blender pipeline
+2024-02-15 23:42:57,508 - Run the script print_pipe_hparams.py
+2024-02-15 23:42:57,586 - SIFTsigma = 0.5
+adapt_hist_eq = False
+bin_radius = 2
+blender_filename = rocks_2_10_deg_higher_distance
+blur_sigma = 1.0
+border_size = 1
+contrastThreshold = 0.0
+delta_angle = 5.0
+distanceThreshold = 1000000000.0
+distance_type = min
+edgeThreshold = 0.0
+epsilon = None
+filt_type = mean
+im_ext = png
+im_name1 = rocks_2_10_deg_higher_distance_left
+im_name2 = rocks_2_10_deg_higher_distance_right
+im_names = ('rocks_2_10_deg_higher_distance_left', 'rocks_2_10_deg_higher_distance_right')
+img_folder = blender/rocks_2
+method_post = lowe
+nb_angular_bins = 73
+nb_bins = 3
+neigh_radius = 9
+normalization_mode = global
+percentile = 60
+photo_name = rocks_2_10_deg_higher_distance
+pixel_distance_postfilt = False
+relative_path = ../data
+sigma = 0
+use_filt = False
+use_sift = True
+x_lengths = [580, 580]
+x_starts = [590, 590]
+y_lengths = [300, 300]
+y_starts = [450, 450]
+
+2024-02-15 23:42:57,586 - Script print_pipe_hparams.py is done.
+
+2024-02-15 23:42:57,586 - Run the script display_matches.py
+2024-02-15 23:43:13,544 - number of pixels in image 0 174000
+number of sift keypoints in image 0 31794
+percentage of sift keypoints in subimage 0:  18.27%
+number of pixels in image 1 174000
+number of sift keypoints in image 1 32228
+percentage of sift keypoints in subimage 1:  18.52%
+number of blender unfiltered sift matches 29563
+number of good sift matches at a precision of None pixels:  6170
+Percentage of good sift matches within matches:  20.87%
+Percentage of good sift matches within pixels in subimage 1:  3.55%
+percentage of kept matches in the subimage 1: 2%
+corresponding number of kept matches: 3480
+Number of good sift matches within the 3480 minimal matches: 309
+Percentage of good sift matches within the 3480 minimal matches:  8.88%
+Statistics about the distances of the good matches
+Minimal distance of sift matches:  23.28
+Maximal distance of sift matches:  366.19
+Mean distance of sift matches:  181.05
+Standard deviation of the distances of sift matches:  61.99
+Statistics about the distances of the bad matches
+Minimal distance of sift matches:  0.00
+Maximal distance of sift matches:  403.03
+Mean distance of sift matches:  226.36
+Standard deviation of the distances of sift matches:  102.32
+
+2024-02-15 23:43:13,544 - Script display_matches.py is done.
+
+2024-02-15 23:43:13,544 - All scripts are done. The pipeline is finished.
+2024-02-16 00:07:01,014 - Start running the pipeline
+2024-02-16 00:07:01,014 - All infos are saved in execution_logs/rocks_2_10_deg_higher_distance_y_450_450_300_300_x_590_590_580_580_nbins_3_brad_2_nangbins_73_sig0_sift_min_log_sift 
+
+2024-02-16 00:07:01,014 - Run the script print_pipe_hparams.py
+2024-02-16 00:07:01,086 - SIFTsigma = 1.6
+adapt_hist_eq = False
+bin_radius = 2
+blender_filename = rocks_2_10_deg_higher_distance
+blur_sigma = 1.0
+border_size = 1
+contrastThreshold = 0.04
+delta_angle = 5.0
+distanceThreshold = 0.75
+distance_type = min
+edgeThreshold = 10
+epsilon = None
+filt_type = mean
+im_ext = png
+im_name1 = rocks_2_10_deg_higher_distance_left
+im_name2 = rocks_2_10_deg_higher_distance_right
+im_names = ('rocks_2_10_deg_higher_distance_left', 'rocks_2_10_deg_higher_distance_right')
+img_folder = blender/rocks_2
+method_post = lowe
+nb_angular_bins = 73
+nb_bins = 3
+neigh_radius = 9
+normalization_mode = global
+percentile = 60
+photo_name = rocks_2_10_deg_higher_distance
+pixel_distance_postfilt = False
+relative_path = ../data
+sigma = 0
+use_filt = False
+use_sift = True
+x_lengths = [580, 580]
+x_starts = [590, 590]
+y_lengths = [300, 300]
+y_starts = [450, 450]
+
+2024-02-16 00:07:01,086 - Script print_pipe_hparams.py is done.
+
+2024-02-16 00:07:01,086 - Run the script imgs_preprocessing.py
+2024-02-16 00:07:11,148 - shapes of images (1080, 1920) (1080, 1920)
+Blurred images saved in ../data/blender/rocks_2
+Cropped images saved in ../data/blender/rocks_2
+
+2024-02-16 00:07:11,148 - Script imgs_preprocessing.py is done.
+
+2024-02-16 00:07:11,148 - Run the script compute_sift_kps.py
+2024-02-16 00:07:12,205 - SIFT parameters: 
+contrastThreshold: 0.04
+edgeThreshold: 10
+SIFTsigma: 1.6
+distanceThreshold: 0.75
+finished saving translated sift kp coords
+finished saving translated sift kp_pairs
+finished saving sift matches
+finished saving translated sift keypoints
+
+2024-02-16 00:07:12,205 - Script compute_sift_kps.py is done.
+
+2024-02-16 00:07:12,205 - All scripts are done. Launch Blender or a display script.
+
+
+2024-02-16 00:07:14,365 - Start running the post blender pipeline
+2024-02-16 00:07:14,365 - Run the script print_pipe_hparams.py
+2024-02-16 00:07:14,450 - SIFTsigma = 1.6
+adapt_hist_eq = False
+bin_radius = 2
+blender_filename = rocks_2_10_deg_higher_distance
+blur_sigma = 1.0
+border_size = 1
+contrastThreshold = 0.04
+delta_angle = 5.0
+distanceThreshold = 0.75
+distance_type = min
+edgeThreshold = 10
+epsilon = None
+filt_type = mean
+im_ext = png
+im_name1 = rocks_2_10_deg_higher_distance_left
+im_name2 = rocks_2_10_deg_higher_distance_right
+im_names = ('rocks_2_10_deg_higher_distance_left', 'rocks_2_10_deg_higher_distance_right')
+img_folder = blender/rocks_2
+method_post = lowe
+nb_angular_bins = 73
+nb_bins = 3
+neigh_radius = 9
+normalization_mode = global
+percentile = 60
+photo_name = rocks_2_10_deg_higher_distance
+pixel_distance_postfilt = False
+relative_path = ../data
+sigma = 0
+use_filt = False
+use_sift = True
+x_lengths = [580, 580]
+x_starts = [590, 590]
+y_lengths = [300, 300]
+y_starts = [450, 450]
+
+2024-02-16 00:07:14,450 - Script print_pipe_hparams.py is done.
+
+2024-02-16 00:07:14,450 - Run the script display_matches.py

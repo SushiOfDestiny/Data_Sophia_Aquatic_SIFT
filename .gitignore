@@ -15,3 +15,5 @@ data/**/**/*_cropped*
 rapport/images
 
 code/computation_pipeline_hyper_params.py
+
+rapport/test*

@@ -202,11 +202,16 @@ def compute_good_and_bad_matches(matches, good_matches_kps_idx):
     bad_matches = [matches[i] for i in bad_matches_idx]
     return good_matches, bad_matches
 
+
 def filter_pixel_distance_matches(matches, threshold, kps):
     return [
-        match for match in matches 
-        if np.sqrt((kps[0][match[0].queryIdx].pt[0]-kps[1][match[0].trainIdx].pt[0])**2  
-                   + (kps[0][match[0].queryIdx].pt[1]-kps[1][match[0].trainIdx].pt[1])**2) < threshold
+        match
+        for match in matches
+        if np.sqrt(
+            (kps[0][match[0].queryIdx].pt[0] - kps[1][match[0].trainIdx].pt[0]) ** 2
+            + (kps[0][match[0].queryIdx].pt[1] - kps[1][match[0].trainIdx].pt[1]) ** 2
+        )
+        < threshold
     ]
 
 
@@ -256,7 +261,11 @@ def display_distance_curvature_scatter(
 
 
 def get_histogram_good_bad_other(
-    good_kps_mean_abs_curvs, bad_kps_mean_abs_curvs, other_kps_mean_abs_curvs, nbins, category_percentages=True
+    good_kps_mean_abs_curvs,
+    bad_kps_mean_abs_curvs,
+    other_kps_mean_abs_curvs,
+    nbins,
+    category_percentages=True,
 ):
     """Arguments:
     -"""
@@ -264,7 +273,11 @@ def get_histogram_good_bad_other(
     fig = plt.figure()
     if category_percentages:
         plt.hist(
-            x=[good_kps_mean_abs_curvs, bad_kps_mean_abs_curvs, other_kps_mean_abs_curvs],
+            x=[
+                good_kps_mean_abs_curvs,
+                bad_kps_mean_abs_curvs,
+                other_kps_mean_abs_curvs,
+            ],
             bins=nbins,
             stacked=False,
             weights=[
@@ -279,9 +292,17 @@ def get_histogram_good_bad_other(
         plt.gca().yaxis.set_major_formatter(PercentFormatter(1))
         plt.title(f"{im_names[id_image]} histogram")
     else:
-        nb_points = len(good_kps_mean_abs_curvs) + len(bad_kps_mean_abs_curvs) + len(other_kps_mean_abs_curvs)
+        nb_points = (
+            len(good_kps_mean_abs_curvs)
+            + len(bad_kps_mean_abs_curvs)
+            + len(other_kps_mean_abs_curvs)
+        )
         plt.hist(
-            x=[good_kps_mean_abs_curvs, bad_kps_mean_abs_curvs, other_kps_mean_abs_curvs],
+            x=[
+                good_kps_mean_abs_curvs,
+                bad_kps_mean_abs_curvs,
+                other_kps_mean_abs_curvs,
+            ],
             bins=nbins,
             stacked=False,
             weights=[
@@ -336,8 +357,9 @@ def get_histogram(
         bad_kps_mean_abs_curvs=bad_kps_mean_abs_curvs,
         other_kps_mean_abs_curvs=other_kps_mean_abs_curvs,
         nbins=nbins,
-        category_percentages=category_percentages
+        category_percentages=category_percentages,
     )
+
 
 def display_curvature_histogram(mean_abs_curvs_ims, id_image):
     for id_image in range(2):
@@ -346,7 +368,11 @@ def display_curvature_histogram(mean_abs_curvs_ims, id_image):
         nb_points = mean_abs_curvs_ims[id_image][y_slice, x_slice].size
 
         plt.figure()
-        plt.hist(x=mean_abs_curvs_ims[id_image][y_slice, x_slice].flatten(), bins=100, weights=np.ones(nb_points)/nb_points)
+        plt.hist(
+            x=mean_abs_curvs_ims[id_image][y_slice, x_slice].flatten(),
+            bins=100,
+            weights=np.ones(nb_points) / nb_points,
+        )
         plt.gca().yaxis.set_major_formatter(PercentFormatter(1))
         plt.xlabel("Courbure absolue moyenne")
         plt.ylabel("Pourcentage")
@@ -414,13 +440,17 @@ if __name__ == "__main__":
     )
 
     if pixel_distance_postfilt:
-        print('\n')
+        print("\n")
         print("Pixel distance postfiltering start")
-        pixel_distance_filtered_matches = filter_pixel_distance_matches(matches, threshold=pixel_distance_threshold)
-        print(f"Percentage of matches kept after pixel distance postfiltering with threhold {pixel_distance_threshold} = {len(pixel_distance_filtered_matches)/len(matches)}")
+        pixel_distance_filtered_matches = filter_pixel_distance_matches(
+            matches, threshold=pixel_distance_threshold
+        )
+        print(
+            f"Percentage of matches kept after pixel distance postfiltering with threhold {pixel_distance_threshold} = {len(pixel_distance_filtered_matches)/len(matches)}"
+        )
         matches = pixel_distance_filtered_matches
         print("Pixel distance postfiltering end")
-        print('\n')
+        print("\n")
     # look at good matches percentage within the x first matches ordered by increasing distance
     # define how much match we keep depending on the size of the subimage 1
     kept_matches_perc = 2
@@ -443,6 +473,13 @@ if __name__ == "__main__":
     print(
         f"Percentage of good {cropped_sift_radical} matches within the {nb_minimal_matches} minimal matches: {nb_good_minimal_matches / nb_minimal_matches * 100.0: .2f}%"
     )
+
+    # look at the distances of the good and bad matches
+    print("Statistics about the distances of the good matches")
+    print_distance_infos(good_matches)
+
+    print("Statistics about the distances of the bad matches")
+    print_distance_infos(bad_matches)
 
     # display some random matches among the minimal matches
     # display random good matches
@@ -570,13 +607,6 @@ if __name__ == "__main__":
 
     plt.show()
 
-    # look at the distances of the good and bad matches
-    print("Statistics about the distances of the good matches")
-    print_distance_infos(good_matches)
-
-    print("Statistics about the distances of the bad matches")
-    print_distance_infos(bad_matches)
-
     # # stop
     # sys.exit()
 
@@ -669,7 +699,7 @@ if __name__ == "__main__":
 
     # look at filtered keypoints on image
     if use_filt:
-        
+
         # plot the filtered pixels on each subimage side by side
         fig, ax = plt.subplots(1, 2, figsize=(10, 5))
         for id_image in range(2):
@@ -709,8 +739,7 @@ if __name__ == "__main__":
 
         for id_image in range(2):
             display_curvature_histogram(
-                mean_abs_curvs_ims=mean_abs_curvs_ims, 
-                id_image=id_image
+                mean_abs_curvs_ims=mean_abs_curvs_ims, id_image=id_image
             )
 
         y_kps = [kps_coords[id_image][:, 1] for id_image in range(2)]
@@ -751,7 +780,6 @@ if __name__ == "__main__":
             )
 
         # look at mask of prefiltered pixels
-        
 
         mask_arrays = [None, None]
         if filt_type is None or filt_type == "mean":
@@ -768,14 +796,18 @@ if __name__ == "__main__":
                         percentile,
                     )
                 )
-                
+
                 hist = get_histogram(
-                    mean_abs_curvs_img=mean_abs_curvs_ims[id_image], 
-                    y_gd_kps=y_gd_kps[id_image], x_gd_kps=x_gd_kps[id_image], y_bd_kps=y_bd_kps[id_image], x_bd_kps=x_bd_kps[id_image], 
-                    id_image=id_image, 
-                    mask_filtered_points=mask_arrays[id_image], 
+                    mean_abs_curvs_img=mean_abs_curvs_ims[id_image],
+                    y_gd_kps=y_gd_kps[id_image],
+                    x_gd_kps=x_gd_kps[id_image],
+                    y_bd_kps=y_bd_kps[id_image],
+                    x_bd_kps=x_bd_kps[id_image],
+                    id_image=id_image,
+                    mask_filtered_points=mask_arrays[id_image],
                     nbins=100,
-                    category_percentages=False)
+                    category_percentages=False,
+                )
                 plt.show()
 
                 # # Scatter plot distances
