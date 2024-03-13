@@ -1,0 +1,15 @@
+[0] Config.pm:307> INFO - This is Biber 2.17
+[0] Config.pm:310> INFO - Logfile is 'template.blg'
+[189] biber-MSWIN32:340> INFO - === 
+[244] Biber.pm:418> INFO - Reading 'template.bcf'
+[397] Biber.pm:972> INFO - Found 2 citekeys in bib section 0
+[417] Biber.pm:4383> INFO - Processing section 0
+[433] Biber.pm:4574> INFO - Looking for bibtex file 'sample.bib' for section 0
+[507] bibtex.pm:1713> INFO - LaTeX decoding ...
+[523] bibtex.pm:1518> INFO - Found BibTeX data source 'sample.bib'
+[576] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[576] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
+[576] Biber.pm:4203> INFO - Sorting list 'none/global//global/global' of type 'entry' with template 'none' and locale 'en-US'
+[576] Biber.pm:4209> INFO - No sort tailoring available for locale 'en-US'
+[578] bbl.pm:654> INFO - Writing 'template.bbl' with encoding 'UTF-8'
+[580] bbl.pm:757> INFO - Output to template.bbl
