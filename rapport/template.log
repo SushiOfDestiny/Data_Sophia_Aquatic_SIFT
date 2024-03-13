@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.12.26)  28 FEB 2024 17:46
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.12.26)  13 MAR 2024 16:14
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -640,15 +640,14 @@ Package biblatex Info: Automatic encoding selection.
 \openout3 = `template.bcf'.
 
 Package biblatex Info: Trying to load bibliographic data...
-Package biblatex Info: ... file 'template.bbl' not found.
-
-No file template.bbl.
+Package biblatex Info: ... file 'template.bbl' found.
+ (./template.bbl)
 Package biblatex Info: Reference section=0 on input line 62.
 Package biblatex Info: Reference segment=0 on input line 62.
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: hyperref package is loaded.
 Package caption Info: End \AtBeginDocument code.
-(c:/texlive/2023/texmf-dist/tex/latex/graphics/color.sty
+ (c:/texlive/2023/texmf-dist/tex/latex/graphics/color.sty
 Package: color 2022/01/06 v1.3d Standard LaTeX Color (DPC)
  (c:/texlive/2023/texmf-dist/tex/latex/graphics-cfg/color.cfg
 File: color.cfg 2016/01/02 v1.6 sample color configuration
@@ -656,6 +655,7 @@ File: color.cfg 2016/01/02 v1.6 sample color configuration
 Package color Info: Driver file: pdftex.def on input line 149.
  (c:/texlive/2023/texmf-dist/tex/latex/graphics/mathcolor.ltx))
 Package hyperref Info: Link coloring ON on input line 62.
+ (./template.out) (./template.out)
 \@outlinefile=\write4
 \openout4 = `template.out'.
 
@@ -686,34 +686,14 @@ Package microtype Info: Loading generic protrusion settings for font family
 LaTeX Font Info:    Trying to load font information for TS1+pplx on input line 65.
  (c:/texlive/2023/texmf-dist/tex/latex/psnfss/ts1pplx.fd
 File: ts1pplx.fd 2004/09/06 font definitions for TS1/pplx.
-)
-
-LaTeX Warning: Reference `eq:example' on page 1 undefined on input line 83.
-
-[1{c:/texlive/2023/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{c:/texlive/2023/texmf-dist/fonts/enc/dvips/base/8r.enc}
+) [1{c:/texlive/2023/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{c:/texlive/2023/texmf-dist/fonts/enc/dvips/base/8r.enc}
 
 
-]
+] [2]
 
-LaTeX Warning: Reference `tab:distcounts' on page 2 undefined on input line 149.
+LaTeX Warning: Reference `fig:tcanther' on page 3 undefined on input line 177.
 
-[2]
-
-LaTeX Warning: File `Tolmukapea.jpg' not found on input line 170.
-
-
-e:/DOSSIERS PERSOS/ETUDES/ecoles_ingenieurs/mines paris/formation/2A/data-sophia/projet_sift/rapport/template.tex:170: Package pdftex.def Error: File `Tolmukapea.jpg' not found: using draft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.170 ...raphics[width=\linewidth]{Tolmukapea.jpg}
-                                                  
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-LaTeX Font Info:    Trying to load font information for T1+cmtt on input line 170.
+LaTeX Font Info:    Trying to load font information for T1+cmtt on input line 199.
 (c:/texlive/2023/texmf-dist/tex/latex/base/t1cmtt.fd
 File: t1cmtt.fd 2023/04/13 v2.5m Standard LaTeX font definitions
 )
@@ -721,42 +701,13 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `cmtt' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
+ [3{c:/texlive/2023/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}]
+Package microtype Info: Character `029' is missing
+(microtype)             in font `T1/pplx/m/sc/10'.
+(microtype)             Ignoring protrusion settings for this character.
+ [4
 
-
-LaTeX Warning: Reference `fig:tcanther' on page 3 undefined on input line 175.
-
-
-LaTeX Warning: File `Fibroblastid.jpg' not found on input line 180.
-
-
-e:/DOSSIERS PERSOS/ETUDES/ecoles_ingenieurs/mines paris/formation/2A/data-sophia/projet_sift/rapport/template.tex:180: Package pdftex.def Error: File `Fibroblastid.jpg' not found: using draft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.180 ...phics[width=\linewidth]{Fibroblastid.jpg}
-                                                  
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-
-LaTeX Warning: Citation 'Smith:2023qr' on page 3 undefined on input line 203.
-
-
-LaTeX Warning: Citation 'Smith:2023qr' on page 3 undefined on input line 203.
-
-
-LaTeX Warning: Citation 'Smith:2024jd' on page 3 undefined on input line 203.
-
-
-LaTeX Warning: Citation 'Smith:2024jd' on page 3 undefined on input line 203.
-
-[3{c:/texlive/2023/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}] [4]
-
-LaTeX Warning: Empty bibliography on input line 225.
-
-[5] (./template.aux)
+] (./template.aux)
  ***********
 LaTeX2e <2023-11-01>
 L3 programming layer <2023-12-11>
@@ -765,39 +716,25 @@ L3 programming layer <2023-12-11>
 
 LaTeX Warning: There were undefined references.
 
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
-
-Package rerunfilecheck Warning: File `template.out' has changed.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
-
-Package rerunfilecheck Info: Checksums for `template.out':
-(rerunfilecheck)             Before: <no file>
-(rerunfilecheck)             After:  59E2C02A582909CB38775FEC7280F07C;1565.
-
-Package biblatex Warning: Please (re)run Biber on the file:
-(biblatex)                template
-(biblatex)                and rerun LaTeX afterwards.
-
+Package rerunfilecheck Info: File `template.out' has not changed.
+(rerunfilecheck)             Checksum: FCDA9E00712CC7127798AF3DF8885CE0;1564.
 Package logreq Info: Writing requests to 'template.run.xml'.
 \openout1 = `template.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
  21485 strings out of 474175
- 373668 string characters out of 5749697
- 1948460 words of memory out of 5000000
- 43081 multiletter control sequences out of 15000+600000
- 638538 words of font info for 391 fonts, out of 8000000 for 9000
+ 373307 string characters out of 5749697
+ 1947460 words of memory out of 5000000
+ 43064 multiletter control sequences out of 15000+600000
+ 641856 words of font info for 397 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 81i,13n,95p,1108b,1589s stack positions out of 10000i,1000n,20000p,200000b,200000s
-<c:/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><c:/texlive/2023/texmf-dist/fonts/type1/public/mathpazo/fplmri.pfb><c:/texlive/2023/texmf-dist/fonts/type1/public/cm-super/sftt1000.pfb><c:/texlive/2023/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb><c:/texlive/2023/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb><c:/texlive/2023/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on template.pdf (5 pages, 122643 bytes).
+ 81i,13n,95p,1108b,1685s stack positions out of 10000i,1000n,20000p,200000b,200000s
+<c:/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><c:/texlive/2023/texmf-dist/fonts/type1/public/mathpazo/fplmri.pfb><c:/texlive/2023/texmf-dist/fonts/type1/public/fpl/fplrc8a.pfb><c:/texlive/2023/texmf-dist/fonts/type1/public/cm-super/sftt1000.pfb><c:/texlive/2023/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb><c:/texlive/2023/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb><c:/texlive/2023/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
+Output written on template.pdf (4 pages, 140341 bytes).
 PDF statistics:
- 98 PDF objects out of 1000 (max. 8388607)
- 76 compressed objects within 1 object stream
- 27 named destinations out of 1000 (max. 500000)
- 131585 words of extra memory for PDF output out of 154059 (max. 10000000)
+ 139 PDF objects out of 1000 (max. 8388607)
+ 117 compressed objects within 2 object streams
+ 26 named destinations out of 1000 (max. 500000)
+ 137825 words of extra memory for PDF output out of 154059 (max. 10000000)
 

@@ -1,15 +1,13 @@
 # Fdb version 4
-["biber template"] 0 "template.bcf" "template.bbl" "template" 1709138765 -1
+["biber template"] 0 "template.bcf" "template.bbl" "template" 1710342899 -1
   "./sample.bib" 1709138723 423 bb4d4040f48aec7c0bc550ef99e007d4 ""
-  "template.bcf" 1709138764 107161 d252bc19c4ff9871a89d6b87dd36258b "pdflatex"
+  "template.bcf" 1710342898 107228 a2ebb6bbb1fe5620b45252a953c69f74 "pdflatex"
   (generated)
   "template.bbl"
   "template.blg"
   (rewritten before read)
-["pdflatex"] 1709138762 "e:/DOSSIERS PERSOS/ETUDES/ecoles_ingenieurs/mines paris/formation/2A/data-sophia/projet_sift/rapport/template.tex" "template.pdf" "template" 1709138765 2
-  "Fibroblastid.jpg" 0 -1 0 ""
+["pdflatex"] 1710342896 "e:/DOSSIERS PERSOS/ETUDES/ecoles_ingenieurs/mines paris/formation/2A/data-sophia/projet_sift/rapport/template.tex" "template.pdf" "template" 1710342899 0
   "LTJournalArticle.cls" 1709138723 9784 e38e4f05326438c9cfb0a6c6bf9f0764 ""
-  "Tolmukapea.jpg" 0 -1 0 ""
   "c:/texlive/2023/texmf-dist/fonts/enc/dvips/base/8r.enc" 1703581191 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "c:/texlive/2023/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc" 1703580680 2971 def0b6c1f0b107b3b936def894055589 ""
   "c:/texlive/2023/texmf-dist/fonts/map/fontname/texfonts.map" 1703581509 3524 cb3e574dea2d1052e39280babc910dc8 ""
@@ -20,6 +18,7 @@
   "c:/texlive/2023/texmf-dist/fonts/tfm/adobe/palatino/pplr9e.tfm" 1703583348 6952 02ad5d201b346d62c53c35f081142949 ""
   "c:/texlive/2023/texmf-dist/fonts/tfm/adobe/palatino/pplr9t.tfm" 1703583348 2284 861e5309a3e09d74071777f716a582cc ""
   "c:/texlive/2023/texmf-dist/fonts/tfm/adobe/palatino/pplrc8r.tfm" 1703583348 3528 0711c6c96865155bce7256fa14ac59b1 ""
+  "c:/texlive/2023/texmf-dist/fonts/tfm/adobe/palatino/pplrc9e.tfm" 1703583348 11504 0aee68a3cffe19441de3ef8908532348 ""
   "c:/texlive/2023/texmf-dist/fonts/tfm/adobe/palatino/pplri8r.tfm" 1703583348 2720 70000d5e623e601132eab3cded5b819b ""
   "c:/texlive/2023/texmf-dist/fonts/tfm/adobe/palatino/pplri9e.tfm" 1703583348 4636 04bb79b19bf5315ced00732a1dac5509 ""
   "c:/texlive/2023/texmf-dist/fonts/tfm/jknappen/ec/ecrm1000.tfm" 1703581228 3584 adb004a0c8e7c46ee66cad73671f37b4 ""
@@ -35,6 +34,7 @@
   "c:/texlive/2023/texmf-dist/fonts/tfm/public/mathpazo/zplmr7y.tfm" 1703582693 1316 b4037e9c09961a72f8476628774e1ec1 ""
   "c:/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb" 1703580014 35752 024fb6c41858982481f6968b5fc26508 ""
   "c:/texlive/2023/texmf-dist/fonts/type1/public/cm-super/sftt1000.pfb" 1703580680 169201 651a6333c3213b38091f54d2ab2d2cd6 ""
+  "c:/texlive/2023/texmf-dist/fonts/type1/public/fpl/fplrc8a.pfb" 1703581548 62231 526da4dbddad40f1a015252940f23e5c ""
   "c:/texlive/2023/texmf-dist/fonts/type1/public/mathpazo/fplmri.pfb" 1703582693 15213 d999bbe8bd9c8f231f3f66a737c76478 ""
   "c:/texlive/2023/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb" 1703583348 52406 dad2f72863a03727d5f536c64a69c452 ""
   "c:/texlive/2023/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb" 1703583348 52665 661b1e6b26edb5f50dd491f8a701cb57 ""
@@ -43,6 +43,7 @@
   "c:/texlive/2023/texmf-dist/fonts/vf/adobe/palatino/pplr9c.vf" 1703583348 2908 c7a03afe5d67b6476673018447828dc3 ""
   "c:/texlive/2023/texmf-dist/fonts/vf/adobe/palatino/pplr9e.vf" 1703583348 2296 bb1ff9494546688194a48c9b41b39dac ""
   "c:/texlive/2023/texmf-dist/fonts/vf/adobe/palatino/pplr9t.vf" 1703583348 1036 6bf3f57f140c19369dc13ae2329f0e57 ""
+  "c:/texlive/2023/texmf-dist/fonts/vf/adobe/palatino/pplrc9e.vf" 1703583348 2476 9ee0dbbdd2dd550350b23d6a93c7c1af ""
   "c:/texlive/2023/texmf-dist/fonts/vf/adobe/palatino/pplri9e.vf" 1703583348 2296 c260490d12463c5a352580ede007bb93 ""
   "c:/texlive/2023/texmf-dist/fonts/vf/public/mathpazo/zplmr7m.vf" 1703582693 1812 de7624743c8bafe2ce204bec2f72ce7e ""
   "c:/texlive/2023/texmf-dist/fonts/vf/public/mathpazo/zplmr7t.vf" 1703582693 1532 0ba0b316cfeb3df86c9701756c9a4b71 ""
@@ -136,11 +137,12 @@
   "c:/texlive/2023/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1703585320 4785563 321aa554689bde33441a615ba7dae12f ""
   "c:/texlive/2023/texmf-var/web2c/pdftex/pdflatex.fmt" 1703585428 8217693 ad4addcd5fcd2fbf0c11142ca353a2bc ""
   "c:/texlive/2023/texmf.cnf" 1703585288 713 e69b156964470283e0530f5060668171 ""
-  "e:/DOSSIERS PERSOS/ETUDES/ecoles_ingenieurs/mines paris/formation/2A/data-sophia/projet_sift/rapport/template.tex" 1709138723 19772 c7ae37a22ece227546d485553ec6f474 ""
-  "template.aux" 1709138764 3800 462a21a073a77ff629216468b969f4bd "pdflatex"
-  "template.bbl" 0 -1 0 "biber template"
-  "template.out" 1709138764 1565 59e2c02a582909cb38775fec7280f07c "pdflatex"
-  "template.tex" 1709138723 19772 c7ae37a22ece227546d485553ec6f474 ""
+  "e:/DOSSIERS PERSOS/ETUDES/ecoles_ingenieurs/mines paris/formation/2A/data-sophia/projet_sift/rapport/template.tex" 1710342892 19951 9a615eff504df428486c64b2d1db3502 ""
+  "template.aux" 1710342898 2492 5ae77707c23ff72207a5925b4da9f060 "pdflatex"
+  "template.bbl" 1710342868 3292 985b69af5beeb44be6a586f575026aae "biber template"
+  "template.out" 1710342898 1564 fcda9e00712cc7127798af3df8885ce0 "pdflatex"
+  "template.run.xml" 1710342898 2329 dd0b28ad5248dccc56c9d3651d0f9aad "pdflatex"
+  "template.tex" 1710342892 19951 9a615eff504df428486c64b2d1db3502 ""
   (generated)
   "template.aux"
   "template.bcf"
