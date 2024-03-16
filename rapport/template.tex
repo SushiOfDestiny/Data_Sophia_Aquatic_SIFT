@@ -20,12 +20,21 @@
 %	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
 %----------------------------------------------------------------------------------------
 
+
 \documentclass[
 	a4paper, % Paper size, use either a4paper or letterpaper
 	10pt, % Default font size, can also use 11pt or 12pt, although this is not recommended
 	unnumberedsections, % Comment to enable section numbering
 	twoside, % Two side traditional mode where headers and footers change between odd and even pages, comment this option to make them fixed
 ]{LTJournalArticle}
+
+
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{float}
+\usepackage{makecell}
+\usepackage{adjustbox}
+
 
 \addbibresource{sample.bib} % BibLaTeX bibliography file
 
@@ -90,135 +99,231 @@ Maecenas consectetur metus at tellus finibus condimentum. Proin arcu lectus, ult
 
 %------------------------------------------------
 
-\section{Methodologies}
+\section{Méthodologie}
 
-\subsection{Sample Sites \& Processing}
+\subsection{Traitement de l'image}
+Les images sont transformées en niveau de gris par simple moyenne des $3$ canaux de couleur.
+Parce qu'on se focalise uniquement sur des point appartenant à la chose photographiée, on procède
+à un agrandissemnet manuel dessus, minimisant l'arrière-plan. Ensuite un filtre gaussien est
+appliqué, d'écart-type $1$ et pour les images de synthèse uniquement, car les images réelles
+dont nous disposions étaient selon nous suffisamment précise et peu contrastées,
+et car nous jugions notre solution sensible au manque de contraste
 
-This line shows how to use a footnote to further explain or cite text\footnote{Example footnote text.}.
+\subsection{Notion de point d'intérêt}
 
-This is a bullet point list:
+Il est certes possible de chercher les matchs de façon brute entre
+l'entièreté des pixels de chaque image, mais c'est insensé sur le
+point de vue du temps de calcul, et clairement inutile: beaucoup de
+points réels ne présentent que peu d'intérêt car la surface ie est
+localement plane.
 
-\begin{itemize}
-	\item Arcu eros accumsan lorem, at posuere mi diam sit amet tortor
-	\item Fusce fermentum, mi sit amet euismod rutrum
-	\item Sem lorem molestie diam, iaculis aliquet sapien tortor non nisi
-	\item Pellentesque bibendum pretium aliquet
-\end{itemize}
+Il nous faut donc nous poser la question de ce qu'est un bon point
+d'intérêt, ie un point dont le voisinage topologique varie de façon
+assez significative pour être reconnaissable malgré un changement de
+point d'observation.
 
-Mauris interdum porttitor fringilla. Proin tincidunt sodales leo at ornare. Donec tempus magna non mauris gravida luctus. Cras vitae arcu vitae mauris eleifend scelerisque. Nam sem sapien, vulputate nec felis eu, blandit convallis risus. Pellentesque sollicitudin venenatis tincidunt. In et ipsum libero. Nullam tempor ligula a massa convallis pellentesque.
+SIFT se concentre sur la répartition des gradients
+dans le voisinage, et élimine des points sur des arêtes, jugés trop
+sensibles au bruit, cette caractérisation des arêtes, ce fait par
+le calcul de la trace et du déterminant de la hessienne,
+qui sont fonction des courbures principales.
 
-This is a numbered list:
+Nous pensons que ces courbures principales méritent plus d'attention,
+et pourraient être considérées telles quelles. Dit grossièrement,
+elles apportent une information à l'ordre $2$ sur la surface. Un bon
+point d'intérêt a selon nous une courbure marquée.
+
+C'est pour cela que nous ne gardons que $30 \%$ des pixels de chaque image,
+de plus grande courbure principale moyenne (en norme).
+
+\subsection{Descripteur}
+Inspiré de SIFT, nous avons cherché pour un pixel donné à en construire un descripteur,
+ie à encoder dans un vecteur
+des caractéristiques topologiques de son voisinage, qu'on espère trouver
+sur les deux images le plus à l'identique possible.
+
+Définissons d'abord des propriétés de robustesse
+que nous souhaitons pour notre descripteur:
 
 \begin{enumerate}
-	\item Donec dolor arcu, rutrum id molestie in, viverra sed diam
-	\item Curabitur feugiat
-	\item Turpis sed auctor facilisis
+	\item Invariance par échelle: pourtant un atout essentiel de SIFT, nous l'avons mise
+	      de côté lors de notre développement. La raison est que c'est cette propriété
+	      qui complexifie l'algorithme et nous pensons que dans notre cadre
+	      experimental, il serait possible de bien calibrer nos paramètres
+	      afin de chercher des points d'intérêts de taille fixe, sans perdre
+	      en qualité.
+	\item Invariance par rotation: le robot sous-marin n'est pas parfaitement
+	      horizontal lorsqu'il photographie, une même forme n'aura pas la même
+	      orientation sur les deux images.
+	\item Robustesse à la luminosité: la lumière sous-marine peut être très inégale.
 \end{enumerate}
 
-\subsection{Species Identification}
 
-Proin lobortis efficitur dictum. Pellentesque vitae pharetra eros, quis dignissim magna. Sed tellus leo, semper non vestibulum vel, tincidunt eu mi. Aenean pretium ut velit sed facilisis. Ut placerat urna facilisis dolor suscipit vehicula. Ut ut auctor nunc. Nulla non massa eros. Proin rhoncus arcu odio, eu lobortis metus sollicitudin eu. Duis maximus ex dui, id bibendum diam dignissim id. Aliquam quis lorem lorem. Phasellus sagittis aliquet dolor, vulputate cursus dolor convallis vel. Suspendisse eu tellus feugiat, bibendum lectus quis, fermentum nunc. Nunc euismod condimentum magna nec bibendum. Curabitur elementum nibh eu sem cursus, eu aliquam leo rutrum. Sed bibendum augue sit amet pharetra ullamcorper. Aenean congue sit amet tortor vitae feugiat.
+Le descripteur repose principalement sur le gradient et les courbures principales.
+Ces valeurs sont approximées par différences finies symétriques:
 
-Mauris interdum porttitor fringilla. Proin tincidunt sodales leo at ornare. Donec tempus magna non mauris gravida luctus. Cras vitae arcu vitae mauris eleifend scelerisque. Nam sem sapien, vulputate nec felis eu, blandit convallis risus. Pellentesque sollicitudin venenatis tincidunt. In et ipsum libero. Nullam tempor ligula a massa convallis pellentesque.
+INSERER FORMULE
 
-\subsection{Data Analysis}
+L'orientation du gradient est
+INSERER FORMULE
 
-Vestibulum sodales orci a nisi interdum tristique. In dictum vehicula dui, eget bibendum purus elementum eu. Pellentesque lobortis mattis mauris, non feugiat dolor vulputate a. Cras porttitor dapibus lacus at pulvinar. Praesent eu nunc et libero porttitor malesuada tempus quis massa. Aenean cursus ipsum a velit ultricies sagittis. Sed non leo ullamcorper, suscipit massa ut, pulvinar erat. Aliquam erat volutpat. Nulla non lacus vitae mi placerat tincidunt et ac diam. Aliquam tincidunt augue sem, ut vestibulum est volutpat eget. Suspendisse potenti. Integer condimentum, risus nec maximus elementum, lacus purus porta arcu, at ultrices diam nisl eget urna. Curabitur sollicitudin diam quis sollicitudin varius. Ut porta erat ornare laoreet euismod. In tincidunt purus dui, nec egestas dui convallis non. In vestibulum ipsum in dictum scelerisque.
+Construisons le voisinage autour d'un pixel. En appelant $\theta$
+l'orientation du gradient en le point, le voisinage en question est l'image par
+une rotation d'angle $\theta$ d'un carré de $15\cdot 15$ pixels,
+centré en le pixel. Cela permet d'être invariant par rotation des images.
+Ce voisinage est ensuite découpé en $9$ cellules de $25$ pixels.
 
-Mauris interdum porttitor fringilla. Proin tincidunt sodales leo at ornare. Donec tempus magna non mauris gravida luctus. Cras vitae arcu vitae mauris eleifend scelerisque. Nam sem sapien, vulputate nec felis eu, blandit convallis risus. Pellentesque sollicitudin venenatis tincidunt. In et ipsum libero. Nullam tempor ligula a massa convallis pellentesque. Mauris interdum porttitor fringilla. Proin tincidunt sodales leo at ornare. Donec tempus magna non mauris gravida luctus. Cras vitae arcu vitae mauris eleifend scelerisque. Nam sem sapien, vulputate nec felis eu, blandit convallis risus. Pellentesque sollicitudin venenatis tincidunt. In et ipsum libero. Nullam tempor ligula a massa convallis pellentesque.
+Pour construire le descripteur, en chacune des $9$ cellules, on va
+calculer l'histogramme des gradients des pixels,
+répartis selon l'écart entre leur orientation et celle du pixel central.
+La résolution angulaire de l'orientation est $5$°. La contribution d'un pixel
+est son gradient normalisé par celui du pixel central, pondéré par une gaussienne
+de sa distance au centre, d'écart type la moitié du voisinage, ici $7.5$. Les contributions sont ensuite transformées en pourcentage
+de la somme des contributions dans toutes les cellules.
+
+On calcule de la même façon les histogrammes des courbures principales.
+
+En concaténant les $3$ histogrammes, on obtient le descripteur du pixel,
+vecteur de taille $360 / 5 \cdot 3 \cdot 5 \cdot 1944$.
+
+
+\subsection{Appariement}
+Bien qu'il existe des méthode analogues aux plus proches voisins adaptées à de la haute dimension,
+comme la \textit{Best Bin First}, nous ne les avons pas utilisées car nous ne les avons pas
+recréées nous-mêmes et celles des librairies Python ne pouvaient pas être précompilées en C
+par Numba.
+
+Nous avons donc dû faire avec l'appariement brut: pour chaque pixel filtré de l'image de gauche,
+on l'associe à celui de l'image de droite ayant le descripteur le plus similaire,
+dans le sens où il minimise leur distance euclidienne.
+Ce choix de distance a été fait par défaut et nous n'avons pas testé d'autres distances.
+
+Il pourrait être intéressant d'expérimenter avec une norme pondérée, accordant plus d'importance
+à l'information des gradients plutôt qu'à celle des courbures.
+
+\subsection{Postfiltrage}
+Une fois les paires calculées, nous n'en gardons que $2 \%$ du nombre de pixels de l'image,
+ayant les plus petites distances, ie les paires avec le plus haut taux
+de confiance. Nous avons choisi ce seuil puisqu'il correspond à un peu plus que
+notre objectif de $3000$ bonnes paires sur nos images réelles, de résolution
+$900 \cdot 1400$.
+Nous l'avons aussi
+utilisé sur nos images de synthèses, dont la résolution est pourtant
+inférieure.
+
+Par commodité, on désignera notre algorithme
+par \textit{HM}, pour \textit{Home Made}.
 
 %------------------------------------------------
 
-\section{Results}
-
-\begin{table} % Single column table
-	\caption{Example single column table.}
+\begin{table*}[t]
 	\centering
-	\begin{tabular}{l l r}
-		\toprule
-		\multicolumn{2}{c}{Location}          \\
-		\cmidrule(r){1-2}
-		East Distance & West Distance & Count \\
-		\midrule
-		100km         & 200km         & 422   \\
-		350km         & 1000km        & 1833  \\
-		600km         & 1200km        & 890   \\
-		\bottomrule
-	\end{tabular}
-	\label{tab:distcounts}
-\end{table}
-
-Referencing a table using its label: Table \ref{tab:distcounts}.
-
-\begin{table*} % Full width table (notice the starred environment)
-	\caption{Example two column table with fixed-width columns.}
-	\centering % Horizontally center the table
-	\begin{tabular}{L{0.2\linewidth} L{0.2\linewidth} R{0.15\linewidth}} % Manually specify column alignments with L{}, R{} or C{} and widths as a fixed amount, usually as a proportion of \linewidth
-		\toprule
-		\multicolumn{2}{c}{Location}          \\
-		\cmidrule(r){1-2}
-		East Distance & West Distance & Count \\
-		\midrule
-		100km         & 200km         & 422   \\
-		350km         & 1000km        & 1833  \\
-		600km         & 1200km        & 890   \\
-		\bottomrule
-	\end{tabular}
+	\begin{adjustbox}{width=\textwidth,center}
+		\begin{tabular}{l c c c c}
+			\hline
+			Angle entre caméras                                              & \multicolumn{2}{c}{$10$°} & \multicolumn{2}{c}{$7$°}                                              \\
+			Algorithme (préfiltrage)                                         & \textit{HM} ($60\%$)      & SIFT                     & \textit{HM} ($70\%$) & SIFT                \\
+			\hline\makecell[l]{Nombre de bonnes paires parmi les                                                                                                                 \\
+			$3480$ de distance min. oui}                                     & $2579$ ($74.11 \%$)       & $613$ ($17.61 \%$)       & $2532$ ($72.76 \%$)  & $604$ ($17.36 \%$)  \\
+			\hline
+			\makecell[l]{Statistiques sur les distances                                                                                                                          \\
+			des bonnes (B) et mauvaises (M) paires}                          & (B)   (M)                 & (B)   (M)                & (B)   (M)            & (B)   (M)           \\
+			\makecell[l]{Min}                                                & $10.98$   $14.11$         & $27.48$   $33.18$        & $11.97$   $12.35$    & $15.56$   $38.74$   \\
+			\makecell[l]{Max}                                                & $33.69$   $44.50$         & $255.22$   $264.50$      & $32.45$   $43.46$    & $253.92$   $251.11$ \\
+			\makecell[l]{Moyenne}                                            & $20.82$   $23.24$         & $111.58$   $124.36$      & $20.79$   $23.28$    & $112.42$   $121.08$ \\
+			\makecell[l]{Ecart-type}                                         & $1.99$   $2.72$           & $49.09$   $52.81$        & $2.03$   $2.75$      & $50.70$   $48.92$   \\
+			\hline
+			\makecell[l]{Résultats avant postfiltrage (Sélection des $2\%$)} &                           &                          &                      &                     \\
+			\makecell[l]{Total de paires calculées}                          & 69600                     & 931                      & 52200                & 930                 \\
+			\makecell[l]{Total de bonnes paires renvoyées (\% de paires)}    & 17110 ($24.58\%$)         & 613 ($65.84 \%$)         & 12647($24.23\%$)     & 604   ($64.94\%$)   \\
+			\hline
+			\makecell[l]{Temps de calcul (hh:mm:ss) :                                                                                                                            \\
+			Image $1$, Image $2$, Appariement}                               & \makecell{00:15:39,
+			\\ 00:15:27, \\ 00:12:05}     &  Total $<5$s                       &    \makecell{00:11:48,\\ 00:11:37, \\ 00:09:24}                 &       Total $<5$s                \\
+			\hline
+		\end{tabular}
+	\end{adjustbox}
+	\caption{Comparaison des résultats sur deux paires d'images de synthèse de résolution $900 \cdot 1400$
+		de notre algorithme \textit{HM} par rapport à SIFT réglé par défaut.
+		Les bonnes paires ont été identifiée par notre algorithme Blender.}
+	\label{table:res_syn}
 \end{table*}
 
-Aenean feugiat pellentesque venenatis. Sed faucibus tristique tortor vel ultrices. Donec consequat tellus sapien. Nam bibendum urna mauris, eget sagittis justo gravida vel. Mauris nisi lacus, malesuada sit amet neque ut, venenatis tempor orci. Curabitur feugiat sagittis molestie. Duis euismod arcu vitae quam scelerisque facilisis. Praesent volutpat eleifend tortor, in malesuada dui egestas id. Donec finibus ac risus sed pellentesque. Donec malesuada non magna nec feugiat. Mauris eget nibh nec orci congue porttitor vitae eu erat. Sed commodo ipsum ipsum, in elementum neque gravida euismod. Cras mi lacus, pulvinar ut sapien ut, rutrum sagittis dui. Donec non est a metus varius finibus. Pellentesque rutrum pellentesque ligula, vitae accumsan nulla hendrerit ut.
 
-% \begin{figure} % Single column figure
-% 	\includegraphics[width=\linewidth]{Tolmukapea.jpg}
-% 	\caption{Anther of thale cress (Arabidopsis thaliana), fluorescence micrograph. Source: Heiti Paves, \href{https://commons.wikimedia.org/wiki/File:Tolmukapea.jpg}{https://commons.wiki-\\media.org/wiki/File:Tolmukapea.jpg}.}
-% 	\label{fig:tcanther}
-% \end{figure}
+\section{Résultats}
 
-Referencing a figure using its label: Figure \ref{fig:tcanther}.
+Nous avons comparé \textit{HM} avec SIFT, paramétré par défaut, ie avec un seuil de contraste de $0.04$,
+un seuil d'arête de $10$, un écart type de gaussienne de $1.6$, et un seuil de distance de $0.75$.
+Il aurait été intéressant d'essayer d'optimiser SIFT sur nos images de synthèse.
 
-Aenean porttitor eros non pharetra congue. Proin in odio in dolor luctus auctor ac et mi. Etiam euismod mi sed lectus fringilla pretium. Phasellus tristique maximus lectus et sodales. Mauris feugiat ligula quis semper luctus. Nam sit amet felis sed leo fermentum aliquet. Mauris arcu dui, posuere id sem eget, cursus pulvinar mi. Donec nec lacus non lectus fermentum scelerisque et at nibh. Sed tristique, metus ac vestibulum porta, tortor lectus placerat lorem, et convallis tellus dolor eget ante. Pellentesque dui ligula, hendrerit a purus et, volutpat tempor lectus. Mauris nec purus nec mauris rhoncus pellentesque. Quisque quis diam sed est lacinia congue. Donec magna est, hendrerit sed metus vel, accumsan rutrum nibh.
+\subsection{Résultats sur image de synthèse}
 
-% \begin{figure*} % Two column figure (notice the starred environment)
-% 	\includegraphics[width=\linewidth]{Fibroblastid.jpg}
-% 	\caption{Bovine pulmonary artery endothelial cells in culture. Blue: nuclei; red: mitochondria; green: microfilaments. Computer generated image from a 3D model based on a confocal laser scanning microscopy using fluorescent marker dyes. Source: Heiti Paves, \href{https://commons.wikimedia.org/wiki/File:Fibroblastid.jpg}{https://commons.wikimedia.org/wiki/File:Fibroblastid.jpg}.}
-% 	\label{fig:bpartery}
-% \end{figure*}
+Pour des sous images de synthèses de résolution $300 \cdot 580$
+d'angles entre caméras de $10$° et $7$° degrés, les résultats sont dans le Tableau~\ref{table:res_syn}.
+Suprenamment, \textit{HM} a d'excellents résultats, puisque la proportion de bonnes paires parmi celles gardées
+est haute par rapport à celle de SIFT.
+Il est rassurant d'avoir une distance moyenne des bonnes paires en dessous de celle des mauvaises, de plus
+l'écart entre les deux moyennes est d'environ $1.22$ fois l'écart-type des bonnes paires (pour $10$°). Pour SIFT en comparaison,
+il est seulement de $0.27$ fois.
+On en conclut que sur ce test, notre descripteur a été plus discriminant que SIFT.
 
-Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Etiam cursus lectus purus, tempus iaculis quam dictum tristique. Nam interdum sapien nec tempor mattis. Quisque id sapien nisi. Mauris vehicula ornare eros vel efficitur. Nulla consectetur, turpis quis fringilla tincidunt, mi neque iaculis lectus, vel commodo elit odio non ex. Duis facilisis, purus ac viverra iaculis, turpis lectus ultrices ante, ac vestibulum ligula magna in libero. Etiam tristique maximus lacinia. Vestibulum hendrerit, lacus malesuada laoreet blandit, sapien velit sollicitudin nunc, eu porttitor urna ligula at lorem. Aliquam faucibus eros in fermentum venenatis. Fusce consectetur congue pellentesque. Suspendisse at nisi sit amet est porttitor cursus. Cras placerat faucibus nunc, a laoreet justo dignissim sit amet.
+Quand on regarde les résultats pour $10$° avant d'avoir fait le postfiltrage, donc avant de ne garder que l'équivalent des $2\%$ des pixels de l'image,
+on voit que \textit{HM} renvoie comme attendu un grand nombre de paires, et la bonne nouvelle est que parmi elles se trouvent relativement beaucoup
+de bonnes paires: $24.58\%$. A contrario, SIFT a la vertu d'être très parcimonieux et précis avec $931$ paires dont $65.8\%$ de bonnes.
+Cependant, le reproche qu'on peut faire à SIFT est de ne pas renvoyer assez de bonnes paires, bien que le pourcentage de bonnes paires
+parmi le nombre de pixels de la sous-image est de $0.31\%$, supérieur à notre objectif de $0.24\%$ correspondant à 3000 points dans une
+image $900 \cdot 1400$. Ainsi, SIFT valide dans notre cas nos attentes, mais de peu, là où \textit{HM} peut potentiellemnt détecter bien
+plus de bons points.
 
-\subsection{International Support}
+On peut voir sur la Figure~\ref{figure:fig_syn} des paires proposées par \textit{HM}.
+Un effet du préfiltrage par la courbure principale moyenne est que \textit{HM} ne renvoie pas
+de paires dans les zones peu contrastées, là où SIFT en trouve plus, voir Figure~\ref{figure:fig_syn_sift}
+en Annexes.
 
-\noindent àáâäãåèéêëìíîïòóôöõøùúûüÿýñçčšž
+\begin{figure}
+	\centering
+	\begin{subfigure}[H]{\columnwidth}
+		\centering
+		\includegraphics[width=\textwidth]{images/res1_g.png}
+	\end{subfigure}
 
-\noindent ÀÁÂÄÃÅÈÉÊËÌÍÎÏÒÓÔÖÕØÙÚÛÜŸÝÑ
+	\begin{subfigure}[H]{\columnwidth}
+		\centering
+		\includegraphics[width=\textwidth]{images/res1_d.png}
+	\end{subfigure}
+	\caption{$250$ paires tirées aléatoirement parmi celles proposées par \textit{HM}.}
+	\label{figure:fig_syn}
+\end{figure}
 
-\noindent ßÇŒÆČŠŽ
 
-\subsection{Links}
+\subsection{Résultats sur images réelles}
+Les images réelles dont nous disposons ont comme résolution $800 \cdot 1500$ après recadrage. \textit{HM} a fonctionné
+avec un préfiltrage de $70 \%$, le temps de calcul a été de 4 heures 30 par image et 5 heures 10 pour l'appariement.
+On voit clairement ici la limite de notre algorithme, peu parcimonieux par nature et implémenté en Python.
 
-This is a clickable URL link: \href{https://www.latextemplates.com}{LaTeX Templates}. This is a clickable email link: \href{mailto:vel@latextemplates.com}{vel@latextemplates.com}. This is a clickable monospaced URL link: \url{https://www.LaTeXTemplates.com}.
 
-%------------------------------------------------
 
 \section{Discussion}
 
 This statement requires citation \autocite{Smith:2023qr}. This statement requires multiple citations \autocite{Smith:2023qr, Smith:2024jd}. This statement contains an in-text citation, for directly referring to a citation like so: \textcite{Smith:2024jd}.
 
-\subsection{Subsection One}
+\section{Annexes}
+\begin{figure}
+	\centering
+	\begin{subfigure}[H]{\columnwidth}
+		\centering
+		\includegraphics[width=\textwidth]{images/res1_sift_g.png}
+	\end{subfigure}
 
-Suspendisse potenti. Vivamus suscipit dapibus metus. Proin auctor iaculis ex, id fermentum lectus dapibus tristique. Nullam maximus eros eget leo pretium dapibus. Nunc in auctor erat, id interdum risus. Suspendisse aliquet vehicula accumsan. In vestibulum efficitur dictum. Sed ultrices, libero nec fringilla feugiat, elit massa auctor ligula, vehicula tempor ligula felis in lectus. Suspendisse sem dui, pharetra ut sodales eu, suscipit sit amet felis. Donec pretium viverra ante, ac pulvinar eros. Suspendisse gravida consectetur urna. Pellentesque vitae leo porta, imperdiet eros eget, posuere sem. Praesent eget leo efficitur odio bibendum condimentum sit amet vel ex. Nunc maximus quam orci, quis pulvinar nibh eleifend ac. Quisque consequat lacus magna, eu posuere tellus iaculis ac. Sed vitae tortor tincidunt ante sagittis iaculis.
+	\begin{subfigure}[H]{\columnwidth}
+		\centering
+		\includegraphics[width=\textwidth]{images/res1_sift_d.png}
+	\end{subfigure}
+	\caption{$250$ paires tirées aléatoirement parmi celles proposées par SIFT.}
+	\label{figure:fig_syn_sift}
+\end{figure}
 
-\subsection{Subsection Two}
 
-Nullam mollis tellus lorem, sed congue ipsum euismod a. Donec pulvinar neque sed ligula ornare sodales. Nulla sagittis vel lectus nec laoreet. Nulla volutpat malesuada turpis at ultricies. Ut luctus velit odio, sagittis volutpat erat aliquet vel. Donec ac neque eget neque volutpat mollis. Vestibulum viverra ligula et sapien bibendum, vel vulputate ex euismod. Curabitur nec velit velit. Aliquam vulputate lorem elit, id tempus nisl finibus sit amet. Curabitur ex turpis, consequat at lectus id, imperdiet molestie augue. Curabitur eu eros molestie purus commodo hendrerit. Quisque auctor ipsum nec mauris malesuada, non fringilla nibh viverra. Quisque gravida, metus quis semper pulvinar, dolor nisl suscipit leo, vestibulum volutpat ante justo ultrices diam. Sed id facilisis turpis, et aliquet eros.
-
-\subsubsection{Subsubsection Example}
-
-Duis venenatis eget lectus a aliquet. Integer vulputate ante suscipit felis feugiat rutrum. Aliquam eget dolor eu augue elementum ornare. Nulla fringilla interdum volutpat. Sed tincidunt, neque quis imperdiet hendrerit, turpis sapien ornare justo, ac blandit felis sem quis diam. Proin luctus urna sit amet felis tincidunt, sed congue nunc pellentesque. Ut faucibus a magna faucibus finibus. Etiam id mi euismod, auctor nisi eget, pretium metus. Proin tincidunt interdum mi non interdum. Donec semper luctus dolor at elementum. Aenean eu congue tortor, sed hendrerit magna. Quisque a dolor ante. Mauris semper id urna id gravida. Vestibulum mi tortor, finibus eu felis in, vehicula aliquam mi.
-
-Aliquam arcu turpis, ultrices sed luctus ac, vehicula id metus. Morbi eu feugiat velit, et tempus augue. Proin ac mattis tortor. Donec tincidunt, ante rhoncus luctus semper, arcu lorem lobortis justo, nec convallis ante quam quis lectus. Aenean tincidunt sodales massa, et hendrerit tellus mattis ac. Sed non pretium nibh.
-
-Donec cursus maximus luctus. Vivamus lobortis eros et massa porta porttitor. Nam vitae suscipit mi. Pellentesque ex tellus, iaculis vel libero at, cursus pretium sapien. Curabitur accumsan velit sit amet nulla lobortis, ut pretium ex aliquam. Proin eget volutpat orci. Morbi eu aliquet turpis. Vivamus molestie urna quis tempor tristique. Proin hendrerit sem nec tempor sollicitudin.
 
 %----------------------------------------------------------------------------------------
 %	 REFERENCES
