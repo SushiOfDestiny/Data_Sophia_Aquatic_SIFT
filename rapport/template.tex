@@ -209,34 +209,66 @@ similairement, voir l'Equation~\ref{eq:hess_coefs} en Annexes :
 
 Puis le module \textit{Numpy} de \textit{Python} pour en obtenir les valeurs et vecteurs
 propres.
-
-
+Avant de construire l'histogramme, précisons quelques choix techniques.
+Dans tout l'algorithme, les angles sont dans $[0, 360]$. Afin de n'avoir que des
+courbures positives, on tourne de $180$° les vecteurs propres associés à celles
+négatives, et on multiplie celles-ci par $-1$.
 
 Construisons le voisinage autour d'un pixel. En appelant $\theta$
 l'orientation du gradient en le point, le voisinage en question est l'image par
-une rotation d'angle $\theta$ d'un carré de $15\cdot 15$ pixels,
-centré en le pixel. Cela permet d'être invariant par rotation des images.
+une rotation d'angle $\theta$ d'un carré de $15\times 15$ pixels,
+centré en le pixel. Cela permet d'être invariant par rotation.
 Ce voisinage est ensuite découpé en $9$ cellules de $25$ pixels.
 
-Pour construire le descripteur, en chacune des $9$ cellules, on va
-calculer l'histogramme des gradients des pixels,
-répartis selon l'écart entre leur orientation et celle du pixel central.
-La résolution angulaire de l'orientation est $5$°. La contribution d'un pixel
-est son gradient normalisé par celui du pixel central, pondéré par une gaussienne
-de sa distance au centre, d'écart type la moitié du voisinage, ici $7.5$. Les contributions sont ensuite transformées en pourcentage
-de la somme des contributions dans toutes les cellules.
+Pour construire le descripteur, on va d'abord
+calculer en chacune des $9$ cellules un histogramme des gradients des pixels.
+Chaque gradient d'un voisin contribue à
+l'angle correspondant à l'écart entre son orientation et celle du pixel central.
+La résolution angulaire de l'histogramme est $5$°, donc celui-ci est un vecteur de taille
+$360 / 5 = 72$.
+La contribution d'un pixel
+est le rapport entre la norme de son gradient et celle du pixel central,
+on pondère cette contribution par une fonction gaussienne de sa distance au centre,
+d'écart type la moitié du voisinage, ici $7.5$, et ceci afin de limiter l'influence des
+de la topologie aux bords du voisinage, voir la Figure~\ref{figure:lowe_desc_constr}.
+Les contributions sont ensuite transformées en pourcentage
+de la somme des contributions dans toutes les cellules, afin de fournir une invariance
+à la luminosité. Ainsi, le tableau des $9$ histogrammes est de taille $9 \times 72 = 648$
 
-On calcule de la même façon les histogrammes des courbures principales.
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}[H]{\columnwidth}
+		\centering
+		\includegraphics[width=0.6\textwidth]{images/lowe_grads.png}
+	\end{subfigure}
+	\begin{subfigure}[H]{\columnwidth}
+		\centering
+		\includegraphics[width=0.55\textwidth]{images/lowe_desc.png}
+	\end{subfigure}
+	\caption{Schémas des gradients d'un voisinage $8 \times 8$ d'un pixel, la pondération
+		gaussienne y apparaît en bleu, et des histogrammes des cellules. (Illustrations tirées
+		de SIFT) }
+	\label{figure:lowe_desc_constr}
+\end{figure}
 
-En concaténant les $3$ histogrammes, on obtient le descripteur du pixel,
-vecteur de taille $360 / 5 \cdot 3 \cdot 5 \cdot 1944$.
+On calcule de la même façon les deux histogrammes des courbures principales
+(ordonnées par valeur signée décroissante). Pour cela,
+on définit l'orientation d'une courbure principale comme l'angle fait entre sa
+direction et le vecteur horizontal $e_x=(x=1, y=0)$, et la contribution va,
+comme avant, à l'écart entre les orientations du voisin et du pixel central.
+Comme exemple, voir la Figure~\ref{figure:fig_hist} en Annexes.
+
+En concaténant les $3$ tableaux d'histogrammes, on obtient le descripteur du pixel,
+qui est un vecteur de taille $$3 \times 648 = 1944$$.
 
 
 \subsection{Appariement}
+
 Bien qu'il existe des méthode analogues aux plus proches voisins adaptées à de la haute dimension,
 comme la \textit{Best Bin First}, nous ne les avons pas utilisées car nous ne les avons pas
-recréées nous-mêmes et celles des librairies Python ne pouvaient pas être précompilées en C
-par Numba.
+recréées nous-mêmes et celles des librairies \textit{Python} ne pouvaient pas être
+précompilées en \textit{C} par \textit{Numba}, que nous utilisons pour avoir des temps
+de calcul "raisonnables".
 
 Nous avons donc dû faire avec l'appariement brut: pour chaque pixel filtré de l'image de gauche,
 on l'associe à celui de l'image de droite ayant le descripteur le plus similaire,
@@ -251,7 +283,7 @@ Une fois les paires calculées, nous n'en gardons que $2 \%$ du nombre de pixels
 ayant les plus petites distances, ie les paires avec le plus haut taux
 de confiance. Nous avons choisi ce seuil puisqu'il correspond à un peu plus que
 notre objectif de $3000$ bonnes paires sur nos images réelles, de résolution
-$900 \cdot 1400$.
+$900 \times 1400$.
 Nous l'avons aussi
 utilisé sur nos images de synthèses, dont la résolution est pourtant
 inférieure.
@@ -288,7 +320,7 @@ par \textit{HM}, pour \textit{Home Made}.
 			\hline
 		\end{tabular}
 	\end{adjustbox}
-	\caption{Comparaison des résultats sur deux paires d'images de synthèse de résolution $900 \cdot 1400$
+	\caption{Comparaison des résultats sur deux paires d'images de synthèse de résolution $900 \times 1400$
 		de notre algorithme \textit{HM} par rapport à SIFT réglé par défaut.
 		Les bonnes paires ont été identifiée par notre algorithme Blender.}
 	\label{table:res_syn}
@@ -303,7 +335,7 @@ Il aurait été intéressant d'essayer d'optimiser SIFT sur nos images de synth�
 
 \subsection{Résultats sur image de synthèse}
 
-Pour des sous images de synthèses de résolution $300 \cdot 580$
+Pour des sous images de synthèses de résolution $300 \times 580$
 d'angles entre caméras de $10$° et $7$° degrés, les résultats sont dans le Tableau~\ref{table:res_syn}.
 Suprenamment, \textit{HM} a d'excellents résultats, puisque la proportion de bonnes paires parmi celles gardées
 est haute par rapport à celle de SIFT.
@@ -317,7 +349,7 @@ on voit que \textit{HM} renvoie comme attendu un grand nombre de paires, et la b
 de bonnes paires: $24.58\%$. A contrario, SIFT a la vertu d'être très parcimonieux et précis avec $931$ paires dont $65.8\%$ de bonnes.
 Cependant, le reproche qu'on peut faire à SIFT est de ne pas renvoyer assez de bonnes paires, bien que le pourcentage de bonnes paires
 parmi le nombre de pixels de la sous-image est de $0.31\%$, supérieur à notre objectif de $0.24\%$ correspondant à 3000 points dans une
-image $900 \cdot 1400$. Ainsi, SIFT valide dans notre cas nos attentes, mais de peu, là où \textit{HM} peut potentiellemnt détecter bien
+image $900 \times 1400$. Ainsi, SIFT valide dans notre cas nos attentes, mais de peu, là où \textit{HM} peut potentiellemnt détecter bien
 plus de bons points.
 
 On peut voir sur la Figure~\ref{figure:fig_syn} des paires proposées par \textit{HM}.
@@ -356,7 +388,7 @@ en Annexes.
 \end{figure*}
 
 \subsection{Résultats sur images réelles}
-Les images réelles dont nous disposons ont comme résolution $800 \cdot 1500$ après recadrage. \textit{HM} a fonctionné
+Les images réelles dont nous disposons ont comme résolution $800 \times 1500$ après recadrage. \textit{HM} a fonctionné
 avec un préfiltrage de $70 \%$, le temps de calcul a été de 4 heures 30 par image et 5 heures 10 pour l'appariement.
 On voit clairement ici la limite de notre algorithme, peu parcimonieux par nature et implémenté en Python.
 Quant aux résultats, les zooms en Figure~\ref{figure:fig_irl} montrent de nombreux déchets, malgré de visiblement
@@ -366,7 +398,7 @@ en terme d'angle entre caméras, de variation de contraste, et de résolution.
 On comprend ici la faiblesse de \textit{HM} sur ces dernières qui semble observer un voisinage fixe,
 trop petit ici pour encapsuler un relief topologique caractéristique du point,
 car ces images sont de haute résolution et possèdent globalement peu de relief, donc les
-variations notables de celui-ci se font sur une plus grande zone que $15 \cdot 15$.
+variations notables de celui-ci se font sur une plus grande zone que $15 \times 15$.
 On trouvera en Annexes sur la Figure~\ref{figure:fig_irl_sift} les résultats de SIFT sur la même zone.
 Sans surprise, ceux-ci sont très bons, avec très peu de déchets flagrants, il faudrait certes zoomer plus
 pour vérifier la validité des paires au pixel près, mais il reste que nos performances avec \textit{HM}
@@ -399,8 +431,8 @@ This statement requires citation \autocite{Smith:2023qr}. This statement require
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=\textwidth]{images/histo_result.png}
-	\caption{Exemple d'un des trois carrés d'histogrammes constituant le descripteur
-		d'un point.}
+	\caption{Exemple du tableau des histogrammes de la courbure principale $2$,
+		servant à construire le descripteur d'un point.}
 	\label{figure:fig_hist}
 \end{figure}
 
