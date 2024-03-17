@@ -81,13 +81,17 @@
 
 \section{Introduction}
 
-2e modification du fichier tex, toujours par Jules.
+\subsection{Contexte}
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent porttitor arcu luctus, imperdiet urna iaculis, mattis eros. Pellentesque iaculis odio vel nisl ullamcorper, nec faucibus ipsum molestie. Sed dictum nisl non aliquet porttitor. Etiam vulputate arcu dignissim, finibus sem et, viverra nisl. Aenean luctus congue massa, ut laoreet metus ornare in. Nunc fermentum nisi imperdiet lectus tincidunt vestibulum at ac elit. Nulla mattis nisl eu malesuada suscipit.
+Les algorithmes de \textit{computer vision} pour la détection de points d'intérêt sont aujourd'hui extrêmement efficaces, en particulier depuis la publication de SIFT [\ref{cite:sift}] en 2004, avec des applications dans de nombreux domaines : médecine, logistique et imagerie numérique pour ne citer qu'eux.
+Néanmoins, les algorithmes existants semblent inadaptatés lorsqu'il s'agit de traiter des images sous-marines, et ce principalement à cause de la perte de contraste et du manque de luminosité aux profondeurs considérées.
+Un domaine dans lequel cette lacune est particulièrement visible est la reconstruction de coraux par images sous-marines. Des images de l'organisme marin sont prises en stéréographie à l'aide d'un robot possédant deux caméras, et une reconstitution 3D est ensuite effectuée en comparant les images prises par les deux caméras pour déterminer la profondeur de chaque point dans les images.
+Cette détermination de la profondeur passe par un \textit{matching} entre les deux images : pour certains points notables dans l'image de gauche, appelés points d'intérêt, le point correspondant sur l'image de droite doit être trouvé.
+Pour avoir une grande précision dans cette reconstitution ($< 1$mm, ce qui n'est pas atteint à l'heure actuelle), il est nécessaire d'avoir un grand nombre de points ($N > 3000$ sur des images de résolution $3000 * 2000^$) dont la correspondance est exacte. 
+Or SIFT donne un très grand nombre de correspondances ($N > 10 000$) sur ce type d'images, mais dont un très grand nombre sont erronées, ce qui fait baisser la précision de la reconstruction d'un facteur $10$, voire plus.
+Nous avons donc souhaité améliorer la détection et la caractérisation de points d'intérêt dans des images sous-marines pour pouvoir augmenter la précision des méthodes de reconstitution d'organismes sous-marins, qui sont amenées à se développer aujourd'hui pour faire face à la perte massive de récifs coraliens.
 
-Aliquam arcu turpis, ultrices sed luctus ac, vehicula id metus. Morbi eu feugiat velit, et tempus augue. Proin ac mattis tortor. Donec tincidunt, ante rhoncus luctus semper, arcu lorem lobortis justo, nec convallis ante quam quis lectus. Aenean tincidunt sodales massa, et hendrerit tellus mattis ac. Sed non pretium nibh. Donec cursus maximus luctus. Vivamus lobortis eros et massa porta porttitor. Donec laoreet nisl vel risus lacinia elementum non nec lacus. Nullam luctus, nulla volutpat ultricies ultrices, quam massa placerat augue, ut fringilla urna lectus nec nibh. Vestibulum efficitur condimentum orci a semper. Pellentesque ut metus pretium lacus maximus semper.
-
-Fusce varius orci ac magna dapibus porttitor. In tempor leo a neque bibendum sollicitudin. Nulla pretium fermentum nisi, eget sodales magna facilisis eu. Praesent aliquet nulla ut bibendum lacinia. Donec vel mauris vulputate, commodo ligula ut, egestas orci. Suspendisse commodo odio sed hendrerit lobortis. Donec finibus eros erat, vel ornare enim mattis et. Donec finibus dolor quis dolor tempus consequat. Mauris fringilla dui id libero egestas, ut mattis neque ornare. Ut condimentum urna pharetra ipsum consequat, eu interdum elit cursus. Vivamus scelerisque tortor et nunc ultricies, id tincidunt libero pharetra. Aliquam eu imperdiet leo. Morbi a massa volutpat velit condimentum convallis et facilisis dolor.
+\subsection{Objectif}
 
 \begin{equation}
 	\cos^3 \theta =\frac{1}{4}\cos\theta+\frac{3}{4}\cos 3\theta
@@ -103,6 +107,89 @@ Maecenas consectetur metus at tellus finibus condimentum. Proin arcu lectus, ult
 %------------------------------------------------
 \section{Etat de l'art}
 
+Dans cette section, nous présentons les algorithmes de détection et caractérisation de points d'intérêt déjà développés dans la littérature.
+
+\subsection{SIFT}
+
+SIFT (\textit{Scale Invariant Feature Keypoints}) [\ref{article:sift}], algorithme fondateur dans le domaine, utilise les extrema de l'espace des échelles pour déterminer des points d'intérêt dans l'image.
+L'espace des échelles de l'image est calculé en effectuant des différences de gausiennes, i.e. des différences pixel par pixel de l'image convoluée par des filtres gaussiens d'écart-type $\sigma$ variable.
+Un pixel à une échelle $\sigma_i$ est alors considéré comme un point d'intérêt si et seulement si sa valeur est supérieure (resp. inférieure) aux 8 pixels voisins à l'échelle $\sigma_i$, aux 9 pixels voisins à l'échelle $\sigma_{i+1}$ et aux 9 pixels voisins à l'échelle $\sigma_{i-1}$ (c'est alors un extremum de l'espace des échelles).
+Après une étape de filtrage intermédiaire, les points d'intérêt trouvés sont alors caractérisés par un histogramme d'orientation des gradients autour du point. 
+Le détail de l'assignation d'une orientation et d'une magnitude aux gradients des voisins est donné par les équations \ref{eq:gradient_orientation}.
+Chaque point d'intérêt est ainsi représenté par un descripteur de dimension 128, contenant les informations d'un carré de 4x4 histogrammes autour du point, avec 8 directions enregistrées dans chaque cellule. (INSERER IMAGE p.15 article SIFT)
+
+\begin{figure}
+	\centering
+	\begin{subfigure}[H]{\columnwidth}
+		\centering
+		\includegraphics[width=\textwidth]{images/sift_descriptor.png}
+	\end{subfigure}
+	\label{figure:sift_descriptor}
+	\caption{Illustration du descripteur utilisé dans SIFT}
+\end{figure}
+
+\subsection{SURF}
+
+\subsection{DAISY}
+
+\section{Données}
+
+Dans cette section, nous présentons les images que nous avons à traiter dans le cadre de la stéréographie sous-marine.
+
+\subsection{Images réelles}
+
+Les images réelles dont nous disposons proviennent d'une expérience en bassin peu profond, dans lequel un rocher a été photographié par un robot à deux caméras. Un exemple d'image est disponible en figure \ref{figure:irl_example}.
+Les différences majeures entre des images en surface et des images sous-marines sont une perte de contraste significative et une modification des couleurs (visible à l'oeil nu).
+
+\begin{figure}
+	\centering
+	\begin{subfigure}[H]{\columnwidth}
+		\centering
+		\includegraphics[width=\textwidth]{images/irl_example.png}
+	\end{subfigure}
+	\label{figure:irl_example}
+	\caption{Une image réelle expérimentale}
+\end{figure}
+
+Les paramètres des images et des caméras sont résumés dans le tableau  :
+
+\begin{table*}[t]
+	\begin{adjustbox}{width=\columnwidth, left}
+		\begin{tabular}{l c}
+			\hline
+			Résolution 	 & ?? \\
+			\hline
+			Angle entre caméras         & $10$°        \\
+			Distance focale         & ??                   \\
+			Distance à l'objet  & 1m \\
+			\hline
+		\end{tabular}
+	\end{adjustbox}
+	\label{table:params_irl_imgs}
+	\caption{Paramètres des images réelles expérimentales}
+\end{table*}
+
+\subsection{Images de synthèse}
+
+Pour pouvoir comparer les performances des descripteurs de l'état de l'art et le descripteur que nous avons conçu, nous avons décidé de créer des images de synthèse à l'aide du logiciel open-source Blender [\ref{cite:blender}], pour créer une scène 3D dans laquelle tous les paramètres seraient connus.
+Un rocher texturé a été simulé dans cette scène 3D à l'aide de déformations à bruit gaussien, et deux caméras ont été placées pour simuler la stéréographie sous-marine.
+Les scènes sont disponibles sur le dépôt du projet, nous donnons ici les principaux paramètres des scènes en table \ref{table:params_syn_imgs}
+
+\begin{table*}[t]
+	\begin{adjustbox}{width=\columnwidth, left}
+		\begin{tabular}{l c}
+			\hline
+			Résolution 	 & ?? \\
+			\hline
+			Angle entre caméras         & $10$°        \\
+			Distance focale         & ??                   \\
+			Distance à l'objet  & 1m \\
+			\hline
+		\end{tabular}
+	\end{adjustbox}
+	\label{table:params_syn_imgs}
+	\caption{Paramètres des images de synthèse}
+\end{table*}
 
 \section{Méthodologie}
 
