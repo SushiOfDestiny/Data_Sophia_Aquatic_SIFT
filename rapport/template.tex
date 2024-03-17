@@ -300,6 +300,26 @@ en Annexes.
 Les images réelles dont nous disposons ont comme résolution $800 \cdot 1500$ après recadrage. \textit{HM} a fonctionné
 avec un préfiltrage de $70 \%$, le temps de calcul a été de 4 heures 30 par image et 5 heures 10 pour l'appariement.
 On voit clairement ici la limite de notre algorithme, peu parcimonieux par nature et implémenté en Python.
+Quant aux résultats, les zooms en Figure~\ref{figure:fig_irl} montrent de nombreux déchets, malgré de visiblement
+bonnes paires dans les zones contrastées. On voit tout d'abord que nos images de synthèses sont sensiblement différentes des réelles,
+en terme d'angle entre caméras, de variation de contraste, et de résolution.
+On comprend ici la faiblesse de \textit{HM} qui observe un voisinage
+de taille fixe, trop petite ici pour ces images haute résolution ou il y a peu de relief.
+
+\begin{figure}
+	\centering
+	\begin{subfigure}[H]{\columnwidth}
+		\centering
+		\includegraphics[width=\textwidth]{images/irl_z2_g.png}
+	\end{subfigure}
+
+	\begin{subfigure}[H]{\columnwidth}
+		\centering
+		\includegraphics[width=\textwidth]{images/irl_z2_d.png}
+	\end{subfigure}
+	\caption{Zoom sur des paires tirées aléatoirement parmi celles proposées par \textit{HM} sur images réelles.}
+	\label{figure:fig_irl}
+\end{figure}
 
 
 

@@ -1,12 +1,12 @@
 # Fdb version 4
-["biber template"] 1710604911 "template.bcf" "template.bbl" "template" 1710606786 0
+["biber template"] 1710608214 "template.bcf" "template.bbl" "template" 1710608643 0
   "./sample.bib" 1709138723 423 bb4d4040f48aec7c0bc550ef99e007d4 ""
-  "template.bcf" 1710606785 107228 a2ebb6bbb1fe5620b45252a953c69f74 "pdflatex"
+  "template.bcf" 1710608642 107228 a2ebb6bbb1fe5620b45252a953c69f74 "pdflatex"
   (generated)
   "template.bbl"
   "template.blg"
   (rewritten before read)
-["pdflatex"] 1710606782 "e:/DOSSIERS PERSOS/ETUDES/ecoles_ingenieurs/mines paris/formation/2A/data-sophia/projet_sift/rapport/template.tex" "template.pdf" "template" 1710606786 0
+["pdflatex"] 1710608639 "e:/DOSSIERS PERSOS/ETUDES/ecoles_ingenieurs/mines paris/formation/2A/data-sophia/projet_sift/rapport/template.tex" "template.pdf" "template" 1710608643 0
   "LTJournalArticle.cls" 1709138723 9784 e38e4f05326438c9cfb0a6c6bf9f0764 ""
   "c:/texlive/2023/texmf-dist/fonts/enc/dvips/base/8r.enc" 1703581191 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "c:/texlive/2023/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc" 1703580680 2971 def0b6c1f0b107b3b936def894055589 ""
@@ -154,16 +154,18 @@
   "c:/texlive/2023/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1703585320 4785563 321aa554689bde33441a615ba7dae12f ""
   "c:/texlive/2023/texmf-var/web2c/pdftex/pdflatex.fmt" 1703585428 8217693 ad4addcd5fcd2fbf0c11142ca353a2bc ""
   "c:/texlive/2023/texmf.cnf" 1703585288 713 e69b156964470283e0530f5060668171 ""
-  "e:/DOSSIERS PERSOS/ETUDES/ecoles_ingenieurs/mines paris/formation/2A/data-sophia/projet_sift/rapport/template.tex" 1710606781 20427 2f96c2c8f94dca44735973dd55dd287d ""
+  "e:/DOSSIERS PERSOS/ETUDES/ecoles_ingenieurs/mines paris/formation/2A/data-sophia/projet_sift/rapport/template.tex" 1710608638 21714 cde7fc60b1bfc044290a00e29dcaeb1d ""
+  "images/irl_z2_d.png" 1710607861 477956 a1c0d20db87669dc35cd2fc37806f3a6 ""
+  "images/irl_z2_g.png" 1710607856 506213 96ee4882c2f4de01104781807253fbe8 ""
   "images/res1_d.png" 1710594359 358307 54573e1bf2057f896198eb47510850f9 ""
   "images/res1_g.png" 1710594364 375403 b1412e264d24489dfa7abf9521492253 ""
   "images/res1_sift_d.png" 1710605123 368248 5fb6201f1d862383cf7b4564d048939b ""
   "images/res1_sift_g.png" 1710605116 370899 bf2340bf5731ce7c19715e352a8281c1 ""
-  "template.aux" 1710606785 3442 21f913317ba2eedcaf6b93847fbd75de "pdflatex"
-  "template.bbl" 1710604917 3292 985b69af5beeb44be6a586f575026aae "biber template"
-  "template.out" 1710606785 1631 a0b8cbd5c9366a4c84e4af960387fb3b "pdflatex"
-  "template.run.xml" 1710606785 2329 dd0b28ad5248dccc56c9d3651d0f9aad "pdflatex"
-  "template.tex" 1710606781 20427 2f96c2c8f94dca44735973dd55dd287d ""
+  "template.aux" 1710608642 3827 a503118f6f9694f60497b52cdc5bc7b2 "pdflatex"
+  "template.bbl" 1710608217 3292 985b69af5beeb44be6a586f575026aae "biber template"
+  "template.out" 1710608642 1631 10a68f2d470c8334328c9b4f25a9c165 "pdflatex"
+  "template.run.xml" 1710608642 2329 dd0b28ad5248dccc56c9d3651d0f9aad "pdflatex"
+  "template.tex" 1710608638 21714 cde7fc60b1bfc044290a00e29dcaeb1d ""
   (generated)
   "template.aux"
   "template.bcf"
@@ -171,3 +173,4 @@
   "template.out"
   "template.pdf"
   "template.run.xml"
+  (rewritten before read)
