@@ -34,6 +34,9 @@
 \usepackage{float}
 \usepackage{makecell}
 \usepackage{adjustbox}
+\usepackage{caption}
+\usepackage{amsmath}
+\usepackage{stmaryrd}
 
 
 \addbibresource{sample.bib} % BibLaTeX bibliography file
@@ -98,20 +101,22 @@ In hac habitasse platea dictumst. Curabitur mattis elit sit amet justo luctus ve
 Maecenas consectetur metus at tellus finibus condimentum. Proin arcu lectus, ultrices non tincidunt et, tincidunt ut quam. Integer luctus posuere est, non maximus ante dignissim quis. Nunc a cursus erat. Curabitur suscipit nibh in tincidunt sagittis. Nam malesuada vestibulum quam id gravida. Proin ut dapibus velit. Vestibulum eget quam quis ipsum semper convallis. Duis consectetur nibh ac diam dignissim, id condimentum enim dictum. Nam aliquet ligula eu magna pellentesque, nec sagittis leo lobortis. Aenean tincidunt dignissim egestas.
 
 %------------------------------------------------
+\section{Etat de l'art}
+
 
 \section{Méthodologie}
 
 \subsection{Traitement de l'image}
-Les images sont transformées en niveau de gris par simple moyenne des $3$ canaux de couleur.
+Les images sont transformées en niveau de gris par simple moyenne des $3$ canaux de couleur \textit{RGB}.
 Parce qu'on se focalise uniquement sur des point appartenant à la chose photographiée, on procède
-à un agrandissemnet manuel dessus, minimisant l'arrière-plan. Ensuite un filtre gaussien est
-appliqué, d'écart-type $1$ et pour les images de synthèse uniquement, car les images réelles
-dont nous disposions étaient selon nous suffisamment précise et peu contrastées,
-et car nous jugions notre solution sensible au manque de contraste
+à un agrandissement manuel dessus, afin de minimiser l'arrière-plan. Ensuite un filtre gaussien est
+appliqué, d'écart-type $1$ et uniquement sur les images de synthèse, car les images réelles
+dont nous disposons sont selon nous suffisamment précises et peu contrastées,
+et car nous jugeons notre solution sensible au manque de contraste.
 
 \subsection{Notion de point d'intérêt}
 
-Il est certes possible de chercher les matchs de façon brute entre
+Il est certes possible de chercher les paires de points de façon brute entre
 l'entièreté des pixels de chaque image, mais c'est insensé sur le
 point de vue du temps de calcul, et clairement inutile: beaucoup de
 points réels ne présentent que peu d'intérêt car la surface ie est
@@ -120,26 +125,31 @@ localement plane.
 Il nous faut donc nous poser la question de ce qu'est un bon point
 d'intérêt, ie un point dont le voisinage topologique varie de façon
 assez significative pour être reconnaissable malgré un changement de
-point d'observation.
+point d'observation, ie un changement de relief apparent et de contraste.
 
 SIFT se concentre sur la répartition des gradients
 dans le voisinage, et élimine des points sur des arêtes, jugés trop
-sensibles au bruit, cette caractérisation des arêtes, ce fait par
+sensibles au bruit, cette caractérisation des arêtes se fait par
 le calcul de la trace et du déterminant de la hessienne,
-qui sont fonction des courbures principales.
+qui sont fonctions des courbures principales.
+Les courbures principales en un point sont les extrema locaux des courbures d'un voisinage de la surface
+autour du point. Elles
+coïncident avec les valeurs propres de la hessienne de la surface en le point,
+et leurs directions respectives sont les vecteurs propres associés.
 
 Nous pensons que ces courbures principales méritent plus d'attention,
 et pourraient être considérées telles quelles. Dit grossièrement,
-elles apportent une information à l'ordre $2$ sur la surface. Un bon
-point d'intérêt a selon nous une courbure marquée.
+elles apportent une information à l'ordre $2$ sur la surface et complètent
+l'information d'ordre $1$ fournie par le gradient. Un bon
+point d'intérêt a selon nous dans son voisinage une variation marquée des courbures.
+
 
 C'est pour cela que nous ne gardons que $30 \%$ des pixels de chaque image,
 de plus grande courbure principale moyenne (en norme).
 
 \subsection{Descripteur}
 Inspiré de SIFT, nous avons cherché pour un pixel donné à en construire un descripteur,
-ie à encoder dans un vecteur
-des caractéristiques topologiques de son voisinage, qu'on espère trouver
+ie à encoder dans un vecteur des caractéristiques topologiques de son voisinage, qu'on espère trouver
 sur les deux images le plus à l'identique possible.
 
 Définissons d'abord des propriétés de robustesse
@@ -147,25 +157,60 @@ que nous souhaitons pour notre descripteur:
 
 \begin{enumerate}
 	\item Invariance par échelle: pourtant un atout essentiel de SIFT, nous l'avons mise
-	      de côté lors de notre développement. La raison est que c'est cette propriété
-	      qui complexifie l'algorithme et nous pensons que dans notre cadre
-	      experimental, il serait possible de bien calibrer nos paramètres
-	      afin de chercher des points d'intérêts de taille fixe, sans perdre
-	      en qualité.
+	      de côté lors de notre développement. La raison est que cette propriété
+	      répond à un besoin très général d'identifier des points d'intérêt à différentes
+	      échelles. C'est très utile lorsque l'objet ciblé présente une structure et
+	      un relief très variés, par exemple une maison. Mais dans notre utilisation précise,
+	      nous voulons à terme photographier des récifs coraliens, et actuellement, en
+	      phase expérimentale, nous utilisons des rochers. Le relief d'un rocher ne présente
+	      pas de motif notable, comme des arêtes marquées, mais tend au contraire à être
+	      uniforme et répétitif. Puisque nous voulons avoir un nombre conséquent de bons points
+	      appariés, nous avons décidé de nous focaliser sur une taille fixe de points d'intérêt,
+	      avec l'espoir de pouvoir calibrer cette taille de façon expérimentale en fonction
+	      des conditions de nos observations.
 	\item Invariance par rotation: le robot sous-marin n'est pas parfaitement
 	      horizontal lorsqu'il photographie, une même forme n'aura pas la même
-	      orientation sur les deux images.
-	\item Robustesse à la luminosité: la lumière sous-marine peut être très inégale.
+	      orientation sur les deux images. Nous souhaitons donc pouvoir identifier un
+	      point, même si son voisinage subit une rotation dans le plan de photographie.
+	\item Robustesse à la luminosité: la lumière sous-marine est naturellement inégale,
+	      que ce soit à cause de la lumière du soleil qui est réfractée dans l'eau, ou bien à
+	      cause des éclairages du robot sous-marin.
 \end{enumerate}
 
 
 Le descripteur repose principalement sur le gradient et les courbures principales.
-Ces valeurs sont approximées par différences finies symétriques:
+Ces valeurs sont approximées par différences finies symétriques de l'image à l'ordre $1$ et $2$.
+Dans un repère classique de l'image numérique $I$ de dimension $(w, h) \in \mathbb{N}^2$,
+vue comme une fonction discrète:
+$I: \llbracket 0, w-1 \rrbracket \times \llbracket 0, h-1 \rrbracket \rightarrow [0, 1]$
+d'abscisses $x$ et d'ordonnées $y$, la norme du gradient
+et son orientation sont approximées par:
 
-INSERER FORMULE
+\begin{multline}
+	m(x, y) = \\
+	\sqrt{(I(x+1, y) - I(x-1,y))^2 + (I(x,y+1)-I(x,y-1))^2}
+\end{multline}
 
-L'orientation du gradient est
-INSERER FORMULE
+\begin{multline}
+	\theta(x, y) = \\
+	\tan^{-1}\left(\frac{I(x,y+1)-I(x,y-1)}{I(x+1, y) - I(x-1,y)}\right)
+\end{multline}
+
+Pour calculer les courbures et directions principales, la hessienne $H$ est d'abord calculée
+similairement, voir l'Equation~\ref{eq:hess_coefs} en Annexes :
+
+\begin{equation}
+	H = \\
+	\begin{bmatrix}
+		dxx & dxy \\
+		dxy & dyy
+	\end{bmatrix}
+\end{equation}
+
+Puis le module \textit{Numpy} de \textit{Python} pour en obtenir les valeurs et vecteurs
+propres.
+
+
 
 Construisons le voisinage autour d'un pixel. En appelant $\theta$
 l'orientation du gradient en le point, le voisinage en question est l'image par
@@ -295,33 +340,43 @@ en Annexes.
 	\label{figure:fig_syn}
 \end{figure}
 
+\begin{figure*}
+	\centering
+	\begin{subfigure}[H]{0.45\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{images/irl_z2_g.png}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[H]{0.45\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{images/irl_z2_d.png}
+	\end{subfigure}
+	\caption{Zoom sur des paires tirées aléatoirement parmi celles proposées par \textit{HM} sur images réelles.}
+	\label{figure:fig_irl}
+\end{figure*}
 
 \subsection{Résultats sur images réelles}
 Les images réelles dont nous disposons ont comme résolution $800 \cdot 1500$ après recadrage. \textit{HM} a fonctionné
 avec un préfiltrage de $70 \%$, le temps de calcul a été de 4 heures 30 par image et 5 heures 10 pour l'appariement.
 On voit clairement ici la limite de notre algorithme, peu parcimonieux par nature et implémenté en Python.
 Quant aux résultats, les zooms en Figure~\ref{figure:fig_irl} montrent de nombreux déchets, malgré de visiblement
-bonnes paires dans les zones contrastées. On voit tout d'abord que nos images de synthèses sont sensiblement différentes des réelles,
+bonnes paires dans les zones contrastées.
+On voit tout d'abord que nos images de synthèses sont sensiblement différentes des réelles,
 en terme d'angle entre caméras, de variation de contraste, et de résolution.
-On comprend ici la faiblesse de \textit{HM} qui observe un voisinage
-de taille fixe, trop petite ici pour ces images haute résolution ou il y a peu de relief.
-
-\begin{figure}
-	\centering
-	\begin{subfigure}[H]{\columnwidth}
-		\centering
-		\includegraphics[width=\textwidth]{images/irl_z2_g.png}
-	\end{subfigure}
-
-	\begin{subfigure}[H]{\columnwidth}
-		\centering
-		\includegraphics[width=\textwidth]{images/irl_z2_d.png}
-	\end{subfigure}
-	\caption{Zoom sur des paires tirées aléatoirement parmi celles proposées par \textit{HM} sur images réelles.}
-	\label{figure:fig_irl}
-\end{figure}
+On comprend ici la faiblesse de \textit{HM} sur ces dernières qui semble observer un voisinage fixe,
+trop petit ici pour encapsuler un relief topologique caractéristique du point,
+car ces images sont de haute résolution et possèdent globalement peu de relief, donc les
+variations notables de celui-ci se font sur une plus grande zone que $15 \cdot 15$.
+On trouvera en Annexes sur la Figure~\ref{figure:fig_irl_sift} les résultats de SIFT sur la même zone.
+Sans surprise, ceux-ci sont très bons, avec très peu de déchets flagrants, il faudrait certes zoomer plus
+pour vérifier la validité des paires au pixel près, mais il reste que nos performances avec \textit{HM}
+restent bien en deçà de celles de SIFT. S'il faut néanmoins trouver un avantage à \textit{HM}, on fera
+remarquer que celui-ci a trouvé quelques visiblement bonnes paires, non identifiées par SIFT, par
+exemple la paire bleue en bas à gauche de la Figure~\ref{figure:fig_irl}.
+Mais évidemment, notre algorithme \textit{HM} n'a pas les résultats attendus.
 
 
+\clearpage
 
 \section{Discussion}
 
@@ -329,15 +384,35 @@ test
 
 This statement requires citation \autocite{Smith:2023qr}. This statement requires multiple citations \autocite{Smith:2023qr, Smith:2024jd}. This statement contains an in-text citation, for directly referring to a citation like so: \textcite{Smith:2024jd}.
 
+
+
 \section{Annexes}
-\begin{figure}
+
+\begin{equation} \label{eq:hess_coefs}
+	\begin{split}
+		dxx & = I(x+1, y) + I(y, x-1) - 2I(x, y),                                              \\
+		dyy & = I(x, y+1) + I(y-1, x) - 2I(x, y),                                              \\
+		dxy & = \frac{\left(I(x+1; y+1) + I(x-1, y-1) - I(x-1, y+1) - I(x+1, y-1) \right)}{4}.
+	\end{split}
+\end{equation}
+
+\begin{figure}[H]
 	\centering
-	\begin{subfigure}[H]{\columnwidth}
+	\includegraphics[width=\textwidth]{images/histo_result.png}
+	\caption{Exemple d'un des trois carrés d'histogrammes constituant le descripteur
+		d'un point.}
+	\label{figure:fig_hist}
+\end{figure}
+
+\clearpage
+
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}[H]{0.45\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{images/res1_sift_g.png}
 	\end{subfigure}
-
-	\begin{subfigure}[H]{\columnwidth}
+	\begin{subfigure}[H]{0.45\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{images/res1_sift_d.png}
 	\end{subfigure}
@@ -345,7 +420,21 @@ This statement requires citation \autocite{Smith:2023qr}. This statement require
 	\label{figure:fig_syn_sift}
 \end{figure}
 
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}[H]{0.45\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{images/irl_sift_z1_g.png}
+	\end{subfigure}
+	\begin{subfigure}[H]{0.45\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{images/irl_sift_z1_d.png}
+	\end{subfigure}
+	\caption{Zoom sur des paires tirées aléatoirement parmi celles proposées par SIFT.}
+	\label{figure:fig_irl_sift}
+\end{figure}
 
+\clearpage
 
 %----------------------------------------------------------------------------------------
 %	 REFERENCES
