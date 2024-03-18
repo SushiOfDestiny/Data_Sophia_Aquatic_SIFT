@@ -87,7 +87,7 @@ Les algorithmes de \textit{computer vision} pour la détection de points d'inté
 Néanmoins, les algorithmes existants semblent inadaptatés lorsqu'il s'agit de traiter des images sous-marines, et ce principalement à cause de la perte de contraste et du manque de luminosité aux profondeurs considérées.
 Un domaine dans lequel cette lacune est particulièrement visible est la reconstruction de coraux par images sous-marines. Des images de l'organisme marin sont prises en stéréographie à l'aide d'un robot possédant deux caméras, et une reconstitution 3D est ensuite effectuée en comparant les images prises par les deux caméras pour déterminer la profondeur de chaque point dans les images.
 Cette détermination de la profondeur passe par un \textit{matching} entre les deux images : pour certains points notables dans l'image de gauche, appelés points d'intérêt, le point correspondant sur l'image de droite doit être trouvé.
-Pour avoir une grande précision dans cette reconstitution ($< 1$mm, ce qui n'est pas atteint à l'heure actuelle), il est nécessaire d'avoir un grand nombre de points ($N > 3000$ sur des images de résolution $3000 * 2000^$) dont la correspondance est exacte. 
+Pour avoir une grande précision dans cette reconstitution ($< 1$mm, ce qui n'est pas atteint à l'heure actuelle), il est nécessaire d'avoir un grand nombre de points ($N > 3000$ sur des images de résolution $3000 * 2000$) dont la correspondance est exacte.
 Or SIFT donne un très grand nombre de correspondances ($N > 10 000$) sur ce type d'images, mais dont un très grand nombre sont erronées, ce qui fait baisser la précision de la reconstruction d'un facteur $10$, voire plus.
 Nous avons donc souhaité améliorer la détection et la caractérisation de points d'intérêt dans des images sous-marines pour pouvoir augmenter la précision des méthodes de reconstitution d'organismes sous-marins, qui sont amenées à se développer aujourd'hui pour faire face à la perte massive de récifs coraliens.
 
@@ -111,7 +111,7 @@ Dans cette section, nous présentons les algorithmes de détection et caractéri
 SIFT (\textit{Scale Invariant Feature Keypoints}) [\ref{article:sift}], algorithme fondateur dans le domaine, utilise les extrema de l'espace des échelles pour déterminer des points d'intérêt dans l'image.
 L'espace des échelles de l'image est calculé en effectuant des différences de gausiennes, i.e. des différences pixel par pixel de l'image convoluée par des filtres gaussiens d'écart-type $\sigma$ variable.
 Un pixel à une échelle $\sigma_i$ est alors considéré comme un point d'intérêt si et seulement si sa valeur est supérieure (resp. inférieure) aux 8 pixels voisins à l'échelle $\sigma_i$, aux 9 pixels voisins à l'échelle $\sigma_{i+1}$ et aux 9 pixels voisins à l'échelle $\sigma_{i-1}$ (c'est alors un extremum de l'espace des échelles).
-Après une étape de filtrage intermédiaire, les points d'intérêt trouvés sont alors caractérisés par un histogramme d'orientation des gradients autour du point. 
+Après une étape de filtrage intermédiaire, les points d'intérêt trouvés sont alors caractérisés par un histogramme d'orientation des gradients autour du point.
 Le détail de l'assignation d'une orientation et d'une magnitude aux gradients des voisins est donné par les équations \ref{eq:gradient_orientation}.
 Chaque point d'intérêt est ainsi représenté par un descripteur de dimension 128, contenant les informations d'un carré de 4x4 histogrammes autour du point, avec 8 directions enregistrées dans chaque cellule. (INSERER IMAGE p.15 article SIFT)
 
@@ -154,11 +154,11 @@ Les paramètres des images et des caméras sont résumés dans le tableau  :
 	\begin{adjustbox}{width=\columnwidth, left}
 		\begin{tabular}{l c}
 			\hline
-			Résolution 	 & ?? \\
+			Résolution          & ??    \\
 			\hline
-			Angle entre caméras         & $10$°        \\
-			Distance focale         & ??                   \\
-			Distance à l'objet  & 1m \\
+			Angle entre caméras & $10$° \\
+			Distance focale     & ??    \\
+			Distance à l'objet  & 1m    \\
 			\hline
 		\end{tabular}
 	\end{adjustbox}
@@ -176,11 +176,11 @@ Les scènes sont disponibles sur le dépôt du projet, nous donnons ici les prin
 	\begin{adjustbox}{width=\columnwidth, left}
 		\begin{tabular}{l c}
 			\hline
-			Résolution 	 & ?? \\
+			Résolution          & ??    \\
 			\hline
-			Angle entre caméras         & $10$°        \\
-			Distance focale         & ??                   \\
-			Distance à l'objet  & 1m \\
+			Angle entre caméras & $10$° \\
+			Distance focale     & ??    \\
+			Distance à l'objet  & 1m    \\
 			\hline
 		\end{tabular}
 	\end{adjustbox}
@@ -197,10 +197,13 @@ La distance (3D) entre ces points de collision donne une métrique continue de l
 \subsection{Traitement de l'image}
 Les images sont transformées en niveau de gris par simple moyenne des $3$ canaux de couleur \textit{RGB}.
 Parce qu'on se focalise uniquement sur des point appartenant à la chose photographiée, on procède
-à un agrandissement manuel dessus, afin de minimiser l'arrière-plan. Ensuite un filtre gaussien est
+à un recadrage manuel dessus en enlevant des pixels de l'arrière-plan. Ensuite un filtre gaussien est
 appliqué, d'écart-type $1$ et uniquement sur les images de synthèse, car les images réelles
 dont nous disposons sont selon nous suffisamment précises et peu contrastées,
 et car nous jugeons notre solution sensible au manque de contraste.
+Sur les images réelles, nous avons testé quelques étapes d'augmentation
+de contraste sachant qu'on peut perdre de l'information, mais n'avons pas eu
+de résultats plus concluant avec.
 
 \subsection{Notion de point d'intérêt}
 
@@ -244,20 +247,8 @@ Définissons d'abord des propriétés de robustesse
 que nous souhaitons pour notre descripteur:
 
 \begin{enumerate}
-	\item Invariance par échelle: pourtant un atout essentiel de SIFT, nous l'avons mise
-	      de côté lors de notre développement. La raison est que cette propriété
-	      répond à un besoin très général d'identifier des points d'intérêt à différentes
-	      échelles. C'est très utile lorsque l'objet ciblé présente une structure et
-	      un relief très variés, par exemple une maison. Mais dans notre utilisation précise,
-	      nous voulons à terme photographier des récifs coraliens, et actuellement, en
-	      phase expérimentale, nous utilisons des rochers. Le relief d'un rocher ne présente
-	      pas de motif notable, comme des arêtes marquées, mais tend au contraire à être
-	      uniforme et répétitif. Puisque nous voulons avoir un nombre conséquent de bons points
-	      appariés, nous avons décidé de nous focaliser sur une taille fixe de points d'intérêt,
-	      avec l'espoir de pouvoir calibrer cette taille de façon expérimentale en fonction
-	      des conditions de nos observations.
 	\item Invariance par rotation: le robot sous-marin n'est pas parfaitement
-	      horizontal lorsqu'il photographie, une même forme n'aura pas la même
+	      horizontal lorsqu'il photographie. Une même forme n'aura pas la même
 	      orientation sur les deux images. Nous souhaitons donc pouvoir identifier un
 	      point, même si son voisinage subit une rotation dans le plan de photographie.
 	\item Robustesse à la luminosité: la lumière sous-marine est naturellement inégale,
@@ -265,11 +256,24 @@ que nous souhaitons pour notre descripteur:
 	      cause des éclairages du robot sous-marin.
 \end{enumerate}
 
+Pourtant un atout essentiel de SIFT, nous avons mis de côté l'invariance par échelle
+de côté lors de notre développement. La raison est que cette propriété
+répond à un besoin très général d'identifier des points d'intérêt à différentes
+échelles. C'est très utile lorsque l'objet ciblé présente une structure et
+un relief très variés, par exemple une maison. Mais dans notre utilisation précise,
+nous voulons à terme photographier des récifs coraliens, et actuellement, en
+phase expérimentale, nous utilisons des rochers. Le relief d'un rocher ne présente
+pas de motif notable, comme des arêtes marquées, mais tend au contraire à être
+uniforme et répétitif. Puisque nous voulons avoir un nombre conséquent de bons points
+appariés, nous avons décidé de nous focaliser sur une taille fixe de points d'intérêt,
+avec l'espoir de pouvoir calibrer cette taille de façon expérimentale en fonction
+des conditions de nos observations.
+
 
 Le descripteur repose principalement sur le gradient et les courbures principales.
 Ces valeurs sont approximées par différences finies symétriques de l'image à l'ordre $1$ et $2$.
-Dans un repère classique de l'image numérique $I$ de dimension $(w, h) \in \mathbb{N}^2$,
-vue comme une fonction discrète:
+Si l'on définit une image numérique $I$ de dimension $(w, h) \in \mathbb{N}^2$,
+comme une fonction discrète:
 $I: \llbracket 0, w-1 \rrbracket \times \llbracket 0, h-1 \rrbracket \rightarrow [0, 1]$
 d'abscisses $x$ et d'ordonnées $y$, la norme du gradient
 et son orientation sont approximées par:
@@ -295,7 +299,7 @@ similairement, voir l'Equation~\ref{eq:hess_coefs} en Annexes :
 	\end{bmatrix}
 \end{equation}
 
-Puis le module \textit{Numpy} de \textit{Python} pour en obtenir les valeurs et vecteurs
+Puis le module \textit{Numpy} de \textit{Python} est utilisé pour en obtenir les valeurs et vecteurs
 propres.
 Avant de construire l'histogramme, précisons quelques choix techniques.
 Dans tout l'algorithme, les angles sont dans $[0, 360]$. Afin de n'avoir que des
@@ -307,6 +311,8 @@ l'orientation du gradient en le point, le voisinage en question est l'image par
 une rotation d'angle $\theta$ d'un carré de $15\times 15$ pixels,
 centré en le pixel. Cela permet d'être invariant par rotation.
 Ce voisinage est ensuite découpé en $9$ cellules de $25$ pixels.
+Nous n'avons pas testé d'autre tailles de voisinage en comparaison, à
+part un voisinage $5 \times 5$ qui a sans surprise donné de moins bons résultats.
 
 Pour construire le descripteur, on va d'abord
 calculer en chacune des $9$ cellules un histogramme des gradients des pixels.
@@ -347,7 +353,7 @@ comme avant, à l'écart entre les orientations du voisin et du pixel central.
 Comme exemple, voir la Figure~\ref{figure:fig_hist} en Annexes.
 
 En concaténant les $3$ tableaux d'histogrammes, on obtient le descripteur du pixel,
-qui est un vecteur de taille $$3 \times 648 = 1944$$.
+qui est un vecteur de taille $$3 \times 648 = 1944$$
 
 
 \subsection{Appariement}
@@ -370,11 +376,10 @@ Il pourrait être intéressant d'expérimenter avec une norme pondérée, accord
 Une fois les paires calculées, nous n'en gardons que $2 \%$ du nombre de pixels de l'image,
 ayant les plus petites distances, ie les paires avec le plus haut taux
 de confiance. Nous avons choisi ce seuil puisqu'il correspond à un peu plus que
-notre objectif de $3000$ bonnes paires sur nos images réelles, de résolution
+notre objectif de $3000$ bonnes paires sur nos images réelles recadrées, de résolution
 $900 \times 1400$.
 Nous l'avons aussi
-utilisé sur nos images de synthèses, dont la résolution est pourtant
-inférieure.
+utilisé sur nos images de synthèses, même si la résolution est inférieure.
 
 Par commodité, on désignera notre algorithme
 par \textit{HM}, pour \textit{Home Made}.
@@ -389,7 +394,7 @@ par \textit{HM}, pour \textit{Home Made}.
 			Angle entre caméras                                              & \multicolumn{2}{c}{$10$°} & \multicolumn{2}{c}{$7$°}                                              \\
 			Algorithme (préfiltrage)                                         & \textit{HM} ($60\%$)      & SIFT                     & \textit{HM} ($70\%$) & SIFT                \\
 			\hline\makecell[l]{Nombre de bonnes paires parmi les                                                                                                                 \\
-			$3480$ de distance min. oui}                                     & $2579$ ($74.11 \%$)       & $613$ ($17.61 \%$)       & $2532$ ($72.76 \%$)  & $604$ ($17.36 \%$)  \\
+			$3480$ de distance minimale}                                     & $2579$ ($74.11 \%$)       & $613$ ($17.61 \%$)       & $2532$ ($72.76 \%$)  & $604$ ($17.36 \%$)  \\
 			\hline
 			\makecell[l]{Statistiques sur les distances                                                                                                                          \\
 			des bonnes (B) et mauvaises (M) paires}                          & (B)   (M)                 & (B)   (M)                & (B)   (M)            & (B)   (M)           \\
@@ -500,10 +505,21 @@ Mais évidemment, notre algorithme \textit{HM} n'a pas les résultats attendus.
 
 \section{Discussion}
 
-test
-
-This statement requires citation \autocite{Smith:2023qr}. This statement requires multiple citations \autocite{Smith:2023qr, Smith:2024jd}. This statement contains an in-text citation, for directly referring to a citation like so: \textcite{Smith:2024jd}.
-
+- paramètres pas variés
+- pas investigué pk sift marche pas sous l'eau (regardé points)
+- sensibilité à la résolution. vairation taille voisinage ? choix fait
+en supposant que seetup particulier fournirait assez de bons points d'une
+même taille fixe
+- propostion: trouver d'une manière ou d'une autre la "sweet" taille de ky
+calibrer la taille du descripteur dessus, si trop gros, repenser détection des
+kp, par un filtrage plus fort, ou une recherche comme sift sur un nombre
+restreint d'echelles, et donc garder l'information des courbures seuelment
+pour l'encodage
+- trouver cette bonne taille par optim sur images de synthèses cette fois ci
+bien calibrées
+- préfiltrage plus compliqué avec mix courbures gradient ?
+- matching avec distance plus adaptées ?
+- se pencher sur daisy
 
 
 \section{Annexes}
