@@ -521,8 +521,8 @@ C'est par exemple le cas pour l'écart-type du filtre gaussien
 lors du traitement d'image, influant sur l'équilibre détail - bruit;
 la résolution, les dimensions des rochers, l'éclairage et l'angle de caméras des images de synthèse,
 pas assez proches de ceux des images réelles;
-le pourcentile de points à garder;
-ou plus important encore, la taille du voisinage pour le descripteur.
+le pourcentile de points à garder pour l'appariement;
+ou plus important encore, la taille du voisinage pour le descripteur.\\
 
 Ce dernier point semble important car l'algorithme \textit{HM} repose sur l'hypothèse
 de pouvoir trouver assez de bons points avec une taille fixe de voisinages. Or celle-ci
@@ -535,13 +535,11 @@ observer la variation du taux de bonnes paires trouvées par \textit{HM} en fonc
 Il est fort probable que cette relation soit une fonction croissante,
 il faudrait sûrement introduire une pénalité ou une limite
 supérieure sur la taille.
-
 En plus de cela, l'étape de préfiltrage est grossière: il serait pertinent d'inclure
 la norme du gradient en plus des courbures. Cette remarque vaut aussi pour l'étape
 d'appariement par distance entre descripteurs, distance pouvant être
 pondérée pour augmenter l'importance de l'information sur les gradients par rapport
 à celle des courbures.
-
 Il serait aussi envisageable, une fois la taille de descripteur fixée, de s'inspirer
 encore de SIFT et d'ajouter une étape de détection d'extrema
 locaux sur des différences de gaussiennes. A la différence qu'on se limiterait à
