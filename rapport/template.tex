@@ -115,15 +115,15 @@ Après une étape de filtrage intermédiaire, les points d'intérêt trouvés so
 Le détail de l'assignation d'une orientation et d'une magnitude aux gradients des voisins est donné par les équations \ref{eq:gradient_orientation}.
 Chaque point d'intérêt est ainsi représenté par un descripteur de dimension 128, contenant les informations d'un carré de 4x4 histogrammes autour du point, avec 8 directions enregistrées dans chaque cellule. (INSERER IMAGE p.15 article SIFT)
 
-\begin{figure}
-	\centering
-	\begin{subfigure}[H]{\columnwidth}
-		\centering
-		\includegraphics[width=\textwidth]{images/sift_descriptor.png}
-	\end{subfigure}
-	\label{figure:sift_descriptor}
-	\caption{Illustration du descripteur utilisé dans SIFT}
-\end{figure}
+% \begin{figure}
+% 	\centering
+% 	\begin{subfigure}[H]{\columnwidth}
+% 		\centering
+% 		\includegraphics[width=\textwidth]{images/sift_descriptor.png}
+% 	\end{subfigure}
+% 	\label{figure:sift_descriptor}
+% 	\caption{Illustration du descripteur utilisé dans SIFT}
+% \end{figure}
 
 \subsection{SURF}
 
@@ -138,15 +138,15 @@ Dans cette section, nous présentons les images que nous avons à traiter dans l
 Les images réelles dont nous disposons proviennent d'une expérience en bassin peu profond, dans lequel un rocher a été photographié par un robot à deux caméras. Un exemple d'image est disponible en figure \ref{figure:irl_example}.
 Les différences majeures entre des images en surface et des images sous-marines sont une perte de contraste significative et une modification des couleurs (visible à l'oeil nu).
 
-\begin{figure}
-	\centering
-	\begin{subfigure}[H]{\columnwidth}
-		\centering
-		\includegraphics[width=\textwidth]{images/irl_example.png}
-	\end{subfigure}
-	\label{figure:irl_example}
-	\caption{Une image réelle expérimentale}
-\end{figure}
+% \begin{figure}
+% 	\centering
+% 	\begin{subfigure}[H]{\columnwidth}
+% 		\centering
+% 		\includegraphics[width=\textwidth]{images/irl_example.png}
+% 	\end{subfigure}
+% 	\label{figure:irl_example}
+% 	\caption{Une image réelle expérimentale}
+% \end{figure}
 
 Les paramètres des images et des caméras sont résumés dans le tableau  :
 
@@ -235,8 +235,9 @@ l'information d'ordre $1$ fournie par le gradient. Un bon
 point d'intérêt a selon nous dans son voisinage une variation marquée des courbures.
 
 
-C'est pour cela que nous ne gardons que $30 \%$ des pixels de chaque image,
-de plus grande courbure principale moyenne (en norme).
+C'est pour cela qu'un préfiltrage grossier est fait: sur chaque image,
+seul $30 \%$ des pixels de plus grande courbure principale moyenne (en norme)
+sont gardés.
 
 \subsection{Descripteur}
 Inspiré de SIFT, nous avons cherché pour un pixel donné à en construire un descripteur,
@@ -264,10 +265,9 @@ un relief très variés, par exemple une maison. Mais dans notre utilisation pr�
 nous voulons à terme photographier des récifs coraliens, et actuellement, en
 phase expérimentale, nous utilisons des rochers. Le relief d'un rocher ne présente
 pas de motif notable, comme des arêtes marquées, mais tend au contraire à être
-uniforme et répétitif. Puisque nous voulons avoir un nombre conséquent de bons points
-appariés, nous avons décidé de nous focaliser sur une taille fixe de points d'intérêt,
-avec l'espoir de pouvoir calibrer cette taille de façon expérimentale en fonction
-des conditions de nos observations.
+uniforme et répétitif. Il semble raisonnable de tirer partie de la
+constance du dispositif expérimental, pour trouver assez de bons points ($N > 3000$)
+en comparant des voisinages d'une même taille fixe, déterminée à l'avance.
 
 
 Le descripteur repose principalement sur le gradient et les courbures principales.
@@ -321,8 +321,9 @@ l'angle correspondant à l'écart entre son orientation et celle du pixel centra
 La résolution angulaire de l'histogramme est $5$°, donc celui-ci est un vecteur de taille
 $360 / 5 = 72$.
 La contribution d'un pixel
-est le rapport entre la norme de son gradient et celle du pixel central,
-on pondère cette contribution par une fonction gaussienne de sa distance au centre,
+est le rapport entre la norme de son gradient et celle du pixel central, qui est
+seuillée à $\varepsilon = 10^{-6}$ afin d'éviter une division par $0$.
+Cette contribution est pondérée par une fonction gaussienne de sa distance au centre,
 d'écart type la moitié du voisinage, ici $7.5$, et ceci afin de limiter l'influence des
 de la topologie aux bords du voisinage, voir la Figure~\ref{figure:lowe_desc_constr}.
 Les contributions sont ensuite transformées en pourcentage
@@ -505,21 +506,50 @@ Mais évidemment, notre algorithme \textit{HM} n'a pas les résultats attendus.
 
 \section{Discussion}
 
-- paramètres pas variés
-- pas investigué pk sift marche pas sous l'eau (regardé points)
-- sensibilité à la résolution. vairation taille voisinage ? choix fait
-en supposant que seetup particulier fournirait assez de bons points d'une
-même taille fixe
-- propostion: trouver d'une manière ou d'une autre la "sweet" taille de ky
-calibrer la taille du descripteur dessus, si trop gros, repenser détection des
-kp, par un filtrage plus fort, ou une recherche comme sift sur un nombre
-restreint d'echelles, et donc garder l'information des courbures seuelment
-pour l'encodage
-- trouver cette bonne taille par optim sur images de synthèses cette fois ci
-bien calibrées
-- préfiltrage plus compliqué avec mix courbures gradient ?
-- matching avec distance plus adaptées ?
-- se pencher sur daisy
+Une lacune importante de notre méthodologie est que les différents paramètres
+nous pas été testés avec d'autres valeurs pour s'assurer que celles
+utilisées sont les plus pertinentes.
+C'est par exemple le cas pour l'écart-type du filtre gaussien
+lors du traitement d'image, influant sur l'équilibre détail - bruit;
+la résolution, les dimensions des rochers, l'éclairage et l'angle de caméras des images de synthèse,
+pas assez proches de ceux des images réelles;
+le pourcentile de points à garder selon la moyenne de leurs courbures principales;
+ou plus important encore la taille du voisinage pour le descripteur.
+
+Ce dernier point semble important car l'algorithme \textit{HM} repose sur l'hypothèse
+de pouvoir trouver assez de bons points avec une taille fixe de voisinages. Or celle-ci
+n'a pas fait l'objet d'un travail spécifique de détermination, et la valeur retenue de $15$
+est arbitraire et trop petite pour la résolution des images réelles.
+Une méthode pour pallier cela serait d'abord d'ajuster comme évoqué juste avant les paramètres des
+images de synthèse, afin d'avoir des scènes virtuelles plus fidèles à la réalité, ensuite
+observer la variation du taux de bonnes paires trouvées par \textit{HM} en fonction de
+la variation de la taille du descripteur. C'est au final une tâche d'optimisation.
+Il est fort probable que cette relation soit une fonction croissante, et comme l'on
+cherche non pas la taille maximisant le nombre de bons points, mais la taille caractéristique
+du voisinage d'un bon point, il faudrait introduire une pénalité ou une limite
+supérieure sur la taille.
+
+En plus de cela, l'étape de préfiltrage est grossière: il serait pertinent d'inclure
+la norme du gradient en plus des courbures. Cette remarque vaut aussi pour l'étape
+d'appariement par distance entre descripteurs, distance pouvant être
+pondérée pour augmenter l'importance de l'information sur les gradients par rapport
+à celle des courbures.
+
+Il serait aussi envisageable, une fois la taille de descripteur fixée, de s'inspirer
+encore de SIFT et d'ajouter une étape de détection d'extrema
+locaux sur des différences de gaussiennes. A la différence qu'on se limiterait à
+un nombre restreint d'échelles, choisies en fonction de la taille du descripteur.
+On pourrait même aussi incorporer la phase d'interpolation des extrema dans l'espoir
+d'ajouter de la précision, voire d'en atteindre une subpixellique.
+
+Enfin, comme présenté en introduction, plusieurs méthodes très efficaces ont été développées
+ces dernières années, comme \textit{SURF} et \textit{DAISY} que nous n'avons pas analysées,
+mais qui le mériteraient.
+\section{Remerciements}
+
+Nous tenons à remercier tous les encadrants du trimestre \textit{Data Sophia}
+pour leur aide et leurs conseils: Philippe Blanc pour ses cours sur le traitement d'image,
+Sébastien Travadel pour ses cours sur l'apprentissage statistique et son encadrement de notre travail,
 
 
 \section{Annexes}
