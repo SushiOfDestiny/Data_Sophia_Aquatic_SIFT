@@ -316,8 +316,7 @@ Ce voisinage est ensuite découpé en $9$ cellules de $25$ pixels.
 D'autre tailles de voisinage n'ont pas été testées en comparaison, à
 part un voisinage $5 \times 5$ qui a sans surprise donné de moins bons résultats.
 
-Pour construire le descripteur,
-un histogramme des gradients des pixels est calculé en chacune des $9$ cellules .
+Un histogramme des gradients des pixels est alors calculé en chacune des $9$ cellules .
 Chaque gradient d'un voisin contribue à
 l'angle correspondant à l'écart entre son orientation et celle du pixel central.
 La résolution angulaire de l'histogramme est $5$°, donc celui-ci est un vecteur de taille
@@ -399,7 +398,7 @@ par \textit{HM}, pour \textit{Home Made}.
 			Angle entre caméras                                                       & \multicolumn{2}{c}{$10$°} & \multicolumn{2}{c}{$7$°}                                              \\
 			Algorithme (préfiltrage)                                                  & \textit{HM} ($60\%$)      & SIFT                     & \textit{HM} ($70\%$) & SIFT                \\
 			\hline\makecell[l]{Nombre de bonnes paires parmi les                                                                                                                          \\
-			$3480$ de distance minimale}                                              & $2579$ ($74.11 \%$)       & $613$ ($17.61 \%$)       & $2532$ ($72.76 \%$)  & $604$ ($17.36 \%$)  \\
+			$3480$ de distance minimale (\% de paires)}                               & $2579$ ($74.11 \%$)       & $613$ ($17.61 \%$)       & $2532$ ($72.76 \%$)  & $604$ ($17.36 \%$)  \\
 			\hline
 			\makecell[l]{Statistiques sur les distances                                                                                                                                   \\
 			des bonnes (B) et mauvaises (M) paires}                                   & (B)   (M)                 & (B)   (M)                & (B)   (M)            & (B)   (M)           \\
