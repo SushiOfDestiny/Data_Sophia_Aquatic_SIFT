@@ -305,12 +305,12 @@ Puis le module \textit{Numpy} de \textit{Python} est utilisé pour en obtenir le
 propres.
 Avant de construire l'histogramme, quelques choix techniques doivent être précisés.
 Dans tout l'algorithme, les angles sont dans $[0, 360]$. Afin de n'avoir que des
-courbures positives, les courbures négatives sont multiplié par $-1$
+courbures positives, les courbures négatives sont multipliées par $-1$
 et les vecteurs propres associés sont tournés de $180$°.
 
 Le voisinage autour d'un pixel est ensuite construit. En appelant $\theta$
 l'orientation du gradient en le point, le voisinage en question est l'image par
-une rotation d'angle $\theta$ d'un carré de $15\times 15$ pixels,
+une rotation d'angle $\theta$ d'un carré de $15\times 15$ pixels, (IL MANQUE UN MOT ?)
 centré en le pixel. Cela permet d'être invariant par rotation.
 Ce voisinage est ensuite découpé en $9$ cellules de $25$ pixels.
 D'autre tailles de voisinage n'ont pas été testées en comparaison, à
@@ -352,7 +352,7 @@ On calcule de la même façon les deux histogrammes des courbures principales
 (ordonnées par valeur signée décroissante). Pour cela,
 on définit l'orientation d'une courbure principale comme l'angle fait entre sa
 direction et le vecteur horizontal $e_x=(x=1, y=0)$, et la contribution va,
-comme avant, à l'écart entre les orientations du voisin et du pixel central.
+comme précédemment, à l'écart entre les orientations du voisin et du pixel central.
 Comme exemple, voir la Figure~\ref{figure:fig_hist} en Annexes.
 
 En concaténant les $3$ tableaux d'histogrammes, on obtient le descripteur du pixel,
@@ -515,7 +515,7 @@ Mais évidemment, l'algorithme \textit{HM} n'a pas les résultats attendus.
 \section{Discussion}
 
 Une lacune importante de notre méthodologie est que les différents paramètres
-nous pas été testés avec d'autres valeurs pour s'assurer que celles
+n'ont pas été testés avec d'autres valeurs pour s'assurer que celles
 utilisées sont les plus pertinentes.
 C'est par exemple le cas pour l'écart-type du filtre gaussien
 lors du traitement d'image, influant sur l'équilibre détail - bruit;
