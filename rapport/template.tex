@@ -37,6 +37,7 @@
 \usepackage{caption}
 \usepackage{amsmath}
 \usepackage{stmaryrd}
+\usepackage{biblatex}
 
 
 \addbibresource{sample.bib} % BibLaTeX bibliography file
@@ -83,7 +84,7 @@
 
 \subsection{Contexte}
 
-Les algorithmes de \textit{computer vision} pour la détection de points d'intérêt sont aujourd'hui extrêmement efficaces, en particulier depuis la publication de SIFT [\ref{cite:sift}] en 2004, avec des applications dans de nombreux domaines : médecine, logistique et imagerie numérique pour ne citer qu'eux.
+Les algorithmes de \textit{computer vision} pour la détection de points d'intérêt sont aujourd'hui extrêmement efficaces, en particulier depuis la publication de SIFT \autocite{Lowe:2004} en 2004, avec des applications dans de nombreux domaines : médecine, logistique et imagerie numérique pour ne citer qu'eux.
 Néanmoins, les algorithmes existants semblent inadaptés lorsqu'il s'agit de traiter des images sous-marines, et ce principalement à cause de la perte de contraste et du manque de luminosité aux profondeurs considérées.
 Un domaine dans lequel cette lacune est particulièrement visible est la reconstruction de coraux par images sous-marines. Des images de l'organisme marin sont prises en stéréographie à l'aide d'un robot possédant deux caméras, et une reconstitution 3D est ensuite effectuée en comparant les images prises par les deux caméras pour déterminer la profondeur de chaque point dans les images.
 Cette détermination de la profondeur passe par un \textit{matching} entre les deux images : pour certains points notables dans l'image de gauche, appelés points d'intérêt, le point correspondant sur l'image de droite doit être trouvé.
@@ -100,12 +101,11 @@ Pour cela, nous avons été amenés à définir ce qui caractérisait un point d
 \section{Etat de l'art}
 
 Dans cette section, nous présentons les algorithmes de détection et caractérisation de points d'intérêt déjà développés dans la littérature.
-
-Parler des cross-correlation, du fait que ce n'était pas assez puissant.
+Contrairement à du pattern matching fait à partir de corrélations par patchs (la corrélation entre le pattern recherché et une fenêtre carrée glissante sur l'image est calculée, et le patch où elle est maximale est le pattern recherché), ces algorithmes ont été conçus pour résister à une variation d'échelle et une rotation des images.
 
 \subsection{SIFT}
 
-SIFT (\textit{Scale Invariant Feature Transform}) [\ref{article:sift}], algorithme fondateur dans le domaine, utilise les extrema de l'espace des échelles pour déterminer des points d'intérêt dans l'image.
+SIFT (\textit{Scale Invariant Feature Transform}) \autocite{Lowe:2004}, algorithme fondateur dans le domaine, utilise les extrema de l'espace des échelles pour déterminer des points d'intérêt dans l'image.
 L'espace des échelles de l'image est calculé en effectuant des différences de gausiennes, i.e. des différences pixel par pixel de l'image convoluée par des filtres gaussiens d'écart-type $\sigma$ variable.
 Un pixel à une échelle $\sigma_i$ est alors considéré comme un point d'intérêt si et seulement si sa valeur est supérieure (resp. inférieure) aux 8 pixels voisins à l'échelle $\sigma_i$, aux 9 pixels voisins à l'échelle $\sigma_{i+1}$ et aux 9 pixels voisins à l'échelle $\sigma_{i-1}$ (c'est alors un extremum de l'espace des échelles).
 Après une étape de filtrage intermédiaire, les points d'intérêt trouvés sont alors caractérisés par un histogramme d'orientation des gradients autour du point.
