@@ -110,7 +110,7 @@ Contrairement à du \textit{pattern matching} fait à partir de corrélations pa
 L'espace des échelles de l'image est calculé en effectuant des différences de gausiennes, i.e. des différences pixel par pixel de l'image convoluée par des filtres gaussiens d'écart-type $\sigma$ variable.
 Un pixel à une échelle $\sigma_i$ est alors considéré comme un point d'intérêt si et seulement si sa valeur est supérieure (resp. inférieure) aux $8$ pixels voisins à l'échelle $\sigma_i$, aux $9$ pixels voisins à l'échelle $\sigma_{i+1}$ et aux $9$ pixels voisins à l'échelle $\sigma_{i-1}$ (c'est alors un extremum de l'espace des échelles).
 Après une étape de filtrage intermédiaire, les points d'intérêt trouvés sont alors caractérisés par un histogramme d'orientation des gradients autour du point.
-Le détail de l'assignation d'une orientation et d'une magnitude aux gradients des voisins est donné par les équations \ref{eq:gradient_orientation}.
+Le détail de l'assignation d'une orientation et d'une magnitude aux gradients des voisins est donné par les équations~\ref{eq:angle_grad} et \ref{eq:magnitude_grad} .
 Chaque point d'intérêt est ainsi représenté par un descripteur de dimension 128, contenant les informations d'un carré de
 $4 \times 4$ histogrammes autour du point, avec $8$ directions enregistrées dans chaque cellule (cf figure \ref{figure:lowe_desc_constr}).
 
