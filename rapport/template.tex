@@ -109,7 +109,7 @@ SIFT (\textit{Scale Invariant Feature Transform}) \autocite{Lowe:2004}, algorith
 L'espace des échelles de l'image est calculé en effectuant des différences de gausiennes, i.e. des différences pixel par pixel de l'image convoluée par des filtres gaussiens d'écart-type $\sigma$ variable.
 Un pixel à une échelle $\sigma_i$ est alors considéré comme un point d'intérêt si et seulement si sa valeur est supérieure (resp. inférieure) aux 8 pixels voisins à l'échelle $\sigma_i$, aux 9 pixels voisins à l'échelle $\sigma_{i+1}$ et aux 9 pixels voisins à l'échelle $\sigma_{i-1}$ (c'est alors un extremum de l'espace des échelles).
 Après une étape de filtrage intermédiaire, les points d'intérêt trouvés sont alors caractérisés par un histogramme d'orientation des gradients autour du point.
-Le détail de l'assignation d'une orientation et d'une magnitude aux gradients des voisins est donné par les équations \ref{eq:gradient_orientation}.
+Le détail de l'assignation d'une orientation et d'une magnitude aux gradients des voisins est donné par les équations \ref{eq:magnitude_grad} et \ref{eq:angle_grad} de la section Descripteur.
 Chaque point d'intérêt est ainsi représenté par un descripteur de dimension 128, contenant les informations d'un carré de 
 4x4 histogrammes autour du point, avec 8 directions enregistrées dans chaque cellule (cf figure \ref{figure:lowe_desc_constr}).
 
@@ -164,13 +164,13 @@ Les images réelles dont nous disposons proviennent d'une expérience en bassin 
 Les différences majeures entre des images en surface et des images sous-marines sont une perte de contraste significative et une modification des couleurs (visible à l'oeil nu).
 
 Les paramètres des images et des caméras sont donnés ici.
-Les images sont de résolution 3000 $\times$ 2000, l'angle entre les caméras nous a été estimé à 10°, les caméras sont situés à environ 1m du rocher, et elles ont une distance focale de 35 mm.
+Les images sont de résolution 3000 $\times$ 2000, l'angle entre les caméras nous a été estimé à 10°, les caméras sont situés à environ 1m du rocher, et leur distance focale est de 35 mm.
 
 
 
 \subsection{Images de synthèse}
 
-Pour pouvoir comparer les performances des descripteurs de l'état de l'art et le descripteur que nous avons conçu, nous avons décidé de créer des images de synthèse à l'aide du logiciel open-source Blender \autocite{Blender}, pour créer une scène 3D dans laquelle tous les paramètres seraient connus.
+Pour pouvoir comparer les performances des descripteurs de l'état de l'art et le descripteur que nous avons conçu, nous avons décidé de créer des images de synthèse à l'aide du logiciel open-source Blender \autocite{Blender} pour créer une scène 3D dans laquelle tous les paramètres seraient connus.
 Un rocher texturé a été simulé dans cette scène 3D à l'aide de déformations à bruit gaussien, et deux caméras ont été placées pour simuler la stéréographie sous-marine. Les dimensions du rocher sont de 35.4 cm $\times$ 21.4 cm $\times$ 25.6 cm.
 Les scènes sont disponibles sur le dépôt du projet, et nous donnons ici leurs principaux paramètres.
 L'angle entre les caméras est de 10°, la distance focale des caméras est de 35 mm, la distance au rocher de 1 m. Les images produites sont de 1920 $\times$ 1080 pixels.
@@ -192,7 +192,7 @@ L'angle entre les caméras est de 10°, la distance focale des caméras est de 3
 Ces images de synthèse permettent de comparer des points d'intérêt trouvés de manière informatique, en vérifiant si les correspondances sont bonnes grâce à Blender.
 Pour ce faire, pour chaque caméra, nous traçons les rayons partant du centre de la caméra, passant par le point trouvé, et nous enregistrons le point de collision entre ce rayon et le rocher simulé (cf figure \ref{figure:blender_check}).
 La distance (3D) entre ces points de collision donne une métrique continue de la qualité du \textit{match}, qui peut être ensuite transormée en une métrique binaire (bon/mauvais \textit{match}) en mettant un seuil de distance, qui peut être variable, et qui correspond à la distance entre deux pixels au point considéré.
-Bien qu'une solution de filtrage par droite épipolaire aurait pu être envisagée, elle n'a pas été retenue par souci de rapidité d'implémentation par rapport à ce filtrage Blender et par souci de rapidité d'exécution sur les images considérées.
+Bien qu'une solution de filtrage par droite épipolaire aurait pu être envisagée, elle n'a pas été retenue par souci de rapidité d'implémentation par rapport à ce filtrage Blender et de rapidité d'exécution sur les images considérées.
 
 \begin{figure}[H]
 	\centering
@@ -224,7 +224,7 @@ points réels ne présentent que peu d'intérêt car leur voisinage présente
 peu de relief.
 
 La question est alors de définir un bon point
-d'intérêt, ie un point dont le voisinage topologique varie de façon
+d'intérêt, i.e. un point dont le voisinage topologique varie de façon
 assez significative pour être reconnaissable sur les deux images.
 Un changement de point d'observation s'effectue pendant
 la prise de celles-ci, changeant alors le relief apparent et le contraste.
@@ -245,11 +245,11 @@ l'information d'ordre $1$ fournie par le gradient. Un bon
 point d'intérêt a selon nous dans son voisinage une variation marquée des courbures.
 
 
-C'est pour cela qu'un préfiltrage grossier est fait: sur chaque image,
+C'est pour cela qu'un préfiltrage grossier est effectué : sur chaque image,
 seul $30 \%$ des pixels de plus grande courbure principale moyenne (en norme)
 sont gardés.
 
-\subsection{Descripteur}
+\subsection{Descripteur} \label{subsection:descripteur}
 Comme dans SIFT un descripteur est construit,
 son but est d'encoder dans un vecteur des caractéristiques topologiques de son voisinage, qu'on espère trouver
 sur les deux images le plus à l'identique possible.
@@ -292,7 +292,7 @@ $I: \llbracket 0, w-1 \rrbracket \times \llbracket 0, h-1 \rrbracket \rightarrow
 d'abscisses $x$ et d'ordonnées $y$, la norme du gradient
 et son orientation sont approximées par:
 
-\begin{multline}
+\begin{multline} \label{eq:magnitude_grad}
 	m(x, y) = \\
 	\sqrt{(I(x+1, y) - I(x-1,y))^2 + (I(x,y+1)-I(x,y-1))^2}
 \end{multline}
@@ -322,7 +322,7 @@ et les vecteurs propres associés sont tournés de $180$°.
 
 Le voisinage autour d'un pixel est ensuite construit. En appelant $\theta$
 l'orientation du gradient en le point, le voisinage en question est l'image par
-une rotation d'angle $\theta$ d'un carré de $15\times 15$ pixels, (IL MANQUE UN MOT ?)
+une rotation d'angle $\theta$ d'un carré de $15\times 15$ pixels,
 centré en le pixel. Cela permet d'être invariant par rotation.
 Ce voisinage est ensuite découpé en $9$ cellules de $25$ pixels.
 D'autre tailles de voisinage n'ont pas été testées en comparaison, à
@@ -341,7 +341,7 @@ d'écart type la moitié du voisinage, ici $7.5$, et ceci afin de limiter l'infl
 de la topologie aux bords du voisinage, voir la Figure~\ref{figure:lowe_desc_constr}.
 Les contributions sont ensuite transformées en pourcentage
 de la somme des contributions dans toutes les cellules, afin de fournir une invariance
-à la luminosité. Ainsi, le tableau des $9$ histogrammes est de taille $9 \times 72 = 648$
+à la luminosité. Ainsi, le tableau des $9$ histogrammes est de taille $9 \times 72 = 648$.
 
 \begin{figure}[H]
 	\centering
@@ -405,7 +405,7 @@ des bons points d'intérêts des mauvais,
 pour chaque image, la moyenne des histogrammes spatiaux de
 la courbure principale $1$ des bons points parmi les paires
 renvoyées par \textit{HM} est calculée. Idem pour les mauvais points, cf Figure~\ref{figure:desc_comp}.
-Cependant, aucune différence notable apparaît entre le bon et mauvais descripteurs,
+Cependant, aucune différence notable apparaît entre le bon et mauvais descripteur,
 les différences visibles sont de l'ordre de $0.01 \%$.
 Le même constat est fait pour les autres histogrammes spatiaux du
 descripteur. Ces observations ne
@@ -512,7 +512,7 @@ en Annexes.
 
 \subsection{Résultats sur images réelles}
 Les images réelles dont nous disposons ont comme résolution $800 \times 1500$ après recadrage. \textit{HM} a fonctionné
-avec un préfiltrage de $70 \%$, le temps de calcul a été de 4 heures 30 par image et 5 heures 10 pour l'appariement.
+avec un préfiltrage de $70 \%$, le temps de calcul a été de 4 heures 30 par image et 5 heures 10 pour l'appariement sur une machine à 20 coeurs.
 On voit clairement ici la limite de notre algorithme, peu parcimonieux par nature et implémenté en Python.
 Quant aux résultats, les zooms en Figure~\ref{figure:fig_irl} montrent de nombreux déchets, malgré de visiblement
 bonnes paires dans les zones contrastées.
