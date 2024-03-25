@@ -109,8 +109,9 @@ SIFT (\textit{Scale Invariant Feature Transform}) \autocite{Lowe:2004}, algorith
 L'espace des échelles de l'image est calculé en effectuant des différences de gausiennes, i.e. des différences pixel par pixel de l'image convoluée par des filtres gaussiens d'écart-type $\sigma$ variable.
 Un pixel à une échelle $\sigma_i$ est alors considéré comme un point d'intérêt si et seulement si sa valeur est supérieure (resp. inférieure) aux 8 pixels voisins à l'échelle $\sigma_i$, aux 9 pixels voisins à l'échelle $\sigma_{i+1}$ et aux 9 pixels voisins à l'échelle $\sigma_{i-1}$ (c'est alors un extremum de l'espace des échelles).
 Après une étape de filtrage intermédiaire, les points d'intérêt trouvés sont alors caractérisés par un histogramme d'orientation des gradients autour du point.
-Le détail de l'assignation d'une orientation et d'une magnitude aux gradients des voisins est donné par les équations %\ref{eq:gradient_orientation}.
-Chaque point d'intérêt est ainsi représenté par un descripteur de dimension 128, contenant les informations d'un carré de 4x4 histogrammes autour du point, avec 8 directions enregistrées dans chaque cellule. (INSERER IMAGE p.15 article SIFT)
+Le détail de l'assignation d'une orientation et d'une magnitude aux gradients des voisins est donné par les équations \ref{eq:gradient_orientation}.
+Chaque point d'intérêt est ainsi représenté par un descripteur de dimension 128, contenant les informations d'un carré de 
+4x4 histogrammes autour du point, avec 8 directions enregistrées dans chaque cellule (cf figure \ref{figure:lowe_desc_constr}).
 
 % \begin{figure}
 % 	\centering
@@ -124,9 +125,20 @@ Chaque point d'intérêt est ainsi représenté par un descripteur de dimension 
 
 \subsection{SURF}
 
+SURF \autocite{SURF} (\textit{Speeded Up Robust Features}) est un autre algorithme de détection 
+et un descripteur de points d'intérêt, mais qui lui utilise une somme de réponses à des ondelettes de Haar, après calcul d'une image intégrale, pour encoder l'information autour d'un point.
+L'algorithme n'a pas été étudié ici car il est encore sous brevet, et demandait donc de refaire une implémentation Python pour l'utiliser gratuitement.
+
 \subsection{DAISY}
 
-Rapide + wide baseline
+DAISY \autocite{DAISY} est un algorithme de détection et description de points d'intérêt conçu 
+pour fonctionner dans des conditions de haute distance entre caméras (\textit{baseline}) 
+et pour effectuer des calculs rapides en exploitant au maximum des convolutions. 
+Chaque point d'intérêt est codé par un vecteur de dimension 200, à partir d'histogrammes de gradients 
+calculés par convolution gaussienne avec un noyau symétrique circulairement.
+
+Malgré son efficacité et sa rapidité, DAISY n'a pas été étudié par manque d'implémentation en Python pour l'étudier dans le temps restreint du projet.
+
 
 \section{Données}
 
@@ -134,52 +146,63 @@ Dans cette section, nous présentons les images que nous avons à traiter dans l
 
 \subsection{Images réelles}
 
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}[H]{\columnwidth}
+		\centering
+		\includegraphics[width=0.55\textwidth]{images/scene_l_1_u.jpeg}
+	\end{subfigure}
+	\begin{subfigure}[H]{\columnwidth}
+		\centering
+		\includegraphics[width=0.55\textwidth]{images/scene_r_1_u.jpeg}
+	\end{subfigure}
+	\caption{Exemple d'images réelles prises lors d'une expérience en bassin peu profond, avant recadrage manuel.}
+	\label{figure:irl_example}
+\end{figure}
+
 Les images réelles dont nous disposons proviennent d'une expérience en bassin peu profond, dans lequel un rocher de dimensions approximatives 30 cm $\times$ 20 cm $\times$ 20 cm a été photographié par un robot à deux caméras. Un exemple d'image est disponible en figure \ref{figure:irl_example}.
 Les différences majeures entre des images en surface et des images sous-marines sont une perte de contraste significative et une modification des couleurs (visible à l'oeil nu).
 
-% \begin{figure}
-% 	\centering
-% 	\begin{subfigure}[H]{\columnwidth}
-% 		\centering
-% 		\includegraphics[width=\textwidth]{images/irl_example.png}
-% 	\end{subfigure}
-% 	\label{figure:irl_example}
-% 	\caption{Une image réelle expérimentale}
-% \end{figure}
-
 Les paramètres des images et des caméras sont donnés ici.
-Les images sont de résolution XX, l'angle entre les caméras nous a été estimé à 10°, les caméras sont situés à environ 1m du rocher, et elles ont une distance focale de XX mm.
+Les images sont de résolution 3000 $\times$ 2000, l'angle entre les caméras nous a été estimé à 10°, les caméras sont situés à environ 1m du rocher, et elles ont une distance focale de 35 mm.
+
+
 
 \subsection{Images de synthèse}
 
-Pour pouvoir comparer les performances des descripteurs de l'état de l'art et le descripteur que nous avons conçu, nous avons décidé de créer des images de synthèse à l'aide du logiciel open-source Blender [\ref{cite:blender}], pour créer une scène 3D dans laquelle tous les paramètres seraient connus.
+Pour pouvoir comparer les performances des descripteurs de l'état de l'art et le descripteur que nous avons conçu, nous avons décidé de créer des images de synthèse à l'aide du logiciel open-source Blender \autocite{Blender}, pour créer une scène 3D dans laquelle tous les paramètres seraient connus.
 Un rocher texturé a été simulé dans cette scène 3D à l'aide de déformations à bruit gaussien, et deux caméras ont été placées pour simuler la stéréographie sous-marine. Les dimensions du rocher sont de 35.4 cm $\times$ 21.4 cm $\times$ 25.6 cm.
-Les scènes sont disponibles sur le dépôt du projet, nous donnons ici les principaux paramètres des scènes en table \ref{table:params_syn_imgs}
+Les scènes sont disponibles sur le dépôt du projet, et nous donnons ici leurs principaux paramètres.
+L'angle entre les caméras est de 10°, la distance focale des caméras est de 35 mm, la distance au rocher de 1 m. Les images produites sont de 1920 $\times$ 1080 pixels.
 
-\begin{table*}[t]
-	\begin{adjustbox}{width=\columnwidth, left}
-		\begin{tabular}{l c}
-			\hline
-			Résolution          & ??    \\
-			\hline
-			Angle entre caméras & $10$° \\
-			Distance focale     & ??    \\
-			Distance à l'objet  & 1m    \\
-			\hline
-		\end{tabular}
-	\end{adjustbox}
-	\label{table:params_syn_imgs}
-	\caption{Paramètres des images de synthèse (A MODIFIER)}
-\end{table*}
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}[H]{\columnwidth}
+		\centering
+		\includegraphics[width=0.55\textwidth]{images/rocks_2_10_deg_higher_distance_left.png}
+	\end{subfigure}
+	\begin{subfigure}[H]{\columnwidth}
+		\centering
+		\includegraphics[width=0.55\textwidth]{images/rocks_2_10_deg_higher_distance_right.png}
+	\end{subfigure}
+	\caption{Exemple d'images de synthèse produites, avant recadrage manuel.}
+	\label{figure:blender_example}
+\end{figure}
 
 Ces images de synthèse permettent de comparer des points d'intérêt trouvés de manière informatique, en vérifiant si les correspondances sont bonnes grâce à Blender.
-Pour ce faire, pour chaque caméra, nous traçons les rayons partant du centre de la caméra, passant par le point trouvé, et nous enregistrons le point de collision entre ce rayon et le rocher simulé.
+Pour ce faire, pour chaque caméra, nous traçons les rayons partant du centre de la caméra, passant par le point trouvé, et nous enregistrons le point de collision entre ce rayon et le rocher simulé (cf figure \ref{figure:blender_check}).
 La distance (3D) entre ces points de collision donne une métrique continue de la qualité du \textit{match}, qui peut être ensuite transormée en une métrique binaire (bon/mauvais \textit{match}) en mettant un seuil de distance, qui peut être variable, et qui correspond à la distance entre deux pixels au point considéré.
+Bien qu'une solution de filtrage par droite épipolaire aurait pu être envisagée, elle n'a pas été retenue par souci de rapidité d'implémentation par rapport à ce filtrage Blender et par souci de rapidité d'exécution sur les images considérées.
 
-
-(Rajouter pas de filtrage droite épipolaire car long à implémenter par rappport à Blender + long à faire tourner sur grosses images)
-
-(RAJOUTER IMAGE VERIFICATION BLENDER)
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}[H]{\columnwidth}
+		\centering
+		\includegraphics[width=0.55\textwidth]{images/blender_check.png}
+	\end{subfigure}
+	\caption{Tracé des rayons passant par les centres des caméras et un point d'intérêt interceptant l'objet simulé dans le logiciel Blender.}
+	\label{figure:blender_check}
+\end{figure}
 
 \section{Méthodologie}
 
