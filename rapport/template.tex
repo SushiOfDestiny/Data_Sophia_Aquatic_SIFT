@@ -53,7 +53,7 @@
 %	TITLE SECTION
 %----------------------------------------------------------------------------------------
 
-\title{Améliorer la localisation de points d'intérêt sur des images sous-marines en stéréo.} % Article title, use manual lines breaks (\\) to beautify the layout
+\title{Améliorer la localisation de points d'intérêt sur des images stéréographiques en milieu sous-marin.} % Article title, use manual lines breaks (\\) to beautify the layout
 
 % Authors are listed in a comma-separated list with superscript numbers indicating affiliations
 % \thanks{} is used for any text that should be placed in a footnote on the first page, such as the corresponding author's email, journal acceptance dates, a copyright/license notice, keywords, etc
@@ -66,11 +66,17 @@
 % Full-width abstract
 \renewcommand{\maketitlehookd}{%
 	\begin{abstract}
-		\noindent Malgré l'efficacité des algorithmes de détection et caractérisation de points d'intérêt actuels, leur performance lors de tâches de stéréographie sous-marine diminue significativement, au point de baisser la précision d'algorithmes de reconstruction 3D en milieu sous-marin.
-		Dans cet article, nous proposons un nouveau descripteur de points d'intérêt, basé sur \textit{SIFT}, qui lui rajoute l'information portée par les courbures principales dans chaque point de l'image.
-		Ce descripteur est comparé à SIFT de manière quantitative sur des images de synthèse simulant le dispositif expérimental de stéréographie ainsi que sur des photographies réelles.
-		Un meilleur taux de bons points d'intérêt est trouvé sur images de synthèse, mais celui-ci n'est pas retrouvé sur les photographies.
-		Nous proposons ensuite des pistes d'amélioration du descripteur et de la méthodologie de comparaison.
+		% \noindent Malgré l'efficacité des algorithmes de détection et caractérisation de points d'intérêt actuels, leur performance lors de tâches de stéréographie sous-marine diminue significativement, au point de baisser la précision d'algorithmes de reconstruction 3D en milieu sous-marin.
+		% Dans cet article, nous proposons un nouveau descripteur de points d'intérêt, basé sur \textit{SIFT}, qui lui rajoute l'information portée par les courbures principales dans chaque point de l'image.
+		% Ce descripteur est comparé à SIFT de manière quantitative sur des images de synthèse simulant le dispositif expérimental de stéréographie ainsi que sur des photographies réelles.
+		% Un meilleur taux de bons points d'intérêt est trouvé sur images de synthèse, mais celui-ci n'est pas retrouvé sur les photographies.
+		% Nous proposons ensuite des pistes d'amélioration du descripteur et de la méthodologie de comparaison.
+		\noindent Localiser des paires de points d'intérêt sur des images stéréographiques avec une précision en dessous du pixel est une tâche difficile avec les méthodes actuelles.
+		De plus, construire un modèle 3D d'un objet réel requiert de trouver un nombre conséquent de telles paires. La principale difficulté provient du manque de contraste
+		des images sous-marines. Dans cet article, un nouvel algorithme de localisation de paires de points d'intérêt est présenté. Inspiré de SIFT, algorithme incontournable
+		sur le sujet, il construit des histogrammes de gradients des voisins d'un point et les compare entre les images. Contrairement à SIFT, 
+		il ajoute l'information des courbures principales des images mais détecte uniquement des motifs de taille constante. Sur des images
+		de synthèse, il détecte plus de paires que SIFT, au pixel près, mais ce n'est pas le cas sur des images réelles. Des pistes d'amélioration sont proposées.
 	\end{abstract}
 }
 
@@ -88,35 +94,57 @@
 
 \subsection{Contexte}
 
-Les algorithmes de \textit{computer vision} pour la détection de points d'intérêt sont aujourd'hui extrêmement efficaces, en particulier depuis la publication de \textit{\textit{SIFT}} \autocite{Lowe:2004} en 2004, avec des applications dans de nombreux domaines : médecine, logistique et imagerie numérique pour ne citer qu'eux.
-Néanmoins, les algorithmes existants semblent inadaptés lorsqu'il s'agit de traiter des images sous-marines, et ce principalement à cause de la perte de contraste et du manque de luminosité aux profondeurs considérées.
-Un domaine dans lequel cette lacune est particulièrement visible est la reconstruction de coraux par images sous-marines. Des images de l'organisme marin sont prises en stéréographie à l'aide d'un robot possédant deux caméras, et une reconstitution 3D est ensuite effectuée en comparant les images prises par les deux caméras pour déterminer la profondeur de chaque point dans les images.
-Cette détermination de la profondeur passe par un \textit{matching} entre les deux images : pour certains points notables dans l'image de gauche, appelés points d'intérêt, le point correspondant sur l'image de droite doit être trouvé.
-Pour avoir une grande précision dans cette reconstitution ($< 1$mm, ce qui n'est pas atteint à l'heure actuelle), il est nécessaire d'avoir un grand nombre de points ($N \approx 3000$ sur des images de résolution $3000 \times 2000$) dont la correspondance est exacte.
-Or \textit{\textit{SIFT}} donne un très grand nombre de correspondances ($N \approx 3000$) sur ce type d'images, mais dont un très grand nombre sont erronées, ce qui fait baisser la précision de la reconstruction d'un facteur $10$, voire plus.
-Nous avons donc souhaité améliorer la détection et la caractérisation de points d'intérêt dans des images sous-marines pour pouvoir augmenter la précision des méthodes de reconstitution d'organismes sous-marins, qui sont amenées à se développer aujourd'hui pour faire face à la perte massive de récifs coraliens.
-L'entièreté de notre code se trouve dans le dépôt \textit{Github} suivant \footnote{Lien: \href{https://github.com/SushiOfDestiny/Data_Sophia_Aquatic_SIFT}{$https://github.com/SushiOfDestiny/Data\_Sophia\_Aquatic\_SIFT$}}.
+Les algorithmes de \textit{Computer Vision} pour la détection de points d'intérêt sont aujourd'hui extrêmement efficaces, en particulier depuis la publication de \textit{\textit{SIFT}} \autocite{Lowe:2004} en 2004, avec des applications dans de nombreux domaines : médecine, logistique et imagerie numérique pour ne citer qu'eux.
+Néanmoins, les algorithmes %semblent inadaptés lorsqu'il s'agit de traiter des images sous-marines
+existants ont des résultats mitigés sur des images sous-marines, %et ce principalement à cause de la perte de contraste et du manque de luminosité aux profondeurs considérées.
+En effet, ils proposent de nombreuses paires présentant un écart de plus d'$1$ pixel, qui fausseraient une éventuelle reconstruction 3D.
+Une difficulté majeure du milieu sous-marin est la perte de contraste et le manque de luminosité aux profondeurs considérées.
+
+Un domaine dans lequel cette lacune est particulièrement visible est la reconstruction de coraux par images sous-marines. Des images de l'organisme marin sont prises en stéréographie à l'aide d'un robot possédant deux caméras, et une reconstruction 3D est
+ensuite effectuée en comparant les images prises par les deux caméras pour déterminer %la profondeur de chaque point dans les images.
+la distance des points aux caméras.
+Cette détermination de la profondeur passe par un %\textit{matching}
+appariemment entre les deux images : pour certains points notables dans l'image de gauche, appelés points d'intérêt, le point correspondant sur l'image de droite %doit être trouvé.
+est recherché.
+Pour avoir une %grande précision dans cette reconstruction ($< 1$mm, ce qui n'est pas atteint à l'heure actuelle), 
+une précision inférieure à $1$mm, il est nécessaire d'avoir un grand nombre de %points
+paires : $N \approx 3000$ sur des images de résolution $3000 \times 2000$ dont la correspondance est exacte.
+Or %\textit{SIFT} donne un très grand nombre de correspondances ($N \approx 3000$) sur ce type d'images, mais dont un très grand nombre sont erronées, 
+parmi les paires renvoyées par \textit{SIFT}, bon nombre ne sont pas assez précises, %ce qui fait baisser la précision de la reconstruction d'un facteur $10$, voire plus.
+dégradant significativement la qualité de la reconstruction 3D.
+
+% Nous avons donc souhaité 
+L'objectif de l'article est donc d'améliorer la détection et la caractérisation de points d'intérêt dans des images sous-marines pour pouvoir augmenter la précision des méthodes de reconstruction d'organismes sous-marins, qui sont amenées à se développer aujourd'hui pour faire face à la perte massive de récifs coraliens.
+L'entièreté du code informatique se trouve dans le dépôt \textit{Github} suivant \footnote{Lien: \href{https://github.com/SushiOfDestiny/Data_Sophia_Aquatic_SIFT}{$https://github.com/SushiOfDestiny/Data\_Sophia\_Aquatic\_SIFT$}}.
 
 \subsection{Objectif}
 
-Notre objectif a été d'améliorer le taux de détection de "bons" points d'intérêt par rapport à l'algorithme \textit{SIFT}. Des "bons" points sont des points qui correspondent de manière non équivoque et au pixel près au même point dans le monde réel.
-Pour cela, nous avons été amenés à définir ce qui caractérisait un point d'intérêt, et à définir des métriques objectives et quantitatives permettant de comparer les algorithmes sur la détection et la correspondance de points d'intérêt.
+Notre objectif est donc % d'améliorer le taux de détection de "bons" points d'intérêt par rapport à l'algorithme \textit{SIFT}. 
+de dépasser le taux de paires de points localisées au pixel près sur les images stéréographiques par l'algorithme \textit{SIFT}.
+% Un "bon" point est un point qui correspond de manière univoque et au pixel près au même point dans le monde réel.
+Pour cela, % nous avons été amenés à définir ce qui caractérisait un point d'intérêt, et à définir des métriques objectives et quantitatives permettant de comparer les algorithmes sur la détection et la correspondance de points d'intérêt.
+nous avons cherché quel relief topologique autour d'un point maximisait la détection de celui-ci sur les deux images,
+et nous avons conçu des métriques pour quantifier la performance de notre algorithme et pour le comparer à \textit{SIFT}.
+
 
 %------------------------------------------------
 \section{Etat de l'art}
 
-Dans cette section, nous présentons les algorithmes de détection et caractérisation de points d'intérêt déjà développés dans la littérature.
-Contrairement à du \textit{pattern matching} fait à partir de corrélations par patchs (la corrélation entre le pattern recherché et une fenêtre carrée glissante sur l'image est calculée, et le patch où elle est maximale est le pattern recherché), ces algorithmes ont été conçus pour résister à une variation d'échelle et une rotation des images.
+Dans cette section, nous présentons les algorithmes de détection et caractérisation de points d'intérêt % déjà développés dans la littérature.
+les plus utilisés à l'heure actuelle.
+Contrairement à du \textit{pattern matching} fait à partir de corrélations par patchs (la corrélation entre le motif recherché et une fenêtre carrée glissante sur l'image est calculée, et le patch où elle est maximale est le pattern recherché),
+ces algorithmes ont été conçus pour résister à une variation d'échelle, une rotation des images est un changement de point de vue.
 
 \subsection{\textit{SIFT}}
 
 \textit{SIFT} (\textit{Scale Invariant Feature Transform}) \autocite{Lowe:2004}, algorithme fondateur dans le domaine, utilise les extrema de l'espace des échelles pour déterminer des points d'intérêt dans l'image.
-L'espace des échelles de l'image est calculé en effectuant des différences de gausiennes, i.e. des différences pixel par pixel de l'image convoluée par des filtres gaussiens d'écart-type $\sigma$ variable.
-Un pixel à une échelle $\sigma_i$ est alors considéré comme un point d'intérêt si et seulement si sa valeur est supérieure (resp. inférieure) aux $8$ pixels voisins à l'échelle $\sigma_i$, aux $9$ pixels voisins à l'échelle $\sigma_{i+1}$ et aux $9$ pixels voisins à l'échelle $\sigma_{i-1}$ (c'est alors un extremum de l'espace des échelles).
-Après une étape de filtrage intermédiaire, les points d'intérêt trouvés sont alors caractérisés par un histogramme d'orientation des gradients autour du point.
-Le détail de l'assignation d'une orientation et d'une magnitude aux gradients des voisins est donné par les équations~\ref{eq:angle_grad} et \ref{eq:magnitude_grad} .
-Chaque point d'intérêt est ainsi représenté par un descripteur de dimension 128, contenant les informations d'un carré de
-$4 \times 4$ histogrammes autour du point, avec $8$ directions enregistrées dans chaque cellule (cf figure \ref{figure:lowe_desc_constr}).
+L'espace des échelles de l'image est constitué de différences de gaussiennes, i.e. des différences pixel par pixel de l'image convoluée par des filtres gaussiens d'écart-types différents.
+Un pixel à une échelle $\sigma_i$ est alors considéré comme un point d'intérêt quand sa valeur est supérieure (resp. inférieure) aux $8$ pixels voisins à l'échelle $\sigma_i$, aux $9$ pixels voisins à l'échelle $\sigma_{i+1}$ et aux $9$ pixels voisins à l'échelle $\sigma_{i-1}$
+(c'est alors un extremum de l'espace des échelles).
+Après un filtrage et une interpolation intermédiaires, les points d'intérêt restants sont alors caractérisés par un histogramme des gradients voisins.
+L'orientation et la magnitude du gradient d'un point est définie par les équations~\ref{eq:angle_grad} et \ref{eq:magnitude_grad}.
+Chaque point d'intérêt est ainsi représenté par un vectuer de dimension $128$, contenant les informations d'un carré de
+$4 \times 4$ histogrammes autour du point, avec $8$ directions enregistrées dans chaque cellule (cf Figure~\ref{figure:lowe_desc_constr}).
 
 % \begin{figure}
 % 	\centering
@@ -130,24 +158,24 @@ $4 \times 4$ histogrammes autour du point, avec $8$ directions enregistrées dan
 
 \subsection{\textit{SURF}}
 
-\textit{SURF} \autocite{SURF} (\textit{Speeded Up Robust Features}) est un autre algorithme de détection
-et un descripteur de points d'intérêt, mais qui lui utilise une somme de réponses à des ondelettes de Haar, après calcul d'une image intégrale, pour encoder l'information autour d'un point.
-L'algorithme n'a pas été étudié ici car il est encore sous brevet, et demandait donc de refaire une implémentation \textit{Python} pour l'utiliser gratuitement.
+\textit{SURF} \autocite{SURF} (\textit{Speeded Up Robust Features}) est un algorithme de détection
+et de caractérisation de points d'intérêt, plus récent et plus rapide que \textit{SIFT}.
+Pour caractériser un point d'intérêt, il utilise des images intégrales et des sommes de réponses à des ondelettes de Haar.
+\textit{SURF} n'a pas été étudié ici car il est encore sous brevet, et demandait donc de refaire une implémentation \textit{Python}.
 
 \subsection{\textit{DAISY}}
 
-\textit{DAISY} \autocite{DAISY} est un algorithme de détection et description de points d'intérêt conçu
-pour fonctionner dans des conditions de haute distance entre caméras (\textit{baseline})
-et pour effectuer des calculs rapides en exploitant au maximum des convolutions.
+\textit{DAISY} \autocite{DAISY} a la même fonction que les deux algorithmes précédent.
+Il est développé pour être utilisé lorsque la distance entre les caméras stéréographiques (\textit{baseline}) est grande.
+Pour effectuer des calculs rapides, il repose sur des convolutions.
 Chaque point d'intérêt est codé par un vecteur de dimension $200$, à partir d'histogrammes de gradients
 calculés par convolution gaussienne avec un noyau symétrique circulairement.
-
-Malgré son efficacité et sa rapidité, \textit{DAISY} n'a pas été étudié par manque d'implémentation en \textit{Python} pour l'étudier dans le temps restreint du projet.
+\textit{DAISY} n'a pas été étudié non plus.
 
 
 \section{Données}
 
-Dans cette section, nous présentons les images que nous avons à traiter dans le cadre de la stéréographie sous-marine.
+Dans cette section, nous présentons les images sur lesquelles les performances des algorithmes ont été évaluées.
 
 \subsection{Images réelles}
 
@@ -161,24 +189,32 @@ Dans cette section, nous présentons les images que nous avons à traiter dans l
 		\centering
 		\includegraphics[width=\textwidth]{images/scene_r_1_u.jpeg}
 	\end{subfigure}
-	\caption{Exemple d'images réelles prises lors d'une expérience en bassin peu profond, avant recadrage manuel.}
+	\caption{Exemple d'images réelles prises lors d'une expérience en bassin peu profond.}
 	\label{figure:irl_example}
 \end{figure}
 
-Les images réelles dont nous disposons proviennent d'une expérience en bassin peu profond, dans lequel un rocher de dimensions approximatives $30$ cm $\times$ $20$ cm $\times$ $20$ cm a été photographié par un robot à deux caméras. Un exemple d'image est disponible en Figure~\ref{figure:irl_example}.
-Les différences majeures entre des images en surface et des images sous-marines sont une perte de contraste significative et une modification des couleurs (visible à l'oeil nu).
-
-Les paramètres des images et des caméras sont donnés ici.
-Les images sont de résolution $3000 \times 2000$, l'angle entre les caméras nous a été estimé à $10$°, les caméras sont situés à environ 1m du rocher, et elles ont une distance focale de 35 mm.
+Les images réelles dont nous disposons proviennent d'une expérience en bassin peu profond,
+dans lequel un rocher d'environ $30$ cm $\times$ $20$ cm $\times$ $20$ cm est photographié par un robot à deux caméras.
+Un exemple d'image est disponible en Figure~\ref{figure:irl_example}.
+Les différences majeures entre des images en surface et des images sous-marines
+sont une perte de contraste significative et une modification des couleurs (visible à l'oeil nu).
+Les images sont de résolution $3000 \times 2000$, l'angle entre les caméras est estimé à $10$°,
+les caméras sont situées à environ $1$m du rocher, et ont une distance focale de $35$mm.
 
 
 
 \subsection{Images de synthèse}
+La précision de paires de points d'intérêt sur des images réelles est souvent calculée par une méthode de filtrage avec la droite épipolaire.
+Cette méthode présente l'inconvénient d'être longue et coûteuse en calcul. De fait, une méthode alternative est développée
+pour pouvoir quantifier les performances entre l'algorithme présenté ici et \textit{SIFT}.
 
-Pour pouvoir comparer les performances des descripteurs de l'état de l'art et le descripteur que nous avons conçu, nous avons décidé de créer des images de synthèse à l'aide du logiciel open-source \textit{Blender} \autocite{Blender}, pour créer une scène 3D dans laquelle tous les paramètres seraient connus.
-Un rocher texturé a été simulé dans cette scène 3D à l'aide de déformations à bruit gaussien, et deux caméras ont été placées pour simuler la stéréographie sous-marine. Les dimensions du rocher sont de $35.4$ cm $\times$ $21.4$ cm $\times$ $25.6$ cm.
-Les scènes sont disponibles sur le dépôt du projet, et nous donnons ici leurs principaux paramètres.
-L'angle entre les caméras est de $10$°, la distance focale des caméras est de $35$ mm, la distance au rocher de $1$ m. Les images produites sont de $1920 \times 1080$ pixels.
+% nous avons décidé de créer des images de synthèse à l'aide du logiciel open-source \textit{Blender} \autocite{Blender}pour créer une scène 3D dans laquelle tous les paramètres seraient connus.
+Une scène 3D se voulant fidèle à la réalité et dont les paramètres sont parfaitement connus est construite avec le logiciel open-source \textit{Blender}.
+Cette scène comporte un rocher dont la texture est obtenue avec des déformations à bruit gaussien, et deux caméras simulant la stéréographie sous-marine.
+Les dimensions du rocher sont de $35.4$ cm $\times$ $21.4$ cm $\times$ $25.6$ cm.
+Comme avec les images réelles, l'angle entre les caméras est de $10$°, la distance focale des caméras est de $35$ mm,
+la distance au rocher de $1$ m. Les images produites sont de $1920 \times 1080$ pixels.
+Les scènes sont également disponibles sur le dépôt du projet.
 
 \begin{figure}[H]
 	\centering
@@ -190,14 +226,16 @@ L'angle entre les caméras est de $10$°, la distance focale des caméras est de
 		\centering
 		\includegraphics[width=\textwidth]{images/rocks_2_10_deg_higher_distance_right.png}
 	\end{subfigure}
-	\caption{Exemple d'images de synthèse produites, avant recadrage manuel.}
+	\caption{Exemple d'images de synthèse produites.}
 	\label{figure:blender_example}
 \end{figure}
-
-Ces images de synthèse permettent de comparer des points d'intérêt trouvés de manière informatique, en vérifiant si les correspondances sont bonnes grâce à \textit{Blender}.
-Pour ce faire, pour chaque caméra, nous traçons les rayons partant du centre de la caméra, passant par le point trouvé, et nous enregistrons le point de collision entre ce rayon et le rocher simulé (cf figure \ref{figure:blender_check}).
-La distance (3D) entre ces points de collision donne une métrique continue de la qualité du \textit{match}, qui peut être ensuite transormée en une métrique binaire (bon/mauvais \textit{match}) en mettant un seuil de distance, qui peut être variable, et qui correspond à la distance entre deux pixels au point considéré.
-Bien qu'une solution de filtrage par droite épipolaire aurait pu être envisagée, elle n'a pas été retenue par souci de rapidité d'implémentation par rapport à ce filtrage \textit{Blender} et par souci de rapidité d'exécution sur les images considérées.
+% Ces images de synthèse permettent de comparer %des points d'intérêt trouvés de manière informatique % automatiquement des , en vérifiant si les correspondances sont bonnes grâce à \textit{Blender}.
+Sur ces images de synthèse, l'exactitude d'une paire de points est calculée automatiquement selon la procédure suivante.
+% Pour chaque caméra, nous traçons les rayons partant du centre de la caméra, passant par le point trouvé, et nous enregistrons le point de collision entre ce rayon et le rocher simulé (cf figure \ref{figure:blender_check}).
+Pour chaque caméra, les rayons passant par le centre de la caméra et le pixel considéré situé sur l'image de la caméra sont tracés. Ce rayon intersecte le rocher 3D en un point de collision, qui est enregistré (cf Figure~\ref{figure:blender_check}).
+La distance euclidienne entre les points de collision de chacune des caméras est utilisée pour évaluer la précision de la paire considérée.
+Si cette distance dépasse un certain seuil, alors la paire de pixels est rejetée. %, qui peut être ensuite transormée en une métrique binaire (bon/mauvais \textit{match}) en mettant un seuil de distance, qui peut être variable, et qui correspond à la distance entre deux pixels au point considéré.
+% Bien qu'une solution de filtrage par droite épipolaire aurait pu être envisagée, elle n'a pas été retenue par souci de rapidité d'implémentation par rapport à ce filtrage \textit{Blender} et par souci de rapidité d'exécution sur les images considérées.
 
 \begin{figure}[H]
 	\centering
@@ -216,15 +254,15 @@ Les images sont transformées en niveau de gris par simple moyenne des $3$ canau
 Un recadrage manuel est effectué pour enlever au maximum les pixels de l'arrière-plan, car les points
 d'intérêts sont à chercher sur l'objet photographié. Ensuite un filtre gaussien est
 appliqué, d'écart-type $1$ et uniquement sur les images de synthèse, car les images réelles
-ont peu de contraste. En réponse, des méthodes d'augmentation
+ont peu de contraste. Pour pallier cela, des méthodes d'augmentation
 de contraste ont été testées, aucune amélioration notable n'a été constatée.
 
 
 \subsection{Notion de point d'intérêt}
 
 Il est certes possible de chercher les paires de points de façon brute entre
-l'entièreté des pixels de chaque image, mais c'est insensé sur le
-point de vue du temps de calcul, et clairement inutile: beaucoup de
+l'entièreté des pixels de chaque image, mais c'est implique de longs temps de calcul,
+et n'est clairement pas le plus efficace : beaucoup de
 points réels ne présentent que peu d'intérêt car leur voisinage présente
 peu de relief.
 
@@ -235,7 +273,7 @@ Un changement de point d'observation s'effectue pendant
 la prise de celles-ci, changeant alors le relief apparent et le contraste.
 
 Pour la caractérisation des points, \textit{SIFT} se concentre sur la répartition des gradients
-dans le voisinage. Il élimine avant cela les points sur des arêtes, jugés trop
+dans le voisinage. Il élimine en amont les points sur des arêtes, jugés trop
 sensibles au bruit, il calcule pour cela la trace et le déterminant
 de la hessienne, fonctions des courbures principales.
 
@@ -255,8 +293,8 @@ seul $30 \%$ des pixels de plus grande courbure principale moyenne (en norme)
 sont gardés.
 
 \subsection{Descripteur}\label{subsection:descripteur}
-Comme dans \textit{SIFT} un descripteur est construit,
-son but est d'encoder dans un vecteur des caractéristiques topologiques de son voisinage, qu'on espère trouver
+Comme dans \textit{SIFT}, un descripteur est construit,
+son but est d'encoder dans un vecteur des caractéristiques topologiques du voisinage du point, qu'on espère trouver
 sur les deux images le plus à l'identique possible.
 
 Définissons d'abord des propriétés de robustesse
@@ -274,16 +312,16 @@ que nous souhaitons pour notre descripteur:
 \end{enumerate}
 
 Il est important de souligner que l'invariance par échelle, propriété essentielle de \textit{SIFT},
-n'a pas été implémentée. La raison est que cette propriété
+n'est pas implémentée. La raison est que cette propriété
 répond à un besoin très général d'identifier des points d'intérêt à différentes
 échelles. C'est très utile lorsque l'objet ciblé présente une structure et
 un relief très variés, par exemple une maison. Mais dans notre utilisation précise,
 nous voulons à terme photographier des récifs coraliens, et actuellement, en
-phase expérimentale, nous utilisons des rochers. Le relief d'un rocher ne présente
-pas de motif notable, comme des arêtes marquées, mais tend au contraire à être
-uniforme et répétitif.
+phase expérimentale, nous utilisons des rochers.
 
-Il semble raisonnable de tirer parti de la
+Le relief d'un rocher ne présente
+pas de motif notable, comme des arêtes marquées, mais tend au contraire à être
+uniforme et répétitif. Il semble raisonnable de tirer parti de la
 constance du dispositif expérimental, pour trouver assez de bons points ($N > 3000$)
 en comparant des voisinages d'une même taille fixe, déterminée à l'avance.
 
@@ -321,7 +359,7 @@ similairement, voir l'équation~\ref{eq:hess_coefs} en Annexes :
 Puis le module \textit{Numpy} de \textit{\textit{Python}} est utilisé pour en obtenir les valeurs et vecteurs
 propres.
 Avant de construire l'histogramme, quelques choix techniques doivent être précisés.
-Dans tout l'algorithme, les angles sont dans $[0, 360]$. Afin de n'avoir que des
+Dans tout l'algorithme, les angles sont en degrés et dans $[0, 360]$. Afin de n'avoir que des
 courbures positives, les courbures négatives sont multipliées par $-1$
 et les vecteurs propres associés sont tournés de $180$°.
 
@@ -329,13 +367,12 @@ Le voisinage autour d'un pixel est ensuite construit. En appelant $\theta$
 l'orientation du gradient en le point, le voisinage en question est l'image par
 une rotation d'angle $\theta$ d'un carré de $15\times 15$ pixels,
 centré en le pixel. Cela permet d'être invariant par rotation.
-Ce voisinage est ensuite découpé en $9$ cellules de $25$ pixels.
+Ce voisinage est ensuite découpé en $9$ cellules de $25$ pixels chacune.
 D'autre tailles de voisinage n'ont pas été testées en comparaison, à
 part un voisinage $5 \times 5$ qui a sans surprise donné de moins bons résultats.
 
 Un histogramme des gradients des pixels est alors calculé en chacune des $9$ cellules .
-Chaque gradient d'un voisin contribue à
-l'angle correspondant à l'écart entre son orientation et celle du pixel central.
+Chaque gradient d'un voisin est une contribution à l'angle correspondant à l'écart entre l'orientation du voisin et celle du pixel central.
 La résolution angulaire de l'histogramme est $5$°, donc celui-ci est un vecteur de taille
 $360 / 5 = 72$.
 La contribution d'un pixel
@@ -360,26 +397,26 @@ de la somme des contributions dans toutes les cellules, afin de fournir une inva
 	\end{subfigure}
 	\caption{Schémas des gradients d'un voisinage $8 \times 8$ d'un pixel, la pondération
 		gaussienne y apparaît en bleu, et des histogrammes des cellules. (Illustrations tirées
-		de \textit{SIFT}) }
+		de \textit{SIFT} \autocite{Lowe:2004}).}
 	\label{figure:lowe_desc_constr}
 \end{figure}
 
-On calcule de la même façon les deux histogrammes des courbures principales
-(ordonnées par valeur signée décroissante). Pour cela,
-on définit l'orientation d'une courbure principale comme l'angle fait entre sa
+Les deux histogrammes des courbures principales ((ordonnées par valeur signée décroissante)
+sont calculés selon le même principe. Pour cela,
+l'orientation d'une courbure principale est définie comme l'angle fait entre sa
 direction et le vecteur horizontal $e_x=(x=1, y=0)$, et la contribution va,
 comme précédemment, à l'écart entre les orientations du voisin et du pixel central.
 Comme exemple, voir la Figure~\ref{figure:fig_hist} en Annexes.
 
-En concaténant les $3$ tableaux d'histogrammes, on obtient le descripteur du pixel,
+En concaténant les $3$ tableaux d'histogrammes, on obtient le descripteur final du pixel,
 qui est un vecteur de taille $3 \times 648 = 1944$.
 
 
 \subsection{Appariement}
 
 Bien qu'il existe des méthode analogues aux plus proches voisins adaptées à de la haute dimension,
-comme la \textit{Best Bin First}, elles n'ont pas utilisées car elles n'ont
-pas été recréées pour le projet et celles des librairies \textit{\textit{Python}} ne peuvent pas être
+comme la \textit{Best Bin First}, elles n'ont pas utilisées car il aurait été nécessaire de les réimplémenter.
+En effet, celles des librairies \textit{Python} ne peuvent pas être
 précompilées en \textit{C} par \textit{Numba}, module utilisé pour avoir des temps
 de calcul "raisonnables".
 
@@ -389,19 +426,18 @@ dans le sens où il minimise leur distance euclidienne.
 Ce choix de distance a encore été fait par défaut et aucune autre distance
 n'a été testée.
 
-Il pourrait être intéressant d'expérimenter avec une norme pondérée, accordant plus d'importance
+Il serait intéressant d'expérimenter avec une norme pondérée, accordant plus d'importance
 à l'information des gradients par rapport à celle des courbures.
 
 \subsection{Postfiltrage}
-Une fois les paires calculées, nous n'en gardons que $2 \%$ du nombre de pixels de l'image,
-ayant les plus petites distances, ie les paires avec le plus haut taux
-de confiance. Ce seuil a été retenu puisqu'il correspond à un peu plus que
-l'objectif de $3000$ bonnes paires sur nos images réelles recadrées, de résolution
+Parmi les paires de points calculées, seul un nombre équivalent à $2 \%$ du nombre de pixels de l'image est gardé.
+Les paires gardées sont celles ayant les plus petites distances, i.e. avec le plus haut taux
+de confiance. Ce seuil est retenu puisqu'il correspond à un peu plus que
+l'objectif de $3000$ bonnes paires sur les images réelles recadrées, de résolution
 $900 \times 1400$.
-Nous l'avons aussi utilisé sur nos images de synthèses, même si la résolution est inférieure.
+Le même seuil est utilisé sur les images de synthèses, même si la résolution est inférieure.
 
-Par commodité, on désignera notre algorithme
-par \textit{HM}, pour \textit{Home Made}.
+Par commodité, l'algorithme conçu dans l'article est appelé \textit{HM}, pour \textit{Home Made}.
 
 \subsection{Analyse du descripteur sur images de synthèse}
 
@@ -456,28 +492,32 @@ permettent pas d'inférer un critère de sélection de bons points d'intérêt.
 
 \section{Résultats}
 
-Dans cette section, \textit{HM} est comparé avec \textit{SIFT}, paramétré par défaut, ie avec un seuil de contraste de $0.04$,
+Dans cette section, \textit{HM} est comparé avec \textit{SIFT}, paramétré par défaut, i.e. avec un seuil de contraste de $0.04$,
 un seuil d'arête de $10$, un écart type de gaussienne de $1.6$, et un seuil de distance de $0.75$.
-Il aurait été intéressant d'essayer d'optimiser \textit{SIFT} sur les images de synthèse
+Il serait intéressant d'optimiser \textit{SIFT} sur les images de synthèse
 pour avoir une meilleure comparaison.
 \subsection{Résultats sur image de synthèse}
 
-Pour des sous images de synthèses de résolution $300 \times 580$ et
+Pour des images de synthèse recadrées sur le rocher, de résolution $300 \times 580$ et
 d'angles entre caméras de $10$° et $7$° degrés, les résultats sont dans le Tableau~\ref{table:res_syn}.
 Surprenamment, \textit{HM} a d'excellents résultats: la proportion de bonnes paires parmi celles gardées
-est haute par rapport à celle de \textit{SIFT}.
+est haute par rapport à celle de \textit{SIFT}: $74.11 \%$ contre $17.61\%$ pour $10$°.
 
 Il est rassurant d'avoir une distance moyenne des bonnes paires en dessous de celle des mauvaises.
 De plus l'écart entre les deux moyennes est d'environ $1.22$ fois l'écart-type des bonnes paires (pour $10$°). Pour \textit{SIFT} en comparaison,
 il est seulement de $0.27$ fois.
-On en conclut que sur ce test, notre descripteur a été plus discriminant que \textit{SIFT}.
+Sur ce test, le descripteur de \textit{HM} est plus discriminant que \textit{SIFT} car les distributions des bonnes et mauvaises paires sont plus espacées.
 
 Quand on regarde les résultats pour $10$° avant d'avoir fait le postfiltrage, donc avant de ne garder que l'équivalent des $2\%$ des pixels de l'image,
-on voit que \textit{HM} renvoie comme attendu un grand nombre de paires, et la bonne nouvelle est que parmi elles se trouvent relativement beaucoup
-de bonnes paires: $24.58\%$. A contrario, \textit{SIFT} a la vertu d'être très parcimonieux et précis avec $931$ paires dont $65.8\%$ de bonnes.
-Cependant, le reproche qu'on peut faire à \textit{SIFT} est de ne pas renvoyer assez de bonnes paires, bien que le pourcentage de bonnes paires
-parmi le nombre de pixels de la sous-image est de $0.31\%$, supérieur à l'objectif de $0.24\%$ correspondant à 3000 points dans une
-image $900 \times 1400$. Ainsi, \textit{SIFT} valide dans notre cas nos attentes, mais de peu, là où \textit{HM} peut potentiellemnt détecter bien
+on voit que \textit{HM} renvoie comme attendu un grand nombre de paires: en l'occurence $30\%$ ou $40\%$ des pixels de l'image.
+La bonne nouvelle est que parmi elles se trouvent relativement beaucoup
+de bonnes paires: $24.58\%$. De l'autre côté, \textit{SIFT} a la vertu d'être très parcimonieux et précis,
+renvoyant $931$ paires dont $65.8\%$ de bonnes.
+Cependant, le reproche qu'on peut faire à \textit{SIFT} est de ne pas renvoyer assez de bonnes paires.
+On notera cependant que le pourcentage de bonnes paires renvoyées
+parmi le nombre de pixels de la sous-image est de $0.31\%$ et donc supérieur à l'objectif de $0.24\%$ correspondant à $3000$ points dans une
+image $900 \times 1400$ (résolution d'une image réelle recadrée sur le rocher).
+Ainsi, \textit{SIFT} valide dans ce cas les attendus, mais de peu, là où \textit{HM} peut potentiellement détecter bien
 plus de bons points.
 
 On peut voir sur la Figure~\ref{figure:fig_syn} des paires proposées par \textit{HM}.
@@ -516,17 +556,20 @@ en Annexes.
 \end{figure*}
 
 \subsection{Résultats sur images réelles}
-Les images réelles dont nous disposons ont comme résolution $800 \times 1500$ après recadrage. \textit{HM} a fonctionné
-avec un préfiltrage de $70 \%$, le temps de calcul a été de 4 heures 30 par image et 5 heures 10 pour l'appariement sur une machine à 20 coeurs.
+Les images réelles ont comme résolution $800 \times 1500$ après recadrage. \textit{HM} a fonctionné
+avec un préfiltrage de $70 \%$, le temps de calcul est de $4$ heures $30$ par image et $5$ heures $10$ pour l'appariement sur une
+puissante machine de $20$ coeurs.
+
 On voit clairement ici la limite de notre algorithme, peu parcimonieux par nature et implémenté en \textit{Python}.
 Quant aux résultats, les zooms en Figure~\ref{figure:fig_irl} montrent de nombreux déchets, malgré de visiblement
 bonnes paires dans les zones contrastées.
-On voit tout d'abord que les images de synthèses sont sensiblement différentes des réelles,
+On voit tout d'abord que les images de synthèses sont sensiblement différentes de celles réelles,
 en terme d'angle entre caméras, de variation de contraste, et de résolution.
 On comprend ici la faiblesse de \textit{HM} sur ces dernières qui semble observer un voisinage fixe,
 trop petit ici pour encapsuler un relief topologique caractéristique du point,
 car ces images sont de haute résolution et possèdent globalement peu de relief, donc les
 variations notables de celui-ci se font sur une plus grande zone que $15 \times 15$.
+
 On trouvera en Annexes sur la Figure~\ref{figure:fig_irl_sift} les résultats de \textit{SIFT} sur la même zone.
 Sans surprise, ceux-ci sont très bons, avec très peu de déchets flagrants, il faudrait certes zoomer plus
 pour vérifier la validité des paires au pixel près, mais il reste que les performances de \textit{HM}
@@ -540,7 +583,7 @@ Mais évidemment, l'algorithme \textit{HM} n'a pas les résultats attendus.
 
 \section{Discussion}
 
-Une lacune importante de notre méthodologie est que les différents paramètres
+Une lacune importante de la méthodologie adoptée est que les différents paramètres
 n'ont pas été testés avec d'autres valeurs pour s'assurer que celles
 utilisées sont les plus pertinentes.
 C'est par exemple le cas pour l'écart-type du filtre gaussien
@@ -560,10 +603,10 @@ images de synthèse, afin d'avoir des scènes virtuelles plus fidèles à la ré
 observer la variation du taux de bonnes paires trouvées par \textit{HM} en fonction de la taille du descripteur. C'est au final une tâche d'optimisation.
 Il est fort probable que cette relation soit une fonction croissante,
 il faudrait sûrement introduire une pénalité ou une limite
-supérieure sur la taille.
+supérieure sur la taille du descripteur.
 En plus de cela, l'étape de préfiltrage est grossière: il serait pertinent d'inclure
 la norme du gradient en plus des courbures. Cette remarque vaut aussi pour l'étape
-d'appariement par distance entre descripteurs, distance pouvant être
+d'appariement par distance entre descripteurs. Cette distance peut en effet être
 pondérée pour augmenter l'importance de l'information sur les gradients par rapport
 à celle des courbures.
 Il serait aussi envisageable, une fois la taille de descripteur fixée, de s'inspirer
