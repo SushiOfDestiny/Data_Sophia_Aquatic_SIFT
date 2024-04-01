@@ -96,7 +96,7 @@
 
 Les algorithmes de \textit{Computer Vision} pour la détection de points d'intérêt sont aujourd'hui extrêmement efficaces, en particulier depuis la publication de \textit{\textit{SIFT}} \autocite{Lowe:2004} en 2004, avec des applications dans de nombreux domaines : médecine, logistique et imagerie numérique pour ne citer qu'eux.
 Néanmoins, les algorithmes %semblent inadaptés lorsqu'il s'agit de traiter des images sous-marines
-existants ont des résultats mitigés sur des images sous-marines, %et ce principalement à cause de la perte de contraste et du manque de luminosité aux profondeurs considérées.
+existants ont des résultats mitigés sur des images sous-marines. %et ce principalement à cause de la perte de contraste et du manque de luminosité aux profondeurs considérées.
 En effet, ils proposent de nombreuses paires présentant un écart de plus d'$1$ pixel, qui fausseraient une éventuelle reconstruction 3D.
 Une difficulté majeure du milieu sous-marin est la perte de contraste et le manque de luminosité aux profondeurs considérées.
 
@@ -143,7 +143,7 @@ Un pixel à une échelle $\sigma_i$ est alors considéré comme un point d'inté
 (c'est alors un extremum de l'espace des échelles).
 Après un filtrage et une interpolation intermédiaires, les points d'intérêt restants sont alors caractérisés par un histogramme des gradients voisins.
 L'orientation et la magnitude du gradient d'un point est définie par les équations~\ref{eq:angle_grad} et \ref{eq:magnitude_grad}.
-Chaque point d'intérêt est ainsi représenté par un vectuer de dimension $128$, contenant les informations d'un carré de
+Chaque point d'intérêt est ainsi représenté par un vecteur de dimension $128$, contenant les informations d'un carré de
 $4 \times 4$ histogrammes autour du point, avec $8$ directions enregistrées dans chaque cellule (cf Figure~\ref{figure:lowe_desc_constr}).
 
 % \begin{figure}
@@ -262,7 +262,7 @@ de contraste ont été testées, aucune amélioration notable n'a été constat�
 
 Il est certes possible de chercher les paires de points de façon brute entre
 l'entièreté des pixels de chaque image, mais c'est implique de longs temps de calcul,
-et n'est clairement pas le plus efficace : beaucoup de
+et n'est pas le plus efficace : beaucoup de
 points réels ne présentent que peu d'intérêt car leur voisinage présente
 peu de relief.
 
@@ -401,7 +401,7 @@ de la somme des contributions dans toutes les cellules, afin de fournir une inva
 	\label{figure:lowe_desc_constr}
 \end{figure}
 
-Les deux histogrammes des courbures principales ((ordonnées par valeur signée décroissante)
+Les deux histogrammes des courbures principales (ordonnées par valeur signée décroissante)
 sont calculés selon le même principe. Pour cela,
 l'orientation d'une courbure principale est définie comme l'angle fait entre sa
 direction et le vecteur horizontal $e_x=(x=1, y=0)$, et la contribution va,
